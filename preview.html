@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneKana Agency - Aperçu</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --bg-color: #ffffff;
+            --card-bg: #f8fafc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .preview-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .preview-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .tech-stack {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+
+        .installation-steps {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            margin-bottom: 1rem;
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .preview-title {
+                font-size: 2rem;
+            }
+            
+            .preview-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1 class="preview-title">OneKana Agency Website</h1>
+            <p class="preview-subtitle">Site web moderne et professionnel inspiré du design de vokode.com</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3 class="feature-title">🎨 Design Moderne</h3>
+                <p>Interface élégante avec animations fluides et transitions sophistiquées inspirées du design de vokode.com.</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">📱 Responsive Design</h3>
+                <p>Compatible avec tous les appareils : mobile, tablette et desktop. Expérience utilisateur optimale sur tous les écrans.</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🚀 Performances</h3>
+                <p>Technologies modernes (Vite + React) pour un chargement rapide et une navigation fluide.</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">✨ Animations</h3>
+                <p>Animations Framer Motion pour des transitions élégantes et une expérience immersive.</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🔧 Fonctionnel</h3>
+                <p>Formulaire de contact, système de filtres pour le portfolio, navigation sticky et menu mobile.</p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🎨 Design System</h3>
+                <p>Couleurs, typographie et composants cohérents pour une identité visuelle forte.</p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h3 style="margin-top: 0;">Technologies Utilisées</h3>
+            <div class="tech-list">
+                <span class="tech-tag">React 19</span>
+                <span class="tech-tag">Vite</span>
+                <span class="tech-tag">Framer Motion</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">Grid & Flexbox</span>
+                <span class="tech-tag">Animations</span>
+            </div>
+        </div>
+
+        <div class="installation-steps">
+            <h3 style="margin-top: 0;">Installation</h3>
+            <div class="step">1. Clonez le projet : git clone [repository-url]</div>
+            <div class="step">2. Installez les dépendances : npm install</div>
+            <div class="step">3. Lancez le serveur : npm run dev</div>
+            <div class="step">4. Ouvrez http://localhost:5173 dans votre navigateur</div>
+        </div>
+
+        <div class="note">
+            <strong>Remarque :</strong> Ce site a été créé avec React et Vite. Pour le faire fonctionner correctement, 
+            assurez-vous d'avoir Node.js installé et exécutez les commandes d'installation ci-dessus.
+        </div>
+    </div>
+</body>
+</html>

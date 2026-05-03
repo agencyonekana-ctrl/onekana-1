@@ -1,0 +1,104 @@
+/* Campaign Types Grid */
+.campaign-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.campaign-type-card {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+  position: relative;
+  min-height: 120px;
+}
+
+.campaign-type-card:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+}
+
+.campaign-type-card.selected {
+  border-color: #007bff;
+  background: #f8f9ff;
+}
+
+.campaign-type-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.campaign-type-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.campaign-type-price {
+  font-weight: 700;
+  color: #007bff;
+  font-size: 14px;
+}
+
+.campaign-type-description {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.campaign-type-checkbox {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.campaign-type-checkbox input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.loading-campaigns,
+.error-campaigns,
+.no-campaigns {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.error-campaigns {
+  color: #dc3545;
+}
+
+/* Total Price Summary */
+.total-price-summary {
+  background: #f8f9ff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.total-price-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.total-price-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #007bff;
+  font-family: 'Courier New', monospace;
+}
