@@ -1,532 +1,996 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle, Car, Store, Smartphone, Target, ArrowRight, Backpack, Play, MousePointer, Sun, Check, Package, DollarSign, Zap, Users, Star, Download, FileText, ChevronDown } from 'lucide-react'
-import { getPacksCommerciaux } from '../services/apiService'
+import {
+  Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle,
+  Car, Store, Smartphone, Target, ArrowRight, Backpack, Play,
+  MousePointer, Sun, Check, Star, Download, FileText, ChevronDown,
+  TrendingUp, Users, Award, Zap, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet
+} from 'lucide-react'
+import { useLanguage } from '../hooks/useLanguage'
 
-// Brochure Download Button with dropdown
+/* ─── Brochure Dropdown ─── */
 const BrochureDropdown = () => {
-    const [open, setOpen] = useState(false)
-    const ref = useRef(null)
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
 
-    const brochures = [
-        {
-            label: 'Présentation commerciale',
-            file: '/brochures/03_2025_12_Présentation_commerciale_ Onekana.pptx.pdf',
-        },
-        {
-            label: 'Présentation & Prix',
-            file: '/brochures/2025_12_Présentation_commerciale_ Onekana_Prix.pptx.pdf',
-        },
-    ]
+  const brochures = [
+    { label: 'Présentation commerciale', file: '/brochures/03_2025_12_Présentation_commerciale_ Onekana.pptx.pdf' },
+    { label: 'Présentation & Prix', file: '/brochures/2025_12_Présentation_commerciale_ Onekana_Prix.pptx.pdf' },
+  ]
 
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (ref.current && !ref.current.contains(e.target)) {
-                setOpen(false)
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-    return (
-        <div className="brochure-dropdown" ref={ref}>
-            <button
-                className="btn btn-primary brochure-btn"
-                onClick={() => setOpen((v) => !v)}
-                aria-expanded={open}
-            >
-                <Download size={18} strokeWidth={2} />
-                Télécharger nos brochures
-                <ChevronDown size={16} strokeWidth={2} className={`brochure-chevron${open ? ' open' : ''}`} />
-            </button>
-            {open && (
-                <div className="brochure-menu">
-                    {brochures.map((b, i) => (
-                        <a
-                            key={i}
-                            href={b.file}
-                            download
-                            className="brochure-item"
-                            onClick={() => setOpen(false)}
-                        >
-                            <FileText size={16} strokeWidth={1.5} />
-                            {b.label}
-                        </a>
-                    ))}
-                </div>
-            )}
+  return (
+    <div className="brochure-dropdown" ref={ref}>
+      <button className="btn-hero-primary" onClick={() => setOpen(v => !v)} aria-expanded={open}>
+        <Download size={18} strokeWidth={2} />
+        Télécharger nos brochures
+        <ChevronDown size={16} strokeWidth={2} className={`brochure-chevron${open ? ' open' : ''}`} />
+      </button>
+      {open && (
+        <div className="brochure-menu">
+          {brochures.map((b, i) => (
+            <a key={i} href={b.file} download className="brochure-item" onClick={() => setOpen(false)}>
+              <FileText size={16} strokeWidth={1.5} />
+              {b.label}
+            </a>
+          ))}
         </div>
-    )
+      )}
+    </div>
+  )
 }
 
-// Hero Section
+/* ─── Animated Counter ─── */
+const Counter = ({ end, suffix = '', duration = 2000 }) => {
+  const [count, setCount] = useState(0)
+  const ref = useRef(null)
+  const started = useRef(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true
+        const start = Date.now()
+        const step = () => {
+          const elapsed = Date.now() - start
+          const progress = Math.min(elapsed / duration, 1)
+          const eased = 1 - Math.pow(1 - progress, 3)
+          setCount(Math.floor(eased * end))
+          if (progress < 1) requestAnimationFrame(step)
+        }
+        requestAnimationFrame(step)
+      }
+    }, { threshold: 0.5 })
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [end, duration])
+
+  return <span ref={ref}>{count}{suffix}</span>
+}
+
+/* ─── Magnetic Button ─── */
+const MagneticBtn = ({ children, className, to, href, ...props }) => {
+  const ref = useRef(null)
+
+  const handleMouseMove = (e) => {
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    el.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px)`
+  }
+
+  const handleMouseLeave = () => {
+    if (ref.current) ref.current.style.transform = 'translate(0,0)'
+  }
+
+  if (to) {
+    return (
+      <Link ref={ref} to={to} className={`${className} btn-magnetic-parent`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} {...props}>
+        {children}
+      </Link>
+    )
+  }
+  return (
+    <div ref={ref} className={`${className} btn-magnetic-parent`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ display: 'inline-block', transition: 'transform 0.15s ease' }}>
+      {children}
+    </div>
+  )
+}
+
+/* ─── Scroll Reveal Hook ─── */
+const useScrollReveal = (selector) => {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('active')
+        }
+      }),
+      { threshold: 0.1 }
+    )
+    document.querySelectorAll(selector).forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [selector])
+}
+
+/* ─── Spotlight Mouse Mover Helper ─── */
+const handleMouseMoveSpotlight = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+  e.currentTarget.style.setProperty('--mouse-x', `${x}px`)
+  e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO SECTION — Cinematic full-screen with interactive particles & grid
+   ══════════════════════════════════════════════════════════ */
 const Hero = () => {
-    return (
-        <section className="hero">
-            <div className="hero-background">
-                <div className="hero-image">
-                    <video
-                        className="hero-video"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="metadata"
-                    >
-                        <source src="/hero-bg.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div className="hero-gradient"></div>
-                <div className="hero-pattern"></div>
-            </div>
-            <div className="hero-content">
-                {/* <p className="hero-subtitle animate-fade-in">
-                    <img src="/onek.png" alt="Onek" style={{ width: '40px', height: '40px', marginRight: '10px', verticalAlign: 'middle' }} />
-                    Onekana Agency
-                </p> */}
-                <h1 className="hero-title">
-                    <span className="line animate-fade-in-up" style={{ animationDelay: '0.2s' }}>la publicité</span>
-                    <span className="line animate-fade-in-up" style={{ animationDelay: '0.4s' }}>bouge au rythme</span>
-                    <span className="line accent animate-fade-in-up" style={{ animationDelay: '0.6s' }}>de la ville !</span>
-                </h1>
-                <p className="hero-description animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-                    Agence de marketing urbain et mobile spécialisée dans la visibilité locale
-                    utile, non intrusive et mesurable.
-                </p>
-                <div className="hero-cta animate-fade-in-up" style={{ animationDelay: '1s' }}>
-                    <BrochureDropdown />
-                    <Link to="/contact" className="btn">Nous contacter</Link>
-                </div>
-            </div>
-            <div className="hero-scroll">
-                <span>Scroll</span>
-                <div className="scroll-line"></div>
-            </div>
-        </section>
-    )
+  const canvasRef = useRef(null)
+  const { t } = useLanguage()
+  const textItems = t({
+    fr: ['la Rue.', 'la Ville.', 'votre Marque.', "l'Avenir."],
+    en: ['the Street.', 'the City.', 'your Brand.', 'the Future.']
+  })
+  const [textIndex, setTextIndex] = useState(0)
+  const [fade, setFade] = useState(true)
+
+  // Rotating text
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFade(false)
+      setTimeout(() => {
+        setTextIndex(i => (i + 1) % textItems.length)
+        setFade(true)
+      }, 500)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [textItems.length])
+
+  // Interactive Particle canvas
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let W = canvas.width = window.innerWidth
+    let H = canvas.height = window.innerHeight
+    const particles = []
+
+    let mouse = { x: null, y: null, radius: 120 }
+
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 2 + 0.5,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        o: Math.random() * 0.6 + 0.15,
+      })
+    }
+
+    const handleMouseMoveCanvas = (e) => {
+      mouse.x = e.clientX
+      mouse.y = e.clientY
+    }
+
+    const handleMouseLeaveCanvas = () => {
+      mouse.x = null
+      mouse.y = null
+    }
+
+    window.addEventListener('mousemove', handleMouseMoveCanvas)
+    window.addEventListener('mouseleave', handleMouseLeaveCanvas)
+
+    let frame
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H)
+      particles.forEach(p => {
+        // Interactivity: push particles away from cursor
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = p.x - mouse.x
+          const dy = p.y - mouse.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius
+            p.x += (dx / dist) * force * 4
+            p.y += (dy / dist) * force * 4
+          }
+        }
+
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(234, 0, 1, ${p.o})`
+        ctx.fill()
+        p.x += p.dx
+        p.y += p.dy
+        if (p.x < 0 || p.x > W) p.dx *= -1
+        if (p.y < 0 || p.y > H) p.dy *= -1
+      })
+      frame = requestAnimationFrame(draw)
+    }
+    draw()
+
+    const handleResize = () => {
+      W = canvas.width = window.innerWidth
+      H = canvas.height = window.innerHeight
+    }
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('mousemove', handleMouseMoveCanvas)
+      window.removeEventListener('mouseleave', handleMouseLeaveCanvas)
+    }
+  }, [])
+
+  return (
+    <section className="hero-cinematic">
+      <canvas ref={canvasRef} className="hero-canvas" />
+      <div className="cinematic-grid-bg" />
+      <div
+        style={{
+          position: 'absolute', inset: 0, zIndex: -1,
+          background: 'radial-gradient(circle at 80% 20%, rgba(234, 0, 1, 0.05) 0%, transparent 60%), radial-gradient(circle at 15% 85%, rgba(234, 0, 1, 0.03) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Animated background shapes */}
+      <div className="hero-bg-shapes">
+        <div className="hbs hbs-1" />
+        <div className="hbs hbs-2" />
+        <div className="hbs hbs-3" />
+      </div>
+
+      <div className="container hero-cinematic-inner">
+        <div className="hero-badge reveal-up active">
+          <span className="badge-dot" />
+          {t({ fr: 'Agence #1 à Lubumbashi', en: '#1 Agency in Lubumbashi' })}
+        </div>
+
+        <h1 className="hero-headline reveal-up active">
+          <span className="split-line-wrap">
+            <span className="split-line-inner">{t({ fr: 'La publicité qui fait', en: 'Advertising that makes' })}</span>
+          </span>
+          <span className="split-line-wrap">
+            <span className="split-line-inner">
+              {t({ fr: 'bouger', en: 'move' })}&nbsp;
+              <span className={`hero-rotating-text ${fade ? 'fade-in' : 'fade-out'}`}>
+                {textItems[textIndex]}
+              </span>
+            </span>
+          </span>
+        </h1>
+
+        <p className="hero-lead reveal-up active" style={{ transitionDelay: '0.15s' }}>
+          {t({ fr: 'Marketing urbain & mobile — visible, mémorisé, mesurable.', en: 'Urban & mobile marketing — visible, memorized, measurable.' })}
+        </p>
+
+        {/* Trustpilot Block */}
+        <div className="hero-trustpilot reveal-up active" style={{ transitionDelay: '0.2s' }}>
+          <div className="trustpilot-stars">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="tp-star"><Star fill="white" size={14} color="white" /></div>
+            ))}
+          </div>
+          <span className="trustpilot-text">
+            {t({ fr: 'Excellent ', en: 'Excellent ' })}
+            <strong>4.9/5</strong>
+            {t({ fr: ' sur ', en: ' on ' })}
+            <strong>Trustpilot</strong>
+          </span>
+        </div>
+
+        <div className="hero-actions reveal-up active" style={{ transitionDelay: '0.3s' }}>
+          <MagneticBtn className="magnetic-wrap" style={{ position: 'relative', zIndex: 100 }}>
+            <BrochureDropdown />
+          </MagneticBtn>
+          <MagneticBtn to="/contact" className="btn-hero-secondary magnetic-wrap" style={{ position: 'relative', zIndex: 1 }}>
+            <Play size={16} /> {t({ fr: 'Voir la vidéo', en: 'Watch Video' })}
+          </MagneticBtn>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="hero-scroll-indicator">
+          <div className="scroll-line" />
+          <span>{t({ fr: 'Découvrir', en: 'Discover' })}</span>
+        </div>
+      </div>
+
+      {/* Stats strip */}
+      <div className="hero-stats-strip reveal-up active" style={{ transitionDelay: '0.4s' }}>
+        <div className="hero-stat">
+          <span className="stat-num"><Counter end={50} suffix="+" /></span>
+          <span className="stat-lbl">Clients actifs</span>
+        </div>
+        <div className="hero-stat-divider" />
+        <div className="hero-stat">
+          <span className="stat-num"><Counter end={200} suffix="+" /></span>
+          <span className="stat-lbl">Campagnes lancées</span>
+        </div>
+        <div className="hero-stat-divider" />
+        <div className="hero-stat">
+          <span className="stat-num"><Counter end={3} suffix=" ans" /></span>
+          <span className="stat-lbl">D'expérience</span>
+        </div>
+        <div className="hero-stat-divider" />
+        <div className="hero-stat">
+          <span className="stat-num"><Counter end={98} suffix="%" /></span>
+          <span className="stat-lbl">Satisfaction client</span>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-// About Section - NEW DESIGN
+/* ══════════════════════════════════════════════════════════
+   MARQUEE TICKER
+   ══════════════════════════════════════════════════════════ */
+const Marquee = () => {
+  const items = [
+    'Affichage Mobile', 'Digi\'Street', 'DOOH', 'Marketing Urbain',
+    'Visibilité Locale', 'WhatsApp Marketing', 'Publicité Taxi',
+    'Promotion Commerce', 'Impact Trafic', 'Campagnes Ciblées',
+  ]
+
+  return (
+    <div className="marquee-bar">
+      <div className="marquee-track">
+        {[...items, ...items].map((item, i) => (
+          <span key={i} className="marquee-item">
+            <span className="marquee-dot">◆</span> {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
+   PARTNERS SECTION
+   ══════════════════════════════════════════════════════════ */
+const Partners = () => {
+  const { t } = useLanguage()
+  useScrollReveal('.partners-reveal')
+
+  const partnerLogos = [
+    { name: 'Rawbank', logo: <img src="/images/partners/rawbank-logo.png" alt="Rawbank" className="partner-img" /> },
+    { name: 'Vodacom', logo: <img src="/images/partners/vodacom-logo.png" alt="Vodacom" className="partner-img" /> },
+    { name: 'Airtel', logo: <img src="/images/partners/airtel-logo.png" alt="Airtel" className="partner-img" /> },
+    { name: 'Orange', logo: <img src="/images/partners/orange-logo.png" alt="Orange" className="partner-img" /> },
+    { name: 'Canal+', logo: <img src="/images/partners/canalplus-logo.png" alt="Canal+" className="partner-img" /> },
+    { name: 'BCDC', logo: <img src="/images/partners/equity-bank-logo.png" alt="Equity BCDC" className="partner-img" /> },
+  ]
+
+  return (
+    <section className="partners-section section">
+      <div className="container">
+        <div className="section-eyebrow partners-reveal reveal-up" style={{ textAlign: 'center' }}>
+          {t({ fr: 'Partenaires', en: 'Partners' })}
+        </div>
+        <h2 className="section-heading partners-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s', marginBottom: '3rem' }}>
+          {t({ fr: 'Ils nous font confiance', en: 'They Trust Us' })}
+        </h2>
+        <div className="partners-logos-container partners-reveal reveal-up" style={{ transitionDelay: '0.2s' }}>
+          <div className="partners-track">
+            {[...partnerLogos, ...partnerLogos, ...partnerLogos].map((p, i) => (
+              <div key={i} className="partner-card">
+                {p.logo}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
+   ABOUT SECTION — with staggered cards & Spotlight hover
+   ══════════════════════════════════════════════════════════ */
 const AboutPreview = () => {
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active')
-                    }
-                })
-            },
-            { threshold: 0.1 }
-        )
+  useScrollReveal('.about-reveal')
+  const { t } = useLanguage()
 
-        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
-        return () => observer.disconnect()
-    }, [])
+  return (
+    <section className="about-premium section">
+      <div className="cinematic-grid-bg" />
+      <div className="container">
+        <div className="section-eyebrow about-reveal reveal-up">
+          {t({ fr: 'Notre Vision', en: 'Our Vision' })}
+        </div>
+        <h2 className="section-heading about-reveal reveal-up" style={{ transitionDelay: '0.1s' }}>
+          {t({ fr: 'Marketing Urbain', en: 'Urban Marketing' })} <span className="text-accent">{t({ fr: 'Redéfini', en: 'Redefined' })}</span>
+        </h2>
 
-    return (
-        <section className="about-modern section">
-            <div className="container">
-                <div className="about-header reveal">
-                    <span className="section-label">Notre Vision</span>
-                    <h2 className="section-title">Marketing Urbain Redéfini</h2>
-                </div>
-
-                <div className="about-cards">
-                    {/* Transform Card */}
-                    <div className="about-card reveal" style={{ transitionDelay: '0.1s' }}>
-                        <div className="card-icon">
-                            <Move3d size={32} strokeWidth={1.5} />
-                        </div>
-                        <h3 className="card-title">Nous transformons</h3>
-                        <ul className="card-list">
-                            <li><span className="bullet">→</span> les déplacements</li>
-                            <li><span className="bullet">→</span> les temps d'attente</li>
-                            <li><span className="bullet">→</span> les espaces urbains</li>
-                        </ul>
-                        <p className="card-conclusion">en opportunités commerciales concrètes.</p>
-                    </div>
-
-                    {/* Promise Card */}
-                    <div className="about-card reveal card-accent" style={{ transitionDelay: '0.2s' }}>
-                        <div className="card-icon">
-                            <Layers size={32} strokeWidth={1.5} />
-                        </div>
-                        <h3 className="card-title">Notre promesse</h3>
-                        <div className="promise-flow">
-                            <div className="flow-item">
-                                <Eye size={20} strokeWidth={1.5} className="flow-icon-lucide" />
-                                <span className="flow-text">Être vu</span>
-                            </div>
-                            <div className="flow-arrow">→</div>
-                            <div className="flow-item">
-                                <Brain size={20} strokeWidth={1.5} className="flow-icon-lucide" />
-                                <span className="flow-text">Mémorisé</span>
-                            </div>
-                            <div className="flow-arrow">→</div>
-                            <div className="flow-item">
-                                <Phone size={20} strokeWidth={1.5} className="flow-icon-lucide" />
-                                <span className="flow-text">Contacté</span>
-                            </div>
-                            <div className="flow-arrow">→</div>
-                            <div className="flow-item">
-                                <CheckCircle size={20} strokeWidth={1.5} className="flow-icon-lucide" />
-                                <span className="flow-text">Choisi</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Logic Card */}
-                    <div className="about-card reveal" style={{ transitionDelay: '0.3s' }}>
-                        <div className="card-icon">
-                            <Network size={32} strokeWidth={1.5} />
-                        </div>
-                        <h3 className="card-title">Notre logique</h3>
-                        <div className="logic-chain">
-                            <div className="logic-item">
-                                <span className="logic-dot"></span>
-                                <span>Exposition physique</span>
-                            </div>
-                            <div className="logic-item">
-                                <span className="logic-dot"></span>
-                                <span>Interaction</span>
-                            </div>
-                            <div className="logic-item">
-                                <span className="logic-dot"></span>
-                                <span>Donnée</span>
-                            </div>
-                            <div className="logic-item">
-                                <span className="logic-dot"></span>
-                                <span>Relance</span>
-                            </div>
-                            <div className="logic-item">
-                                <span className="logic-dot"></span>
-                                <span className="highlight">Conversion</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="about-cta reveal" style={{ transitionDelay: '0.4s' }}>
-                    <Link to="/agence" className="btn btn-primary btn-large">
-                        Découvrir notre approche
-                    </Link>
-                </div>
+        <div className="about-grid reveal-stagger about-reveal">
+          {/* Card 1 */}
+          <div
+            className="acard acard-dark card-spotlight"
+            onMouseMove={handleMouseMoveSpotlight}
+          >
+            <div className="acard-number">01</div>
+            <div className="acard-icon-wrap">
+              <Move3d size={32} strokeWidth={1.5} />
             </div>
-        </section>
-    )
+            <h3 className="acard-title">{t({ fr: 'Nous transformons', en: 'We transform' })}</h3>
+            <ul className="acard-list">
+              <li><span className="acard-bullet" />{t({ fr: 'les déplacements', en: 'commutes' })}</li>
+              <li><span className="acard-bullet" />{t({ fr: "les temps d'attente", en: 'waiting times' })}</li>
+              <li><span className="acard-bullet" />{t({ fr: 'les espaces urbains', en: 'urban spaces' })}</li>
+            </ul>
+            <p className="acard-cta">{t({ fr: 'en opportunités commerciales concrètes.', en: 'into concrete business opportunities.' })}</p>
+          </div>
+
+          {/* Card 2 — accent */}
+          <div
+            className="acard acard-accent card-spotlight"
+            onMouseMove={handleMouseMoveSpotlight}
+          >
+            <div className="acard-number">02</div>
+            <div className="acard-icon-wrap">
+              <Layers size={32} strokeWidth={1.5} />
+            </div>
+            <h3 className="acard-title">{t({ fr: 'Notre promesse', en: 'Our promise' })}</h3>
+            <div className="promise-chain">
+              {[
+                { icon: Eye, label: t({ fr: 'Être vu', en: 'Be seen' }) },
+                { icon: Brain, label: t({ fr: 'Mémorisé', en: 'Remembered' }) },
+                { icon: Phone, label: t({ fr: 'Contacté', en: 'Contacted' }) },
+                { icon: CheckCircle, label: t({ fr: 'Choisi', en: 'Chosen' }) },
+              ].map(({ icon: Icon, label }, i) => (
+                <div key={i} className="chain-step">
+                  <div className="chain-icon"><Icon size={20} strokeWidth={1.5} /></div>
+                  <span>{label}</span>
+                  {i < 3 && <div className="chain-arrow">→</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 3 */}
+          <div
+            className="acard acard-dark card-spotlight"
+            onMouseMove={handleMouseMoveSpotlight}
+          >
+            <div className="acard-number">03</div>
+            <div className="acard-icon-wrap">
+              <Network size={32} strokeWidth={1.5} />
+            </div>
+            <h3 className="acard-title">{t({ fr: 'Notre logique', en: 'Our logic' })}</h3>
+            <div className="funnel">
+              {[
+                t({ fr: 'Exposition physique', en: 'Physical exposure' }),
+                t({ fr: 'Interaction', en: 'Interaction' }),
+                t({ fr: 'Donnée', en: 'Data' }),
+                t({ fr: 'Relance', en: 'Retargeting' }),
+                t({ fr: 'Conversion ✓', en: 'Conversion ✓' }),
+              ].map((s, i) => (
+                <div key={i} className="funnel-step" style={{ width: `${100 - i * 12}%`, opacity: 1 - i * 0.05 }}>
+                  {s}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="about-cta-wrap about-reveal reveal-up" style={{ transitionDelay: '0.4s' }}>
+          <MagneticBtn className="magnetic-wrap">
+            <Link to="/agence" className="btn btn-primary btn-large">
+              {t({ fr: 'Découvrir notre approche', en: 'Discover our approach' })} <ArrowRight size={18} />
+            </Link>
+          </MagneticBtn>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-// Why Lubumbashi Section - NEW
+/* ══════════════════════════════════════════════════════════
+   WHY LUBUMBASHI — with Staggered spotlight cards
+   ══════════════════════════════════════════════════════════ */
 const WhyLubumbashi = () => {
-    const reasons = [
-        { icon: Car, text: "Les taxis sont des médias mobiles permanents" },
-        { icon: Store, text: "Les commerces de proximité concentrent l'attention" },
-        { icon: Smartphone, text: "WhatsApp est le canal n°1 de conversion" },
-        { icon: Eye, text: "Peu de concurrence sur le DOOH & médias mobiles" },
-        { icon: Target, text: "Forte mémorisation des supports utiles et visibles" },
-    ]
+  const { t } = useLanguage()
+  useScrollReveal('.wl-reveal')
 
-    return (
-        <section id="why-lubumbashi" className="why-lubumbashi section">
-            <div className="container">
-                <div className="section-header reveal">
-                    <span className="section-label">POURQUOI ONEKANA</span>
-                    <h2 className="section-title">À Lubumbashi ?</h2>
-                    <p className="section-subtitle">Onekana est conçue pour le terrain lushois</p>
-                </div>
-                <div className="reasons-grid">
-                    {reasons.map((reason, index) => (
-                        <div
-                            key={index}
-                            className="reason-card reveal"
-                            style={{ transitionDelay: `${index * 0.1}s` }}
-                        >
-                            <div className="reason-icon">
-                                <reason.icon size={28} strokeWidth={1.5} />
-                            </div>
-                            <p className="reason-text">{reason.text}</p>
-                        </div>
-                    ))}
-                </div>
-                <div className="result-card reveal" style={{ transitionDelay: '0.5s' }}>
-                    <div className="result-icon">
-                        <ArrowRight size={24} strokeWidth={1.5} />
-                    </div>
-                    <p className="result-text">
-                        <span className="result-label">Résultat :</span> plus d'impact dans la masse de sollicitations publicitaires
-                    </p>
-                </div>
+  const reasons = [
+    {
+      icon: Car,
+      title: t({ fr: 'Médias mobiles', en: 'Mobile Media' }),
+      text: t({
+        fr: 'Les taxis sont des médias mobiles permanents, circulant partout dans la ville.',
+        en: 'Taxis are permanent mobile media, circulating everywhere in the city.'
+      })
+    },
+    {
+      icon: Store,
+      title: t({ fr: 'Commerces de proximité', en: 'Local Shops' }),
+      text: t({
+        fr: 'Les commerces concentrent l\'attention et drainent un trafic qualifié quotidien.',
+        en: 'Shops concentrate attention and drain qualified daily traffic.'
+      })
+    },
+    {
+      icon: Smartphone,
+      title: t({ fr: 'WhatsApp #1', en: 'WhatsApp #1' }),
+      text: t({
+        fr: 'WhatsApp est le canal numéro 1 de conversion dans notre marché.',
+        en: 'WhatsApp is the number 1 conversion channel in our market.'
+      })
+    },
+    {
+      icon: Eye,
+      title: t({ fr: 'Faible concurrence', en: 'Low Competition' }),
+      text: t({
+        fr: 'Peu de concurrence sur le DOOH & médias mobiles — une opportunité réelle.',
+        en: 'Little competition on DOOH & mobile media — a real opportunity.'
+      })
+    },
+    {
+      icon: Target,
+      title: t({ fr: 'Forte mémorisation', en: 'High Memorization' }),
+      text: t({
+        fr: 'Les supports utiles et visibles génèrent une mémorisation supérieure.',
+        en: 'Useful and visible mediums generate superior recall.'
+      })
+    },
+  ]
+
+  return (
+    <section id="why-lubumbashi" className="wl-section section">
+      <div className="wl-bg-accent" />
+      <div className="container">
+        <div className="section-eyebrow wl-reveal reveal-up" style={{ color: 'rgba(10,10,10,0.6)' }}>
+          {t({ fr: 'Pourquoi Onekana', en: 'Why Onekana' })}
+        </div>
+        <h2 className="section-heading wl-reveal reveal-up" style={{ color: '#0a0a0a', transitionDelay: '0.1s' }}>
+          {t({ fr: 'À Lubumbashi ?', en: 'In Lubumbashi?' })}
+        </h2>
+        <p className="wl-subtitle wl-reveal reveal-up" style={{ color: '#555555', transitionDelay: '0.2s' }}>
+          {t({ fr: 'Onekana est conçue pour le terrain lushois', en: 'Onekana is designed for the Lubumbashi market' })}
+        </p>
+
+        <div className="wl-cards-grid wl-reveal reveal-stagger">
+          {reasons.map((r, i) => (
+            <div
+              key={i}
+              className="wl-card card-spotlight"
+              onMouseMove={handleMouseMoveSpotlight}
+            >
+              <div className="wl-card-icon">
+                <r.icon size={28} strokeWidth={1.5} />
+              </div>
+              <h4 className="wl-card-title">{r.title}</h4>
+              <p className="wl-card-text">{r.text}</p>
             </div>
-        </section>
-    )
+          ))}
+        </div>
+
+        <div className="wl-result wl-reveal reveal-up" style={{ transitionDelay: '0.6s' }}>
+          <ArrowRight size={24} strokeWidth={2} />
+          <p><strong>{t({ fr: 'Résultat :', en: 'Result:' })}</strong> {t({ fr: "plus d'impact dans la masse de sollicitations publicitaires", en: 'more impact in the mass of advertising messages' })}</p>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-// DigiStreet Section - NEW
+/* ══════════════════════════════════════════════════════════
+   DIGISTREET — Bold feature section with 3D Orbit
+   ══════════════════════════════════════════════════════════ */
 const Digistreet = () => {
-    const features = [
-        { icon: Backpack, text: "Sac à dos écran LED" },
-        { icon: Play, text: "Vidéo / animation" },
-        { icon: MousePointer, text: "Interaction directe" },
-        { icon: Sun, text: "Jour & nuit" },
-    ]
+  useScrollReveal('.ds-reveal')
+  const { t } = useLanguage()
 
-    return (
-        <section id="digistreet" className="digistreet section">
-            <div className="container">
-                <div className="section-header reveal">
-                    <span className="section-label">Affichage Mobile Innovant</span>
-                    <h2 className="section-title">Digi'Street</h2>
-                </div>
-                <div className="digistreet-content">
-                    {/* <div className="digistreet-image reveal" style={{ marginBottom: '3rem', textAlign: 'center' }}>
-                        <img src="/onek.png" alt="Onek" style={{ width: '200px', height: '200px', borderRadius: '50%' }} />
-                    </div> */}
-                    <div className="digistreet-features">
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                className="feature-card reveal"
-                                style={{ transitionDelay: `${index * 0.1}s` }}
-                            >
-                                <div className="feature-icon">
-                                    <feature.icon size={32} strokeWidth={1.5} />
-                                </div>
-                                <p className="feature-text">{feature.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="digistreet-objective reveal" style={{ transitionDelay: '0.4s' }}>
-                        <div className="objective-icon">
-                            <Target size={28} strokeWidth={1.5} />
-                        </div>
-                        <p className="objective-text">
-                            <span className="objective-label">Objectif :</span> impact visuel fort
-                        </p>
-                    </div>
-                </div>
+  const features = [
+    { icon: Backpack, label: t({ fr: 'Sac à dos', en: 'Backpack display' }), sub: t({ fr: 'Écran LED haute luminosité', en: 'High-brightness LED screen' }) },
+    { icon: Play, label: t({ fr: 'Vidéo/Animation', en: 'Video/Animation' }), sub: t({ fr: 'Contenus dynamiques', en: 'Dynamic content' }) },
+    { icon: MousePointer, label: t({ fr: 'Interaction directe', en: 'Direct interaction' }), sub: t({ fr: 'Engagement immédiat', en: 'Immediate engagement' }) },
+    { icon: Sun, label: t({ fr: 'Jour & nuit', en: 'Day & night' }), sub: t({ fr: 'Visibilité 24/7', en: '24/7 visibility' }) },
+  ]
+
+  return (
+    <section id="digistreet" className="ds-section section">
+      <div className="container">
+        <div className="ds-layout">
+          <div className="ds-left ds-reveal reveal-left">
+            <div className="section-eyebrow" style={{ color: 'var(--color-accent)' }}>
+              {t({ fr: 'Innovation Publicitaire', en: 'Advertising Innovation' })}
             </div>
-        </section>
-    )
+            <h2 className="section-heading">
+              Digi'<span className="text-accent">Street</span>
+            </h2>
+            <p className="ds-lead">
+              {t({
+                fr: "L'affichage mobile qui s'impose là où les gens vivent, se déplacent et s'arrêtent.",
+                en: "Mobile advertising that stands out where people live, move and stop."
+              })}
+            </p>
+            <div className="ds-features">
+              {features.map((f, i) => (
+                <div key={i} className="ds-feature">
+                  <div className="ds-feature-icon"><f.icon size={22} strokeWidth={1.5} /></div>
+                  <div>
+                    <strong>{f.label}</strong>
+                    <span>{f.sub}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="ds-objective">
+              <Target size={20} strokeWidth={2} />
+              <span>
+                <strong>{t({ fr: 'Objectif :', en: 'Goal:' })}</strong> {t({ fr: 'impact visuel fort, contact direct, mémorisation maximale', en: 'strong visual impact, direct contact, maximum recall' })}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-// Pack Section
-const PackSection = () => {
-    const [packs, setPacks] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+/* ══════════════════════════════════════════════════════════
+   SERVICES STRIP — with spotlight cards
+   ══════════════════════════════════════════════════════════ */
+const ServicesStrip = () => {
+  useScrollReveal('.ss-reveal')
 
-    useEffect(() => {
-        const fetchPacks = async () => {
-            try {
-                setLoading(true)
-                const response = await getPacksCommerciaux()
-                console.log('API Response for packs:', response)
+  const services = [
+    { icon: Radio, title: 'Affichage DOOH', desc: 'Écrans LED mobiles en zones à fort trafic' },
+    { icon: Car, title: 'Pub Taxi', desc: 'Branding sur flotte de taxis urbains' },
+    { icon: Smartphone, title: 'WhatsApp Mktg', desc: 'Campagnes ciblées sur le canal n°1' },
+    { icon: BarChart3, title: 'Analytics', desc: 'Mesure précise de vos retombées' },
+    { icon: MapPin, title: 'Géolocalisation', desc: 'Ciblage hyper-local par quartier' },
+    { icon: Award, title: 'Branding', desc: 'Identité visuelle forte et mémorable' },
+  ]
 
-                // Transformation des données API vers format frontend
-                let packsData = []
+  return (
+    <section className="ss-section section">
+      <div className="container">
+        <div className="section-eyebrow ss-reveal reveal-up" style={{ textAlign: 'center' }}>Nos Services</div>
+        <h2 className="section-heading ss-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s' }}>
+          Ce que nous faisons
+        </h2>
 
-                if (response && response.data) {
-                    packsData = response.data
-                } else if (Array.isArray(response)) {
-                    packsData = response
-                } else {
-                    packsData = response || []
-                }
-
-                // Transformation des champs API vers frontend
-                const frontendPacks = packsData.map(pack => ({
-                    id: pack.id,
-                    name: pack.nom,                    // nom → name
-                    budget_min: pack.budget_min,
-                    budget_max: pack.budget_max,
-                    budget_description: pack.budget_description,
-                    description: pack.description,
-                    categorie: pack.categorie,
-                    ideal_pour: pack.ideal_pour,
-                    fonctionnalites: pack.fonctionnalites || []
-                }))
-
-                console.log('Transformed packs:', JSON.stringify(frontendPacks, null, 2))
-                setPacks(frontendPacks)
-
-            } catch (err) {
-                console.error('Error fetching packs:', err)
-                setError(err.message)
-                // Données par défaut en cas d'erreur
-                setPacks([
-                    {
-                        id: 1,
-                        name: "START VISIBILITÉ",
-                        budget_min: 250,
-                        budget_max: 600,
-                        budget_description: null,
-                        description: "Être vu localement",
-                        categorie: "visibilité",
-                        ideal_pour: "Idéal commerces & tests de marché",
-                        fonctionnalites: ["Affichage mobile simple", "Flyers ciblés", "QR WhatsApp", "Suivi terrain"]
-                    },
-                    {
-                        id: 2,
-                        name: "IMPACT TRAFIC",
-                        budget_min: 700,
-                        budget_max: 1500,
-                        budget_description: null,
-                        description: "Générer des visiteurs",
-                        categorie: "trafic",
-                        ideal_pour: "ROI visible et mesurable",
-                        fonctionnalites: ["Sac écran ou taxi premium", "Street marketing", "QR + CTA", "WhatsApp / SMS", "Leads + reporting"]
-                    }
-                ])
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchPacks()
-    }, [])
-
-    const getPackIcon = (name) => {
-        if (!name || typeof name !== 'string') return Eye
-        const nameUpper = name.toUpperCase()
-        if (nameUpper.includes('START')) return Eye
-        if (nameUpper.includes('IMPACT')) return Zap
-        if (nameUpper.includes('DOMINATION')) return Users
-        if (nameUpper.includes('ÉVÉNEMENTIELLE') || nameUpper.includes('EVENEMENTIELLE')) return Star
-        if (nameUpper.includes('SUR-MESURE') || nameUpper.includes('SUR MESURE')) return Target
-        return Eye
-    }
-
-    const formatBudget = (pack) => {
-        if (pack.budget_description) {
-            return pack.budget_description
-        } else if (pack.budget_min && pack.budget_max) {
-            return `${pack.budget_min} $ – ${pack.budget_max} $`
-        } else if (pack.budget_min) {
-            return `À partir de ${pack.budget_min} $`
-        }
-        return 'Sur devis'
-    }
-
-    if (loading) {
-        return (
-            <section id="packs" className="pack-section section">
-                <div className="container">
-                    <div className="section-header reveal">
-                        <span className="section-label">PACKS COMMERCIAUX</span>
-                        <h2 className="section-title">ANNEXE I - PACKS ONEKANA</h2>
-                    </div>
-                    <div className="loading-message">
-                        <div className="loading-spinner"></div>
-                        <p>Chargement des packs commerciaux...</p>
-                    </div>
-                </div>
-            </section>
-        )
-    }
-
-    if (error) {
-        return (
-            <section id="packs" className="pack-section section">
-                <div className="container">
-                    <div className="section-header reveal">
-                        <span className="section-label">PACKS COMMERCIAUX</span>
-                        <h2 className="section-title">ANNEXE I - PACKS ONEKANA</h2>
-                    </div>
-                    <div className="error-message">
-                        <p>Erreur lors du chargement des packs: {error}</p>
-                        <p>Les données par défaut sont affichées</p>
-                    </div>
-                </div>
-            </section>
-        )
-    }
-
-    return (
-        <section id="packs" className="pack-section section">
-            <div className="container">
-                <div className="section-header reveal">
-                    <span className="section-label">PACKS COMMERCIAUX</span>
-                    <h2 className="section-title">ANNEXE I - PACKS ONEKANA</h2>
-                </div>
-
-                <div className="packs-grid">
-                    {packs.map((pack, index) => {
-                        const IconComponent = getPackIcon(pack.name)
-                        return (
-                            <div
-                                key={pack.id || index}
-                                className="pack-card reveal"
-                                style={{ transitionDelay: `${index * 0.1}s` }}
-                            >
-                                <div className="pack-header">
-                                    <div className="pack-icon">
-                                        <IconComponent size={24} strokeWidth={1.5} />
-                                    </div>
-                                    <h3 className="pack-name">{pack.name}</h3>
-                                    <div className="pack-budget">
-                                        <DollarSign size={16} strokeWidth={1.5} />
-                                        {formatBudget(pack)}
-                                    </div>
-                                </div>
-                                <div className="pack-description">{pack.description}</div>
-                                <ul className="pack-features">
-                                    {(pack.fonctionnalites || pack.features || []).map((feature, fIndex) => (
-                                        <li key={fIndex}>
-                                            <Check size={16} strokeWidth={2} />
-                                            {feature || 'Fonctionnalité non spécifiée'}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="pack-ideal">
-                                    <CheckCircle size={16} strokeWidth={1.5} />
-                                    {pack.ideal_pour || pack.ideal}
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-
-                <div className="options-section reveal" style={{ transitionDelay: '0.5s' }}>
-                    <h3 className="options-title">OPTIONS COMPLÉMENTAIRES</h3>
-                    <div className="options-grid">
-                        {[
-                            "Impression flyers : dès 80 $",
-                            "WhatsApp supplémentaire : +100 $",
-                            "Landing + QR tracking : +120 $",
-                            "Extension durée / zone : +15–30 %",
-                            "Exclusivité zone : +25 %",
-                            "Création visuelle : 150–300 $"
-                        ].map((option, index) => (
-                            <div
-                                key={index}
-                                className="option-card"
-                            >
-                                <Check size={16} strokeWidth={2} />
-                                {option}
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <div className="ss-grid ss-reveal reveal-stagger">
+          {services.map((s, i) => (
+            <div
+              key={i}
+              className="ss-card card-spotlight"
+              onMouseMove={handleMouseMoveSpotlight}
+            >
+              <div className="ss-card-top">
+                <div className="ss-icon"><s.icon size={28} strokeWidth={1.5} /></div>
+                <div className="ss-num">0{i + 1}</div>
+              </div>
+              <h4 className="ss-title">{s.title}</h4>
+              <p className="ss-desc">{s.desc}</p>
+              <div className="ss-hover-line" />
             </div>
-        </section>
-    )
+          ))}
+        </div>
+      </div>
+    </section>
+  )
 }
 
+/* ══════════════════════════════════════════════════════════
+   PAYMENT SECTION — Modern payment options overview
+   ══════════════════════════════════════════════════════════ */
+const PaymentSection = () => {
+  const { t } = useLanguage()
+  useScrollReveal('.pay-reveal')
 
-// Home Page Component
+  const payments = [
+    {
+      type: 'image',
+      logos: [
+        '/images/partners/airtel-money-logo.png',
+        '/images/partners/orange-money-logo.png',
+        '/images/partners/mpesa-logo.png', // M-Pesa is Vodacom
+        '/images/partners/afrimoney-logo.png'
+      ],
+      title: t({ fr: 'Mobile Money', en: 'Mobile Money' }),
+      desc: t({
+        fr: 'M-Pesa, Airtel Money, Orange Money. Simple et instantané.',
+        en: 'M-Pesa, Airtel Money, Orange Money. Simple & instant.'
+      }),
+      color: '#eab308'
+    },
+    {
+      type: 'image',
+      logos: [
+        '/images/partners/visa-logo.png',
+        '/images/partners/mastercard-logo.png'
+      ],
+      title: t({ fr: 'Cartes de Crédit', en: 'Credit Cards' }),
+      desc: t({
+        fr: 'Visa, Mastercard acceptées de manière sécurisée.',
+        en: 'Visa, Mastercard accepted securely.'
+      }),
+      color: '#3b82f6'
+    },
+    {
+      type: 'icon',
+      icon: Wallet,
+      title: t({ fr: 'Virement & Cash', en: 'Transfer & Cash' }),
+      desc: t({
+        fr: 'Virements bancaires nationaux/internationaux, ou paiement physique.',
+        en: 'National/international bank transfers, or physical payments.'
+      }),
+      color: '#10b981'
+    }
+  ]
+
+  return (
+    <section className="payment-section section section-alt">
+      <div className="container">
+        <div className="section-eyebrow pay-reveal reveal-up" style={{ textAlign: 'center' }}>
+          {t({ fr: 'Solutions de Paiement', en: 'Payment Solutions' })}
+        </div>
+        <h2 className="section-heading pay-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s', marginBottom: '1.5rem' }}>
+          {t({ fr: 'Payez en toute ', en: 'Pay with absolute ' })}<span className="text-accent">{t({ fr: 'simplicité', en: 'simplicity' })}</span>
+        </h2>
+        <p className="pay-subtitle pay-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.15s', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto', color: 'var(--color-text-muted)' }}>
+          {t({
+            fr: 'Nous proposons une large gamme de méthodes de paiement locales et internationales adaptées à vos besoins professionnels.',
+            en: 'We offer a wide range of local and international payment methods tailored to your business needs.'
+          })}
+        </p>
+
+        <div className="payment-methods-grid pay-reveal reveal-stagger">
+          {payments.map((p, i) => (
+            <div
+              key={i}
+              className="payment-method-card card-spotlight"
+              onMouseMove={handleMouseMoveSpotlight}
+            >
+              {p.type === 'image' ? (
+                <div className="payment-logos-showcase">
+                  {p.logos.map((logo, idx) => (
+                    <img key={idx} src={logo} alt="Payment Logo" className="payment-brand-logo-large" />
+                  ))}
+                </div>
+              ) : (
+                <div className="payment-icon-wrap" style={{ '--icon-color': p.color }}>
+                  <p.icon size={26} strokeWidth={1.5} style={{ color: p.color }} />
+                </div>
+              )}
+              <h4 className="payment-method-name">{p.title}</h4>
+              <p className="payment-method-desc">{p.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="payment-trust-badges pay-reveal reveal-up" style={{ transitionDelay: '0.4s' }}>
+          <div className="payment-trust-badge">
+            <ShieldCheck size={16} /> {t({ fr: 'Transactions 100% sécurisées', en: '100% Secure Transactions' })}
+          </div>
+          <div className="payment-trust-badge" style={{ marginLeft: '1rem' }}>
+            <Check size={16} /> {t({ fr: 'Facturation transparente', en: 'Transparent Invoicing' })}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
+   TESTIMONIALS — double marquee: two rows scrolling in opposite directions
+   ══════════════════════════════════════════════════════════ */
+const Testimonials = () => {
+  const { t } = useLanguage()
+
+  const testimonials = [
+    {
+      name: 'Jean-Bosco M.',
+      role: t({ fr: 'Gérant, Supermarché', en: 'Manager, Supermarket' }),
+      text: t({
+        fr: "Depuis que nous utilisons l'affichage Digi'Street, notre fréquentation a augmenté de 30% le weekend. Un investissement qui se voit !",
+        en: "Since we started using Digi'Street display, our weekend traffic has increased by 30%. An investment that shows!"
+      }),
+      stars: 5,
+      avatar: 'JB'
+    },
+    {
+      name: 'Nadia K.',
+      role: t({ fr: 'Directrice Marketing', en: 'Marketing Director' }),
+      text: t({
+        fr: "Une approche innovante qui nous a permis de toucher notre cible directement dans les quartiers populaires.",
+        en: 'An innovative approach that allowed us to reach our target audience directly in popular neighborhoods.'
+      }),
+      stars: 5,
+      avatar: 'NK'
+    },
+    {
+      name: 'Dieudonné T.',
+      role: t({ fr: 'Fondateur, Startup', en: 'Founder, Startup' }),
+      text: t({
+        fr: "Le ROI est mesurable et l'équipe Onekana est très réactive. Le pack Impact Trafic a vraiment boosté nos ventes.",
+        en: 'The ROI is measurable and the Onekana team is very responsive. The Traffic Impact pack has really boosted our sales.'
+      }),
+      stars: 4,
+      avatar: 'DT'
+    },
+  ]
+
+  const items = testimonials.map(s => ({ text: s.text, name: s.name }))
+
+  const rowStyles = {
+    display: 'flex',
+    gap: '1.5rem',
+    flexWrap: 'nowrap',
+    overflow: 'hidden',
+    alignItems: 'flex-start',
+    minWidth: 'max-content',
+  }
+
+  const rowLeftStyles = {
+    ...rowStyles,
+    animation: 'marquee-left 26s linear infinite',
+  }
+
+  const rowRightStyles = {
+    ...rowStyles,
+    animation: 'marquee-right 32s linear infinite',
+  }
+
+  const itemStyles = {
+    minWidth: '360px',
+    maxWidth: '420px',
+    background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)',
+    border: '2px solid #ea0001',
+    borderRadius: '20px',
+    padding: '1.8rem 1.6rem',
+    flex: '0 0 auto',
+    boxShadow: '0 20px 50px rgba(234,0,1,0.2), inset 0 1px 0 rgba(255,255,255,0.9)',
+    position: 'relative',
+    overflow: 'hidden',
+    transition: 'all 0.3s ease',
+  }
+
+  const quoteStyle = {
+    position: 'absolute',
+    top: '0.5rem',
+    left: '1rem',
+    fontSize: '3.5rem',
+    color: 'rgba(234,0,1,0.15)',
+    fontFamily: 'Georgia, serif',
+    lineHeight: '1',
+  }
+
+  const starContainerStyle = {
+    display: 'flex',
+    gap: '0.3rem',
+    marginBottom: '0.8rem',
+  }
+
+  const starStyle = {
+    color: '#ea0001',
+    fontSize: '1.2rem',
+  }
+
+  const sectionStyle = {
+    background: 'linear-gradient(180deg, rgba(234,0,1,0.03) 0%, rgba(255,255,255,0.5) 50%, rgba(234,0,1,0.02) 100%)',
+    padding: '4.5rem 0',
+    position: 'relative',
+  }
+
+  return (
+    <section className="testi-section section" style={sectionStyle}>
+      <div className="testi-bg-blob" />
+      <div className="container">
+        <div className="section-eyebrow" style={{ textAlign: 'center', color: 'rgba(10,10,10,0.6)' }}>
+          {t({ fr: 'Témoignages', en: 'Testimonials' })}
+        </div>
+        <h2 className="section-heading" style={{ textAlign: 'center', color: '#0a0a0a', marginBottom: '2.5rem' }}>
+          {t({ fr: 'Ce que disent nos clients', en: 'What our clients say' })}
+        </h2>
+
+        <div className="testi-marquee-wrapper" style={{ overflow: 'hidden', width: '100%', display: 'block' }}>
+          <div className="testi-marquee testi-row-left" style={rowLeftStyles}>
+            {[...items, ...items].map((it, i) => (
+              <div key={i} className="testi-item" style={itemStyles}>
+                <div style={quoteStyle}>"</div>
+                <div style={starContainerStyle}>
+                  {[...Array(5)].map((_, j) => (
+                    <span key={j} style={starStyle}>★</span>
+                  ))}
+                </div>
+                <p className="testi-item-text" style={{ margin: 0, lineHeight: 1.7, color: '#222', fontSize: '1rem', fontWeight: 500, paddingTop: '0.5rem' }}>{it.text}</p>
+                <div className="testi-item-by" style={{ marginTop: '1.2rem', fontSize: '1rem', color: '#ea0001', fontWeight: 700, letterSpacing: '0.5px' }}>— {it.name}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="testi-marquee testi-row-right" style={rowRightStyles}>
+            {[...items, ...items].map((it, i) => (
+              <div key={i} className="testi-item" style={itemStyles}>
+                <div style={quoteStyle}>"</div>
+                <div style={starContainerStyle}>
+                  {[...Array(5)].map((_, j) => (
+                    <span key={j} style={starStyle}>★</span>
+                  ))}
+                </div>
+                <p className="testi-item-text" style={{ margin: 0, lineHeight: 1.7, color: '#222', fontSize: '1rem', fontWeight: 500, paddingTop: '0.5rem' }}>{it.text}</p>
+                <div className="testi-item-by" style={{ marginTop: '1.2rem', fontSize: '1rem', color: '#ea0001', fontWeight: 700, letterSpacing: '0.5px' }}>— {it.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
+   CTA BANNER
+   ══════════════════════════════════════════════════════════ */
+const CTABanner = () => {
+  useScrollReveal('.cta-reveal')
+  const { t } = useLanguage()
+
+  return (
+    <section className="cta-banner section" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div
+        style={{
+          position: 'absolute', inset: 0, zIndex: 0,
+          background: 'radial-gradient(circle at 20% 30%, rgba(234, 0, 1, 0.04) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(234, 0, 1, 0.03) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }}
+      />
+      <div className="cta-grid-pattern" style={{ zIndex: 1 }} />
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+        <div className="cta-inner cta-reveal reveal-up">
+          <Zap size={48} strokeWidth={1} className="cta-icon" />
+          <h2 className="cta-heading">{t({ fr: "Prêt à dominer l'espace urbain ?", en: "Ready to dominate the urban space?" })}</h2>
+          <p className="cta-sub">{t({ fr: 'Lancez votre campagne et touchez votre audience là où elle vit.', en: 'Launch your campaign and reach your audience where they live.' })}</p>
+          <div className="cta-btns">
+            <MagneticBtn className="magnetic-wrap">
+              <Link to="/contact" className="btn btn-primary btn-large">
+                {t({ fr: 'Démarrer maintenant', en: 'Get Started Now' })} <ArrowRight size={18} />
+              </Link>
+            </MagneticBtn>
+            <Link to="/expertise" className="btn-ghost">
+              {t({ fr: 'Voir nos services', en: 'View our services' })}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ══════════════════════════════════════════════════════════
+   HOME PAGE
+   ══════════════════════════════════════════════════════════ */
 function Home() {
-    return (
-        <>
-            <Hero />
-            <AboutPreview />
-            <WhyLubumbashi />
-            <Digistreet />
-            {/* <ContactCTA /> */}
-        </>
-    )
+  return (
+    <>
+      <Hero />
+      <Marquee />
+      <Partners />
+      <AboutPreview />
+      <WhyLubumbashi />
+      <Digistreet />
+      <ServicesStrip />
+      <PaymentSection />
+      <Testimonials />
+      <CTABanner />
+    </>
+  )
 }
 
 export default Home

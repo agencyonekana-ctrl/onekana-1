@@ -3,16 +3,16 @@
 
 /* Modern Creative Agency Styles */
 :root {
-  /* Color Palette - Dark Elegant Theme */
-  --color-bg: #0a0a0a;
-  --color-bg-secondary: #111111;
-  --color-bg-tertiary: #1a1a1a;
-  --color-text: #ffffff;
-  --color-text-muted: #888888;
-  --color-text-subtle: #666666;
-  --color-accent: #c9a962;
-  --color-accent-hover: #d4b978;
-  --color-border: #2a2a2a;
+  /* Color Palette - Clean White & Red Theme */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #ebebeb;
+  --color-text: #0a0a0a;
+  --color-text-muted: #555555;
+  --color-text-subtle: #777777;
+  --color-accent: #ea0001;
+  --color-accent-hover: #c40001;
+  --color-border: #e0e0e0;
   
   /* Typography - Changa One for headings, Ubuntu for body */
   --font-heading: 'Changa One', cursive;
@@ -47,6 +47,7 @@ body {
   color: var(--color-text);
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Scrollbar */
@@ -149,6 +150,52 @@ a:hover {
   padding: var(--spacing-xl) 0;
 }
 
+.section-red {
+  background-color: var(--color-accent) !important;
+  color: var(--color-bg) !important;
+}
+
+.section-red .section-label,
+.section-red .section-title,
+.section-red .section-subtitle {
+  color: var(--color-bg) !important;
+}
+
+.section-red .feature-card,
+.section-red .testimonial-card-modern,
+.section-red .digistreet-objective {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: var(--color-bg);
+}
+
+.section-red .feature-text,
+.section-red .objective-text,
+.section-red .testimonial-text-modern,
+.section-red .author-name-modern {
+  color: var(--color-bg) !important;
+}
+
+.section-red .feature-icon,
+.section-red .objective-icon {
+  color: var(--color-bg) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.section-red .objective-label,
+.section-red .author-role-modern {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.section-red .author-avatar-modern {
+  background: var(--color-bg) !important;
+  color: var(--color-accent) !important;
+}
+
+.section-red .testimonial-stars {
+  color: #FFD700 !important;
+}
+
 .text-accent {
   color: var(--color-accent);
 }
@@ -224,4 +271,287 @@ a:hover {
 ::selection {
   background: var(--color-accent);
   color: var(--color-bg);
+}
+
+/* Hero Floating Icons */
+.hero-floating-icons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-icon {
+  position: absolute;
+  color: var(--color-accent);
+  opacity: 0.15;
+  will-change: transform;
+}
+
+.hi-1 {
+  width: 60px;
+  height: 60px;
+  top: 15%;
+  left: 10%;
+  animation: phFloat1 8s ease-in-out infinite;
+}
+
+.hi-2 {
+  width: 80px;
+  height: 80px;
+  top: 25%;
+  right: 15%;
+  animation: phFloat2 12s ease-in-out infinite;
+  opacity: 0.1;
+}
+
+.hi-3 {
+  width: 50px;
+  height: 50px;
+  bottom: 30%;
+  left: 20%;
+  animation: phFloat3 10s ease-in-out infinite reverse;
+}
+
+.hi-4 {
+  width: 70px;
+  height: 70px;
+  bottom: 20%;
+  right: 25%;
+  animation: phFloat1 9s ease-in-out infinite;
+}
+
+.hi-5 {
+  width: 90px;
+  height: 90px;
+  top: 50%;
+  left: 5%;
+  animation: phFloatLeft 14s ease-in-out infinite;
+  opacity: 0.08;
+}
+
+/* ============================================
+   PREMIUM AD AGENCY UPGRADES
+   ============================================ */
+
+/* Custom Cursor */
+.cursor-follower {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              background-color 0.3s ease, 
+              border-color 0.3s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-follower-outer {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease-out, 
+              width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              height 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease;
+}
+
+/* Hover States for Custom Cursor */
+.cursor-follower.hovered {
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+}
+
+.cursor-follower-outer.hovered {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(234, 0, 1, 0.1);
+  border-color: var(--color-accent);
+}
+
+.cursor-follower-outer.link-hovered {
+  width: 70px;
+  height: 70px;
+  border-color: #ffffff;
+  background-color: #ffffff;
+  mix-blend-mode: difference;
+}
+
+@media (max-width: 991px) {
+  .cursor-follower, .cursor-follower-outer {
+    display: none !important;
+  }
+}
+
+/* Premium Curtain Slide-up Preloader */
+.preloader-overlay {
+  transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1), clip-path 1.2s cubic-bezier(0.85, 0, 0.15, 1) !important;
+}
+
+.preloader-overlay.fade-out {
+  transform: translateY(-100%);
+  opacity: 1 !important;
+  pointer-events: none;
+}
+
+/* Cinematic grid for sections */
+.cinematic-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(234, 0, 1, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(234, 0, 1, 0.02) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Advanced reveal on scroll system */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-left.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-right.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Staggered children reveal */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-stagger.active > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger.active > *:nth-child(1) { transition-delay: 0.1s; }
+.reveal-stagger.active > *:nth-child(2) { transition-delay: 0.2s; }
+.reveal-stagger.active > *:nth-child(3) { transition-delay: 0.3s; }
+.reveal-stagger.active > *:nth-child(4) { transition-delay: 0.4s; }
+.reveal-stagger.active > *:nth-child(5) { transition-delay: 0.5s; }
+.reveal-stagger.active > *:nth-child(6) { transition-delay: 0.6s; }
+
+/* Split Text Line Reveal */
+.split-line-wrap {
+  overflow: hidden;
+  display: block;
+}
+
+.split-line-inner {
+  display: inline-block;
+  transform: translateY(100%);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.reveal-up.active .split-line-inner,
+.reveal-left.active .split-line-inner,
+.reveal-right.active .split-line-inner {
+  transform: translateY(0);
+}
+
+/* Card Spotlight effect */
+.card-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(234, 0, 1, 0.08), transparent 40%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Interactive Magnetic Button Details */
+.btn-magnetic-parent {
+  display: inline-block;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-magnetic-parent:hover {
+  z-index: 10;
+}
+
+/* Parallax scroll element */
+.parallax-el {
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* Custom interactive icons orbit */
+.orbit-visual {
+  animation: orbitRotate 30s linear infinite;
+}
+
+@keyframes orbitRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.orbit-dot-inner {
+  animation: orbitRotateReverse 30s linear infinite;
+}
+
+@keyframes orbitRotateReverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }

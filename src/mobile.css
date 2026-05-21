@@ -1,0 +1,807 @@
+/* ============================================================
+   MOBILE.CSS — Onekana Agency
+   Native-app feel for screens ≤ 768px
+   Import AFTER App.css and index.css
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ── Base ─────────────────────────────────────── */
+  html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .section {
+    padding: 4rem 0 !important;
+  }
+
+  /* ── Typography ───────────────────────────────── */
+  h1 { font-size: clamp(2rem, 9vw, 3rem); line-height: 1.1; }
+  h2 { font-size: clamp(1.6rem, 7vw, 2.4rem); line-height: 1.2; }
+  h3 { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+  p  { font-size: 0.95rem; line-height: 1.65; }
+
+  /* ── Navigation ───────────────────────────────── */
+  .navigation {
+    padding: 0.85rem 0;
+    background: rgba(255,255,255,0.96) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .logo img {
+    width: 90px !important;
+    height: auto;
+  }
+
+  /* ── Hero Section ─────────────────────────────── */
+  .hero-cinematic {
+    min-height: 90dvh;
+    padding: 120px 0 3rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 3rem;
+  }
+
+  .hero-rotating-text {
+    min-width: auto !important;
+    display: inline-block;
+  }
+
+  .hero-cinematic-inner {
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    margin: 0 auto 1.2rem;
+  }
+
+  .hero-headline {
+    font-size: clamp(2.2rem, 9vw, 3.2rem) !important;
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-lead {
+    font-size: 0.95rem !important;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  .hero-actions > * {
+    width: 100%;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  .brochure-dropdown {
+    width: 100%;
+  }
+
+  .brochure-dropdown .btn-hero-primary {
+    width: 100%;
+  }
+
+  .brochure-menu {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .hero-scroll-indicator {
+    display: none;
+  }
+
+  /* Stats strip */
+  .hero-stats-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 1.25rem 1rem;
+    margin: 0 1rem;
+    border-radius: 12px;
+  }
+
+  .hero-stat {
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+  }
+
+  .hero-stat-divider {
+    display: none;
+  }
+
+  .stat-num {
+    font-size: 1.6rem;
+  }
+
+  .stat-lbl {
+    font-size: 0.72rem;
+  }
+
+  /* ── Marquee ──────────────────────────────────── */
+  .marquee-bar {
+    padding: 0.7rem 0;
+    font-size: 0.8rem;
+  }
+
+  /* ── Partners ─────────────────────────────────── */
+  .partners-section {
+    padding: 3rem 0 !important;
+  }
+
+  .section-eyebrow {
+    font-size: 0.75rem;
+  }
+
+  .section-heading {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .partner-card {
+    padding: 0.75rem 1rem;
+    min-width: 110px;
+  }
+
+  .partner-img {
+    max-height: 30px;
+    max-width: 90px;
+  }
+
+  /* ── About/Cards ──────────────────────────────── */
+  .about-premium {
+    padding: 4rem 0 !important;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .acard {
+    padding: 1.5rem 1.25rem;
+    border-radius: 12px;
+  }
+
+  .acard-title {
+    font-size: 1.15rem;
+  }
+
+  .acard-list {
+    gap: 0.4rem;
+  }
+
+  .acard-list li {
+    font-size: 0.9rem;
+  }
+
+  .promise-chain {
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .chain-arrow {
+    transform: rotate(90deg);
+    margin: -0.2rem 0;
+  }
+
+  .chain-step {
+    width: 100%;
+  }
+
+  .funnel-step {
+    width: 100% !important;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* ── Why Lubumbashi ───────────────────────────── */
+  .wl-section {
+    padding: 4rem 0 !important;
+  }
+
+  .wl-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .wl-card {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .wl-card-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 10px;
+  }
+
+  .wl-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .wl-card-text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .wl-result {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    border-radius: 10px;
+    margin-top: 2rem;
+  }
+
+  /* ── DigiStreet ───────────────────────────────── */
+  .ds-section {
+    padding: 4rem 0 !important;
+  }
+
+  .ds-layout {
+    flex-direction: column !important;
+    gap: 2rem;
+  }
+
+  .ds-left,
+  .ds-right {
+    width: 100% !important;
+  }
+
+  .ds-heading,
+  .section-heading {
+    font-size: clamp(1.6rem, 7vw, 2.4rem) !important;
+  }
+
+  .ds-lead {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ds-features {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .ds-feature {
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+  }
+
+  .ds-feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .ds-visual {
+    height: 220px !important;
+    border-radius: 16px !important;
+  }
+
+  .ds-visual img {
+    border-radius: 16px !important;
+  }
+
+  /* ── Services Strip ───────────────────────────── */
+  .ss-section {
+    padding: 4rem 0 !important;
+  }
+
+  .ss-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .ss-card {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+
+  .ss-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ss-desc {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .ss-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── Testimonials ─────────────────────────────── */
+  .testi-section {
+    padding: 3rem 0 !important;
+  }
+
+  .testi-item {
+    min-width: 280px !important;
+    width: 280px !important;
+    max-width: 280px !important;
+    padding: 1.2rem !important;
+  }
+
+  .testi-item-text {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    -webkit-line-clamp: 3 !important;
+    max-height: 5rem !important;
+  }
+
+  .testi-marquee,
+  .testi-row-left,
+  .testi-row-right {
+    gap: 1rem !important;
+  }
+
+  .testi-section .testi-row-left {
+    animation: marquee-left 28s linear infinite !important;
+  }
+
+  .testi-section .testi-row-right {
+    animation: marquee-right 32s linear infinite !important;
+  }
+
+  /* ── CTA Banner ───────────────────────────────── */
+  .cta-banner {
+    padding: 4rem 0 !important;
+  }
+
+  .cta-inner {
+    padding: 2.5rem 1.25rem;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .cta-heading {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+    margin-bottom: 1rem;
+  }
+
+  .cta-sub {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .cta-btns {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  .cta-btns > * {
+    width: 100%;
+  }
+
+  .btn-ghost,
+  .btn-large {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.9rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 8px;
+  }
+
+  /* ── Footer ───────────────────────────────────── */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem;
+  }
+
+  .footer-cta {
+    padding: 3.5rem 1rem !important;
+  }
+
+  .footer-cta h2 {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+    margin-bottom: 1rem;
+  }
+
+  .footer-cta p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-main {
+    padding: 3rem 0;
+  }
+
+  .footer-brand-col {
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+    margin-top: 1.25rem;
+  }
+
+  .footer-col h4 {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .footer-bottom-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    align-items: center;
+  }
+
+  .footer-bottom-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ── Floating Buttons ─────────────────────────── */
+  .floating-campaign-btn {
+    bottom: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .floating-campaign-btn .btn {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .floating-lang-btn {
+    display: none !important;
+  }
+
+  /* ── Page Headers ─────────────────────────────── */
+  .page-header {
+    padding: 100px 0 3.5rem !important;
+    min-height: 45dvh;
+  }
+
+  .page-label {
+    font-size: 0.7rem;
+  }
+
+  .page-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    margin: 0.5rem 0 1rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .page-header-objects {
+    opacity: 0.08;
+  }
+
+  /* ── Blog Cards ───────────────────────────────── */
+  .blog-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .blog-card-content {
+    padding: 1.25rem !important;
+  }
+
+  .blog-card-image {
+    height: 160px !important;
+  }
+
+  /* ── Contact Page ─────────────────────────────── */
+  .contact-grid-modern {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  .contact-form-modern .form-row {
+    flex-direction: column;
+  }
+
+  .form-group {
+    width: 100%;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+  }
+
+  .btn.btn-primary.btn-large {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .faq-grid-modern {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .faq-item-modern {
+    padding: 1.25rem 1rem;
+    border-radius: 10px;
+  }
+
+  /* ── Expertise Page ───────────────────────────── */
+  .services-expertise-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .service-expertise-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 12px;
+  }
+
+  .additional-services-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .process-expertise-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .process-expertise-card {
+    padding: 1.25rem 1rem;
+    border-radius: 10px;
+  }
+
+  .process-connector {
+    display: none;
+  }
+
+  /* ── Agence Page ──────────────────────────────── */
+  .about-grid-agence {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  .values-grid-agence {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .value-card-agence {
+    padding: 1.25rem 1rem;
+    border-radius: 10px;
+  }
+
+  .stats-grid-agence {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .stat-item-agence {
+    padding: 1.25rem 1rem;
+    border-radius: 10px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  /* ── Packs Page ───────────────────────────────── */
+  .packs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem;
+  }
+
+  /* ── Section common ───────────────────────────── */
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+  }
+
+  /* ── Button global ────────────────────────────── */
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 6px;
+    touch-action: manipulation;
+  }
+
+  /* ── Cookie Popup ─────────────────────────────── */
+  .cookie-popup {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    border-radius: 14px;
+    padding: 1.25rem;
+    max-width: 100%;
+  }
+
+  /* ── Custom Cursor off ────────────────────────── */
+  .cursor-follower,
+  .cursor-follower-outer {
+    display: none !important;
+  }
+
+  /* ── Payment Section ──────────────────────────── */
+  .payment-methods-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+  }
+
+  .payment-method-card {
+    padding: 1.8rem;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .payment-logos-showcase {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .payment-brand-logo-large {
+    height: 32px;
+    padding: 4px 8px;
+  }
+
+  .payment-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+  }
+
+  .payment-method-name {
+    font-size: 0.82rem;
+  }
+
+  .payment-method-desc {
+    font-size: 0.72rem;
+  }
+
+  .payment-trust-badges {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .payment-trust-badge {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 20px;
+  }
+
+  /* ── Preloader ────────────────────────────────── */
+  .preloader-logo img {
+    width: 100px;
+  }
+
+  /* ── Animations — reduce motion on mobile ──────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ── Scroll snap for sections ─────────────────── */
+  /* Removed — too aggressive for content-heavy pages */
+
+  /* ── Safe area (iPhone notch) ─────────────────── */
+  .navigation {
+    padding-top: max(0.85rem, env(safe-area-inset-top));
+  }
+
+  .floating-campaign-btn {
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    right: max(1.25rem, env(safe-area-inset-right));
+  }
+
+  .floating-lang-btn {
+    left: max(0.75rem, env(safe-area-inset-left));
+  }
+
+  /* ── Floating Language Badge ────────────────────── */
+  .floating-lang-badge {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+    background: linear-gradient(135deg, #ea0001 0%, #c70000 100%);
+    color: white;
+    border: none;
+    border-radius: 0 50px 50px 0;
+    padding: 0.6rem 1rem 0.6rem 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(234, 0, 1, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(10px);
+  }
+
+  .floating-lang-badge:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(234, 0, 1, 0.4);
+  }
+
+  .floating-lang-badge:hover {
+    background: linear-gradient(135deg, #ff0000 0%, #ea0001 100%);
+    box-shadow: 0 15px 40px rgba(234, 0, 1, 0.4);
+  }
+
+  .floating-lang-badge span {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+}

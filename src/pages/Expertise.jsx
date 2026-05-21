@@ -1,7 +1,17 @@
 import { useEffect } from 'react'
 import { Car, Bus, Van, Headphones, Eye, Lightbulb, Monitor, Backpack, ArrowRight } from 'lucide-react'
+import { useLanguage } from '../hooks/useLanguage'
+
+const handleMouseMoveSpotlight = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+  e.currentTarget.style.setProperty('--mouse-x', `${x}px`)
+  e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
+}
 
 function Expertise() {
+  const { t } = useLanguage()
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -11,10 +21,10 @@ function Expertise() {
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
     )
 
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+    document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-stagger, .reveal-scale, .reveal-blur, .reveal-rotate, .reveal-wipe').forEach((el) => observer.observe(el))
     return () => observer.disconnect()
   }, [])
 
@@ -134,7 +144,8 @@ function Expertise() {
   return (
     <div className="page">
       {/* Page Header */}
-      <section className="page-header">
+      <section className="page-header page-header-expertise">
+        <div className="cinematic-grid-bg" />
         {/* Objets décoratifs multimédia & publicité */}
         <div className="page-header-objects" aria-hidden="true">
           {/* Taxi / Voiture */}
@@ -153,72 +164,22 @@ function Expertise() {
             <line x1="40" y1="44" x2="44" y2="56" stroke="currentColor" strokeWidth="2" />
             <line x1="16" y1="56" x2="48" y2="56" stroke="currentColor" strokeWidth="2" />
             <path d="M20 20L28 28L36 22L44 30" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="20" cy="20" r="2" fill="currentColor" />
-            <circle cx="44" cy="30" r="2" fill="currentColor" />
           </svg>
           {/* Mégaphone */}
           <svg className="ph-obj ph-obj-3" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 24H20L44 12V52L20 40H8V24Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
             <line x1="20" y1="40" x2="20" y2="52" stroke="currentColor" strokeWidth="2" />
             <line x1="14" y1="52" x2="26" y2="52" stroke="currentColor" strokeWidth="2" />
-            <path d="M50 20C52.5 23 52.5 41 50 44" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M54 16C58 21 58 43 54 48" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          {/* Sac à dos écran */}
-          <svg className="ph-obj ph-obj-4" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 12C20 8 44 8 44 12V56H20V12Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-            <path d="M20 20C16 20 12 24 12 28V52H20" stroke="currentColor" strokeWidth="2" />
-            <path d="M44 20C48 20 52 24 52 28V52H44" stroke="currentColor" strokeWidth="2" />
-            <rect x="24" y="16" width="16" height="20" rx="2" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="28" y1="22" x2="36" y2="22" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="28" y1="26" x2="36" y2="26" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="28" y1="30" x2="33" y2="30" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Panneau publicitaire */}
-          <svg className="ph-obj ph-obj-5" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="8" width="52" height="32" rx="3" stroke="currentColor" strokeWidth="2" />
-            <line x1="32" y1="40" x2="32" y2="58" stroke="currentColor" strokeWidth="2" />
-            <line x1="24" y1="58" x2="40" y2="58" stroke="currentColor" strokeWidth="2" />
-            <line x1="14" y1="18" x2="50" y2="18" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="14" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="14" y1="30" x2="36" y2="30" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Ampoule / Enseigne lumineuse */}
-          <svg className="ph-obj ph-obj-6" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 8C22 8 14 16 14 26C14 33 18 39 24 42V48H40V42C46 39 50 33 50 26C50 16 42 8 32 8Z" stroke="currentColor" strokeWidth="2" />
-            <line x1="24" y1="52" x2="40" y2="52" stroke="currentColor" strokeWidth="2" />
-            <line x1="26" y1="56" x2="38" y2="56" stroke="currentColor" strokeWidth="2" />
-            <line x1="32" y1="14" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="20" y1="18" x2="24" y2="22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="44" y1="18" x2="40" y2="22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          {/* QR Code */}
-          <svg className="ph-obj ph-obj-7" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="8" width="20" height="20" rx="2" stroke="currentColor" strokeWidth="2" />
-            <rect x="12" y="12" width="12" height="12" rx="1" fill="currentColor" opacity="0.4" />
-            <rect x="36" y="8" width="20" height="20" rx="2" stroke="currentColor" strokeWidth="2" />
-            <rect x="40" y="12" width="12" height="12" rx="1" fill="currentColor" opacity="0.4" />
-            <rect x="8" y="36" width="20" height="20" rx="2" stroke="currentColor" strokeWidth="2" />
-            <rect x="12" y="40" width="12" height="12" rx="1" fill="currentColor" opacity="0.4" />
-            <line x1="36" y1="36" x2="44" y2="36" stroke="currentColor" strokeWidth="2" />
-            <line x1="36" y1="44" x2="44" y2="44" stroke="currentColor" strokeWidth="2" />
-            <line x1="36" y1="52" x2="44" y2="52" stroke="currentColor" strokeWidth="2" />
-            <line x1="52" y1="36" x2="52" y2="44" stroke="currentColor" strokeWidth="2" />
-            <line x1="52" y1="52" x2="52" y2="56" stroke="currentColor" strokeWidth="2" />
-          </svg>
-          {/* Signal / Wifi */}
-          <svg className="ph-obj ph-obj-8" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 24C16 16 48 16 56 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M16 32C22 26 42 26 48 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M24 40C27 37 37 37 40 40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="32" cy="48" r="3" fill="currentColor" />
           </svg>
         </div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="page-label">Expertise</span>
-          <h1 className="page-title">Transport Urbain</h1>
-          <p className="page-subtitle">
-            Des solutions de publicité outdoor innovantes pour maximiser votre visibilité urbaine
+          <span className="page-label reveal-up active">{t({ fr: 'Expertise', en: 'Expertise' })}</span>
+          <h1 className="page-title reveal-up active" style={{ transitionDelay: '0.1s' }}>{t({ fr: 'Transport Urbain', en: 'Urban Transport' })}</h1>
+          <p className="page-subtitle reveal-up active" style={{ transitionDelay: '0.2s' }}>
+            {t({
+              fr: 'Des solutions de publicité outdoor innovantes pour maximiser votre visibilité urbaine',
+              en: 'Innovative outdoor advertising solutions to maximize your urban visibility'
+            })}
           </p>
         </div>
       </section>
@@ -226,16 +187,16 @@ function Expertise() {
       {/* Transport Services */}
       <section className="section">
         <div className="container">
-          <div className="section-header reveal">
+          <div className="section-header reveal-rotate">
             <span className="section-label">Services de Transport</span>
             <h2 className="section-title">Nos solutions publicitaires urbaines</h2>
           </div>
-          <div className="services-expertise-grid">
+          <div className="services-expertise-grid reveal-stagger">
             {transportServices.map((service, index) => (
               <div
                 key={index}
-                className="service-expertise-card reveal"
-                style={{ transitionDelay: `${index * 0.1}s` }}
+                className="service-expertise-card card-spotlight"
+                onMouseMove={handleMouseMoveSpotlight}
               >
                 {service.image && (
                   <div className="service-expertise-bg" style={{ backgroundImage: `url(${service.image})` }}></div>
@@ -270,16 +231,16 @@ function Expertise() {
       {/* Additional Information */}
       <section className="section section-alt">
         <div className="container">
-          <div className="section-header reveal">
+          <div className="section-header reveal-blur">
             <span className="section-label">Informations importantes</span>
             <h2 className="section-title">Points à noter</h2>
           </div>
-          <div className="additional-services-grid">
+          <div className="additional-services-grid reveal-stagger">
             {additionalInfo.map((info, index) => (
               <div
                 key={index}
-                className="additional-service-card reveal"
-                style={{ transitionDelay: `${index * 0.1}s` }}
+                className="additional-service-card card-spotlight"
+                onMouseMove={handleMouseMoveSpotlight}
               >
                 <div className="additional-service-icon">
                   <Lightbulb size={28} strokeWidth={1.5} />
@@ -294,16 +255,15 @@ function Expertise() {
       {/* Process */}
       <section className="section">
         <div className="container">
-          <div className="section-header reveal">
+          <div className="section-header reveal-rotate">
             <span className="section-label">Méthodologie</span>
             <h2 className="section-title">Notre processus</h2>
           </div>
-          <div className="process-expertise-grid">
+          <div className="process-expertise-grid reveal-stagger">
             {process.map((item, index) => (
               <div
                 key={index}
-                className="process-expertise-card reveal"
-                style={{ transitionDelay: `${index * 0.1}s` }}
+                className="process-expertise-card"
               >
                 <span className="process-expertise-step">{item.step}</span>
                 <h3 className="process-expertise-title">{item.title}</h3>

@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Rocket } from 'lucide-react'
+import { Rocket, Globe, Star } from 'lucide-react'
+import { useLanguage } from './hooks/useLanguage'
 import './App.css'
-import { Home, Agence, Campaigns, Expertise, Portfolio, Contact, Packs } from './pages'
+import './mobile.css'
+import { Home, Agence, Campaigns, Expertise, Portfolio, Contact, Blog } from './pages'
 import Preloader from './components/Preloader'
+import CookiePopup from './components/CookiePopup'
 
 // Navigation Component
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const { lang, toggleLanguage, t } = useLanguage()
   const location = useLocation()
 
   useEffect(() => {
@@ -28,35 +32,86 @@ const Navigation = () => {
     <nav className={`navigation ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <Link to="/" className="logo">
-          {/* Onekana<span className="text-accent">.</span> */}
-          <img src="/logo.png" alt="Onekana Logo" style={{ width: '125px', height: 'auto' }} />
+          <img src="/logo.png" alt="Onekana Logo" style={{ width: '120px', height: 'auto' }} />
         </Link>
 
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-          <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-            Acceuil
+          {/* Mobile close button */}
+          {menuOpen && (
+            <button
+              className="nav-close-btn"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Fermer le menu"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
+          <Link to="/" className={location.pathname === '/' ? 'active' : ''} style={{ '--i': 0 }}>
+            {t({ fr: 'Accueil', en: 'Home' })}
+          </Link>
+          <Link to="/agence" className={location.pathname === '/agence' ? 'active' : ''} style={{ '--i': 1 }}>
+            {t({ fr: "L'Agence", en: 'The Agency' })}
+          </Link>
+          <Link to="/expertise" className={location.pathname === '/expertise' ? 'active' : ''} style={{ '--i': 2 }}>
+            {t({ fr: 'Expertise', en: 'Expertise' })}
+          </Link>
+          <Link to="/blog" className={location.pathname === '/blog' ? 'active' : ''} style={{ '--i': 3 }}>
+            {t({ fr: 'Blog', en: 'Blog' })}
           </Link>
 
-          <Link to="/agence" className={location.pathname === '/agence' ? 'active' : ''}>
-            Agence
+          <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''} style={{ '--i': 5 }}>
+            {t({ fr: 'Contact', en: 'Contact' })}
           </Link>
-          <Link to="/expertise" className={location.pathname === '/expertise' ? 'active' : ''}>
-            Expertise
-          </Link>
+          
+          {/* Mobile Lang Toggle */}
+          <button 
+            className="mobile-lang-toggle" 
+            onClick={() => toggleLanguage()}
+            style={{ 
+              '--i': 5,
+              background: 'none', border: 'none', color: '#0a0a0a', 
+              fontSize: '1.2rem', fontFamily: 'var(--font-heading)',
+              padding: '0.65rem 0', width: '100%', textAlign: 'left', paddingLeft: '1.5rem',
+              display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
+              borderBottom: '1px solid rgba(0,0,0,0.06)'
+            }}
+          >
+            <Globe size={20} />
+            {lang === 'fr' ? 'EN' : 'FR'}
+          </button>
 
-          <Link to="/packs" className={location.pathname === '/packs' ? 'active' : ''}>
-            Packs
-          </Link>
-
-          <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>
-            Contact
+          {/* Mobile-only CTA */}
+          <Link to="/contact" className="nav-mobile-cta btn btn-primary" style={{ '--i': 6 }}>
+            {t({ fr: 'Nous contacter', en: 'Contact Us' })}
           </Link>
         </div>
 
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          <span></span>
-          <span></span>
-        </button>
+        <div className="nav-right">
+          <button 
+            className="desktop-lang-toggle" 
+            onClick={() => toggleLanguage()} 
+            aria-label="Toggle language"
+            style={{
+              background: 'none', border: 'none', color: 'var(--color-text)',
+              display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer',
+              padding: '0.5rem'
+            }}
+          >
+            <Globe size={18} />
+            <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{lang.toUpperCase()}</span>
+          </button>
+
+          <Link to="/contact" className="btn btn-primary nav-btn">
+            {t({ fr: 'Nous contacter', en: 'Contact Us' })}
+          </Link>
+          <button className={`menu-toggle ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+          </button>
+        </div>
       </div>
     </nav>
   )
@@ -119,8 +174,26 @@ const ArrowUpIcon = () => (
   </svg>
 )
 
+// Floating Language Badge Component (Mobile only)
+const FloatingLanguageBadge = () => {
+  const { lang, toggleLanguage } = useLanguage()
+
+  return (
+    <button
+      className="floating-lang-badge"
+      onClick={() => toggleLanguage()}
+      aria-label="Toggle language"
+      title={lang === 'fr' ? 'Switch to English' : 'Passer au français'}
+    >
+      <Globe size={20} strokeWidth={2} />
+      <span>{lang.toUpperCase()}</span>
+    </button>
+  )
+}
+
 // Footer Component
 const Footer = () => {
+  const { t } = useLanguage()
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -134,16 +207,16 @@ const Footer = () => {
   ]
 
   return (
-    <footer className="footer">
+    <footer className="footer" style={{ position: 'relative' }}>
       {/* CTA Section */}
       <div className="footer-cta">
         <div className="container">
           <div className="footer-cta-content">
-            <h2>Prêt à démarrer votre campagne ?</h2>
-            <p>Discutons de vos idées et créons quelque chose d'extraordinaire ensemble.</p>
+            <h2 className="text-accent">{t({ fr: 'Prêt à démarrer votre campagne ?', en: 'Ready to launch your campaign?' })}</h2>
+            <p>{t({ fr: "Discutons de vos idées et créons quelque chose d'extraordinaire ensemble.", en: "Let's discuss your ideas and create something extraordinary together." })}</p>
             <Link to="/contact" onClick={scrollToTop}
               className="btn btn-primary btn-large">
-              Commencer une campagne
+              {t({ fr: 'Commencer une campagne', en: 'Start a campaign' })}
             </Link>
           </div>
         </div>
@@ -160,9 +233,26 @@ const Footer = () => {
                 <img src="/logo-1.png" alt="Onekana Logo" style={{ width: '130px', height: 'auto' }} />
               </Link>
               <p className="footer-description">
-                Agence de marketing urbain et mobile spécialisée dans la visibilité locale
-                utile, non intrusive et mesurable.
+                {t({
+                  fr: 'Agence de marketing urbain et mobile spécialisée dans la visibilité locale utile, non intrusive et mesurable.',
+                  en: 'Urban and mobile marketing agency specializing in useful, non-intrusive, and measurable local visibility.'
+                })}
               </p>
+              
+              <div className="footer-trustpilot">
+                <div className="trustpilot-stars">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="tp-star"><Star fill="white" size={14} color="white" /></div>
+                  ))}
+                </div>
+                <span className="trustpilot-text">
+                  {t({ fr: 'Excellent ', en: 'Excellent ' })} 
+                  <strong>4.9/5</strong> 
+                  {t({ fr: ' sur ', en: ' on ' })} 
+                  <strong>Trustpilot</strong>
+                </span>
+              </div>
+
               <div className="footer-social">
                 {socialLinks.map((social, index) => (
                   <a
@@ -180,13 +270,14 @@ const Footer = () => {
 
             {/* Navigation Column */}
             <div className="footer-col">
-              <h4>Navigation</h4>
+              <h4>{t({ fr: 'Navigation', en: 'Navigation' })}</h4>
               <nav className="footer-nav">
-                <Link to="/">Accueil</Link>
-                <Link to="/agence">L'Agence</Link>
-                <Link to="/expertise">Expertise</Link>
-                <Link to="/packs">Nos Packs</Link>
-                <Link to="/contact">Contact</Link>
+                <Link to="/">{t({ fr: 'Accueil', en: 'Home' })}</Link>
+                <Link to="/agence">{t({ fr: "L'Agence", en: 'The Agency' })}</Link>
+                <Link to="/expertise">{t({ fr: 'Expertise', en: 'Expertise' })}</Link>
+                <Link to="/blog">{t({ fr: 'Blog', en: 'Blog' })}</Link>
+
+                <Link to="/contact">{t({ fr: 'Contact', en: 'Contact' })}</Link>
               </nav>
             </div>
 
@@ -204,7 +295,7 @@ const Footer = () => {
 
             {/* Contact Column */}
             <div className="footer-col">
-              <h4>Contact</h4>
+              <h4>{t({ fr: 'Contact', en: 'Contact' })}</h4>
               <div className="footer-contact">
                 <a href="mailto:contact@onekana-agency.com" className="contact-item">
                   <MailIcon />
@@ -229,17 +320,22 @@ const Footer = () => {
         <div className="container">
           <div className="footer-bottom-content">
             <p className="copyright">
-              &copy; {new Date().getFullYear()} Onekana. Tous droits réservés.
+              &copy; {new Date().getFullYear()} Onekana. {t({ fr: 'Tous droits réservés.', en: 'All rights reserved.' })}
             </p>
             <div className="footer-bottom-links">
-              <Link to="/">Mentions légales</Link>
-              <Link to="/">Politique de confidentialité</Link>
+              <Link to="/">{t({ fr: 'Mentions légales', en: 'Legal notices' })}</Link>
+              <Link to="/">{t({ fr: 'Politique de confidentialité', en: 'Privacy Policy' })}</Link>
             </div>
-            <button className="back-to-top" onClick={scrollToTop} aria-label="Retour en haut">
+            <button className="back-to-top" onClick={scrollToTop} aria-label={t({ fr: 'Retour en haut', en: 'Back to top' })}>
               <ArrowUpIcon />
             </button>
           </div>
         </div>
+      </div>
+      <div className="section-divider divider-top">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z" className="divider-fill-red" />
+        </svg>
       </div>
     </footer>
   )
@@ -254,6 +350,74 @@ const ScrollToTop = () => {
   }, [pathname])
 
   return null
+}
+
+// Custom Cursor Component
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [outerPosition, setOuterPosition] = useState({ x: 0, y: 0 })
+  const [cursorState, setCursorState] = useState('') // 'hovered' or 'link-hovered' or ''
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setPosition({ x: e.clientX, y: e.clientY })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  useEffect(() => {
+    let frameId
+    const updateOuter = () => {
+      setOuterPosition((prev) => {
+        const dx = position.x - prev.x
+        const dy = position.y - prev.y
+        return {
+          x: prev.x + dx * 0.15,
+          y: prev.y + dy * 0.15,
+        }
+      })
+      frameId = requestAnimationFrame(updateOuter)
+    }
+    frameId = requestAnimationFrame(updateOuter)
+    return () => cancelAnimationFrame(frameId)
+  }, [position])
+
+  useEffect(() => {
+    const addListeners = () => {
+      const links = document.querySelectorAll('a, button, [role="button"], .brochure-dropdown, .magnetic-wrap')
+      links.forEach((el) => {
+        el.addEventListener('mouseenter', () => {
+          if (el.classList.contains('btn') || el.classList.contains('btn-hero-primary') || el.classList.contains('btn-hero-secondary')) {
+            setCursorState('link-hovered')
+          } else {
+            setCursorState('hovered')
+          }
+        })
+        el.addEventListener('mouseleave', () => {
+          setCursorState('')
+        })
+      })
+    }
+
+    addListeners()
+    const observer = new MutationObserver(addListeners)
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <>
+      <div 
+        className={`cursor-follower ${cursorState}`} 
+        style={{ left: `${position.x}px`, top: `${position.y}px` }} 
+      />
+      <div 
+        className={`cursor-follower-outer ${cursorState}`} 
+        style={{ left: `${outerPosition.x}px`, top: `${outerPosition.y}px` }} 
+      />
+    </>
+  )
 }
 
 // App Content Component (inside Router)
@@ -288,6 +452,11 @@ const AppContent = () => {
 
   return (
     <div className={`app ${!isInitialLoad && !isPageLoading ? 'loaded' : ''}`}>
+      <CustomCursor />
+      
+      {/* Floating Language Badge on Mobile */}
+      <FloatingLanguageBadge />
+
       {/* Initial Load Preloader */}
       {isInitialLoad && <Preloader isLoading={isInitialLoad} />}
 
@@ -304,13 +473,17 @@ const AppContent = () => {
           <Route path="/expertise" element={<Expertise />} />
           {/* <Route path="/portfolio" element={<Portfolio />} /> */}
           <Route path="/contact" element={<Contact />} />
-          <Route path="/packs" element={<Packs />} />
+          <Route path="/blog" element={<Blog />} />
+
         </Routes>
       </main>
       <Footer />
 
       {/* Floating Campaign Button */}
       <FloatingCampaignButton />
+
+
+      <CookiePopup />
     </div>
   )
 }
@@ -318,6 +491,7 @@ const AppContent = () => {
 // Floating Campaign Button Component with Popup
 const FloatingCampaignButton = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { t } = useLanguage()
 
   const togglePopup = () => {
     setIsOpen(!isOpen)
@@ -331,7 +505,7 @@ const FloatingCampaignButton = () => {
     <div className="floating-campaign-btn">
       <button
         className="btn btn-primary btn-large"
-        title="Créer une campagne"
+        title={t({ fr: "Créer une campagne", en: "Create a campaign" })}
         onClick={togglePopup}
       >
         <Rocket size={32} />
@@ -350,8 +524,8 @@ const FloatingCampaignButton = () => {
 
             <div className="popup-header">
               <Rocket size={40} className="popup-icon" />
-              <h3>Lancez votre campagne</h3>
-              <p>Choisissez comment vous souhaitez procéder</p>
+              <h3>{t({ fr: "Lancez votre campagne", en: "Launch your campaign" })}</h3>
+              <p>{t({ fr: "Choisissez comment vous souhaitez procéder", en: "Choose how you would like to proceed" })}</p>
             </div>
 
             <div className="popup-options">
@@ -366,7 +540,7 @@ const FloatingCampaignButton = () => {
                 </div>
                 <div className="option-content">
                   <h4>Onekana Business Manager</h4>
-                  <p>Créez votre compte professionnel et gérez vos campagnes en toute autonomie</p>
+                  <p>{t({ fr: "Créez votre compte professionnel et gérez vos campagnes en toute autonomie", en: "Create your professional account and manage your campaigns independently" })}</p>
                 </div>
                 <div className="option-arrow">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -383,8 +557,8 @@ const FloatingCampaignButton = () => {
                   </svg>
                 </div>
                 <div className="option-content">
-                  <h4>Nous contacter</h4>
-                  <p>Envoyez-nous un message pour obtenir plus d'informations sur nos services</p>
+                  <h4>{t({ fr: "Nous contacter", en: "Contact us" })}</h4>
+                  <p>{t({ fr: "Envoyez-nous un message pour obtenir plus d'informations sur nos services", en: "Send us a message to get more information about our services" })}</p>
                 </div>
                 <div className="option-arrow">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

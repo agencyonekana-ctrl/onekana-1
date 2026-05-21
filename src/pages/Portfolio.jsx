@@ -101,7 +101,7 @@ function Portfolio() {
   return (
     <div className="page">
       {/* Page Header */}
-      <section className="page-header">
+      <section className="page-header page-header-portfolio">
         {/* Objets décoratifs multimédia & publicité */}
         <div className="page-header-objects" aria-hidden="true">
           {/* Appareil photo */}

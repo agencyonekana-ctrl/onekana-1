@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { Send, Mail, Phone, MapPin, Clock, Instagram, Linkedin, Twitter, Dribbble } from 'lucide-react'
 import { getCampaignTypes } from '../services/apiService'
 import { PHP_ENDPOINTS } from '../config/api'
+import { useLanguage } from '../hooks/useLanguage'
 
 function Contact() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,10 +29,10 @@ function Contact() {
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
     )
 
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+    document.querySelectorAll('.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-stagger, .reveal-scale, .reveal-blur, .reveal-rotate, .reveal-wipe').forEach((el) => observer.observe(el))
     return () => observer.disconnect()
   }, [])
 
@@ -193,7 +195,7 @@ function Contact() {
   return (
     <div className="page">
       {/* Page Header */}
-      <section className="page-header">
+      <section className="page-header page-header-contact">
         {/* Objets décoratifs multimédia & publicité */}
         <div className="page-header-objects" aria-hidden="true">
           {/* Enveloppe / Message */}
@@ -252,10 +254,13 @@ function Contact() {
           </svg>
         </div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="page-label">Contact</span>
-          <h1 className="page-title">Discutons de votre projet</h1>
-          <p className="page-subtitle">
-            Prêt à créer quelque chose d'extraordinaire ? Contactez-nous et commençons l'aventure.
+          <span className="page-label reveal-up active">{t({ fr: 'Contact', en: 'Contact' })}</span>
+          <h1 className="page-title reveal-up active" style={{ transitionDelay: '0.1s' }}>{t({ fr: 'Discutons de votre projet', en: "Let's discuss your project" })}</h1>
+          <p className="page-subtitle reveal-up active" style={{ transitionDelay: '0.2s' }}>
+            {t({
+              fr: "Prêt à créer quelque chose d'extraordinaire ? Contactez-nous et commençons l'aventure.",
+              en: "Ready to create something extraordinary? Contact us and let's start the adventure."
+            })}
           </p>
         </div>
       </section>
@@ -265,7 +270,7 @@ function Contact() {
         <div className="container">
           <div className="contact-grid-modern">
             {/* Contact Info */}
-            <div className="contact-info-block reveal">
+            <div className="contact-info-block reveal-left">
               <div className="info-section">
                 <div className="info-section-icon">
                   <Mail size={24} />
@@ -327,7 +332,7 @@ function Contact() {
             </div>
 
             {/* Contact Form */}
-            <div className="contact-form-block reveal">
+            <div className="contact-form-block reveal-right">
               {submitted ? (
                 <div className="form-success-modern">
                   <div className="success-icon-modern">✓</div>
@@ -416,34 +421,34 @@ function Contact() {
       {/* FAQ Section */}
       <section className="section section-alt">
         <div className="container">
-          <div className="section-header reveal">
+          <div className="section-header reveal-rotate">
             <span className="section-label">FAQ</span>
             <h2 className="section-title">Questions fréquentes</h2>
           </div>
           <div className="faq-grid-modern">
-            <div className="faq-item-modern reveal">
-              <h4>Quel est le délai moyen d'un projet ?</h4>
+            <div className="faq-item-modern reveal-up">
+              <h4>Quel est le délai moyen d'un projet ?</h4>
               <p>
                 Cela dépend de la complexité du projet. Un site vitrine prend généralement 4-6 semaines,
                 tandis qu'un projet plus complexe peut prendre 3-6 mois.
               </p>
             </div>
-            <div className="faq-item-modern reveal" style={{ transitionDelay: '0.1s' }}>
-              <h4>Comment se déroule un projet avec vous ?</h4>
+            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.1s' }}>
+              <h4>Comment se déroule un projet avec vous ?</h4>
               <p>
                 Nous commençons par une phase de découverte, suivie de la stratégie, de la création
                 et enfin de la livraison. Vous êtes impliqué à chaque étape du processus.
               </p>
             </div>
-            <div className="faq-item-modern reveal" style={{ transitionDelay: '0.2s' }}>
-              <h4>Proposez-vous un accompagnement après livraison ?</h4>
+            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.2s' }}>
+              <h4>Proposez-vous un accompagnement après livraison ?</h4>
               <p>
                 Oui, nous proposons des contrats de maintenance et d'évolution pour assurer la
                 pérennité de votre projet.
               </p>
             </div>
-            <div className="faq-item-modern reveal" style={{ transitionDelay: '0.3s' }}>
-              <h4>Travaillez-vous avec des clients internationaux ?</h4>
+            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.3s' }}>
+              <h4>Travaillez-vous avec des clients internationaux ?</h4>
               <p>
                 Absolument ! Nous travaillons avec des clients du monde entier et nous adaptons
                 nos processus pour gérer les différences de fuseaux horaires.

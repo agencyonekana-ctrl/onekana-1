@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle, Car, Store, Smartphone, Target, ArrowRight, Backpack, Play, MousePointer, Sun, Check, Package, DollarSign, Zap, Users, Star, Download, FileText, ChevronDown, Plus, Edit, Trash2, Filter, Search } from 'lucide-react'
 import { getPacksCommerciaux, createPack, updatePack, deletePack } from '../services/apiService'
+import { useLanguage } from '../hooks/useLanguage'
 
 // Brochure Download Button with dropdown
 const BrochureDropdown = () => {
@@ -272,6 +273,7 @@ const PackModal = ({ pack, onSave, onClose }) => {
 
 // Packs Page Component
 function Packs() {
+    const { t } = useLanguage()
     const [packs, setPacks] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -399,44 +401,27 @@ function Packs() {
     return (
         <div className="packs-page">
             {/* Hero Section */}
-            <section className="hero">
-                <div className="hero-background">
-                    <div className="hero-image">
-                        <video
-                            className="hero-video"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="metadata"
-                        >
-                            <source src="/hero-bg.mp4" type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div className="hero-gradient"></div>
-                    <div className="hero-pattern"></div>
-                </div>
+            <section className="page-header page-header-packs">
                 <div className="hero-content">
                     {/* <p className="hero-subtitle animate-fade-in">
                         <img src="/onek.png" alt="Onek" style={{ width: '40px', height: '40px', marginRight: '10px', verticalAlign: 'middle' }} />
                         Onekana Agency
                     </p> */}
                     <h1 className="hero-title">
-                        <span className="line animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Nos Packs</span>
-                        <span className="line animate-fade-in-up" style={{ animationDelay: '0.4s' }}>Commerciaux</span>
-                        <span className="line accent animate-fade-in-up" style={{ animationDelay: '0.6s' }}>Sur Mesure</span>
+                        <span className="line animate-fade-in-up" style={{ animationDelay: '0.2s' }}>{t({ fr: 'Nos Packs', en: 'Our Packs' })}</span>
+                        <span className="line animate-fade-in-up" style={{ animationDelay: '0.4s' }}>{t({ fr: 'Commerciaux', en: 'Commercial' })}</span>
+                        <span className="line accent animate-fade-in-up" style={{ animationDelay: '0.6s' }}>{t({ fr: 'Sur Mesure', en: 'Customized' })}</span>
                     </h1>
                     <p className="hero-description animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-                        Des solutions marketing urbain et mobile adaptées à vos besoins spécifiques.
+                        {t({ fr: 'Des solutions marketing urbain et mobile adaptées à vos besoins spécifiques.', en: 'Urban and mobile marketing solutions tailored to your specific needs.' })}
                     </p>
                     <div className="hero-cta animate-fade-in-up" style={{ animationDelay: '1s' }}>
                         <BrochureDropdown />
-                        <Link to="/contact" className="btn">Nous contacter</Link>
+                        <Link to="/contact" className="btn">{t({ fr: 'Nous contacter', en: 'Contact Us' })}</Link>
                     </div>
                 </div>
                 <div className="hero-scroll">
-                    <span>Scroll</span>
+                    <span>{t({ fr: 'Faire défiler', en: 'Scroll' })}</span>
                     <div className="scroll-line"></div>
                 </div>
             </section>
@@ -445,9 +430,9 @@ function Packs() {
             <section className="packs-content section">
                 <div className="container">
                     <div className="section-header">
-                        <span className="section-label">Nos Solutions</span>
-                        <h2 className="section-title">PACKS COMMERCIAUX</h2>
-                        <p className="section-subtitle">Choisissez la solution qui correspond à vos objectifs</p>
+                        <span className="section-label">{t({ fr: 'Nos Solutions', en: 'Our Solutions' })}</span>
+                        <h2 className="section-title">{t({ fr: 'PACKS COMMERCIAUX', en: 'COMMERCIAL PACKS' })}</h2>
+                        <p className="section-subtitle">{t({ fr: 'Choisissez la solution qui correspond à vos objectifs', en: 'Choose the solution that matches your objectives' })}</p>
                     </div>
 
                     {/* Filters */}

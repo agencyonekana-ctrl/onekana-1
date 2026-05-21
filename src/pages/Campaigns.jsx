@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../hooks/useLanguage'
 import {
     Calendar,
     MapPin,
@@ -24,6 +25,7 @@ import {
 import { getCampaignTypes, getPacks, getTransportRoutes, getPointsChauds } from '../services/apiService'
 
 function Campaigns() {
+    const { t } = useLanguage()
     const [campaignData, setCampaignData] = useState({
         name: '',
         campaignTypes: [],
@@ -362,7 +364,7 @@ function Campaigns() {
     return (
         <div className="page">
             {/* Page Header */}
-            <section className="page-header">
+            <section className="page-header page-header-campaigns">
                 <div className="page-header-objects" aria-hidden="true">
                     <svg className="ph-obj ph-obj-1" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="6" y="14" width="52" height="36" rx="4" stroke="currentColor" strokeWidth="2" />
@@ -377,10 +379,10 @@ function Campaigns() {
                     </svg>
                 </div>
                 <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-                    <span className="page-label">Campagnes</span>
-                    <h1 className="page-title">Créer votre campagne</h1>
+                    <span className="page-label">{t({ fr: 'Campagnes', en: 'Campaigns' })}</span>
+                    <h1 className="page-title">{t({ fr: 'Créer votre campagne', en: 'Create your campaign' })}</h1>
                     <p className="page-subtitle">
-                        Configurez votre campagne publicitaire en quelques étapes simples
+                        {t({ fr: 'Configurez votre campagne publicitaire en quelques étapes simples', en: 'Set up your advertising campaign in a few simple steps' })}
                     </p>
                 </div>
             </section>

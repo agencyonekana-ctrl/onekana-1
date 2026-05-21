@@ -3,79 +3,80 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 const Preloader = forwardRef(({ isLoading }, ref) => {
     const [isVisible, setIsVisible] = useState(true)
     const [isFadingOut, setIsFadingOut] = useState(false)
+    const [progress, setProgress] = useState(0)
 
-    // Expose methods to parent component
     useImperativeHandle(ref, () => ({
         show: () => {
             setIsVisible(true)
             setIsFadingOut(false)
+            setProgress(0)
         },
         hide: () => {
             setIsFadingOut(true)
             setTimeout(() => {
                 setIsVisible(false)
                 setIsFadingOut(false)
-            }, 500)
+            }, 1200)
         }
     }))
 
-    // Initial load
+    // Simulate progress
     useEffect(() => {
-        if (isLoading === undefined) {
-            const timer = setTimeout(() => {
-                setIsFadingOut(true)
-                setTimeout(() => {
-                    setIsVisible(false)
-                }, 500)
-            }, 2500)
-            return () => clearTimeout(timer)
-        }
-    }, [])
+        if (!isVisible || isFadingOut) return;
+        
+        let current = 0;
+        const interval = setInterval(() => {
+            current += Math.floor(Math.random() * 15) + 5;
+            if (current >= 100) {
+                current = 100;
+                clearInterval(interval);
+                
+                // If it's the initial load (no props controlling it), hide it automatically
+                if (isLoading === undefined) {
+                    setTimeout(() => {
+                        setIsFadingOut(true);
+                        setTimeout(() => setIsVisible(false), 1200);
+                    }, 400);
+                }
+            }
+            setProgress(current);
+        }, 120);
+        
+        return () => clearInterval(interval);
+    }, [isVisible, isFadingOut, isLoading]);
 
-    // Handle isLoading prop changes
     useEffect(() => {
         if (isLoading !== undefined) {
             if (isLoading) {
                 setIsVisible(true)
                 setIsFadingOut(false)
+                setProgress(0)
             } else {
-                setIsFadingOut(true)
+                setProgress(100)
                 setTimeout(() => {
-                    setIsVisible(false)
-                }, 500)
+                    setIsFadingOut(true)
+                    setTimeout(() => setIsVisible(false), 1200)
+                }, 300)
             }
         }
     }, [isLoading])
 
-    if (!isVisible) {
-        return null
-    }
+    if (!isVisible) return null
 
     return (
-        <div className={`preloader-overlay ${isFadingOut ? 'fade-out' : ''}`}>
-            <div className="preloader-content">
-                <div className="camera-spinner-container">
-                    <div className="camera-spinner">
-                        {/* SVG Camera - fixe */}
-                        <svg className="camera-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="4" y="18" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="2" />
-                            <path d="M40 26L58 18V46L40 38V26Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                            <circle cx="18" cy="32" r="6" stroke="currentColor" strokeWidth="1.5" />
-                            <circle cx="18" cy="32" r="2" fill="currentColor" />
-                        </svg>
-
-                        {/* Cercle tournant autour de la caméra */}
-                        <div className="orbiting-circle">
-                            <div className="orbit-ring"></div>
-                            <div className="orbit-dot"></div>
-                        </div>
-                    </div>
+        <div className={`premium-preloader ${isFadingOut ? 'slide-up' : ''}`}>
+            <div className="premium-preloader-inner">
+                <div className="preloader-brand">
+                    <img src="/logo.png" alt="Onekana" className="preloader-logo" />
                 </div>
-                <div className="preloader-text">
-                    <span className="agency-name">Onekana</span>
-                    <span className="agency-slogan">Agency</span>
+                <div className="preloader-progress-container">
+                    <div className="progress-bar-wrap">
+                        <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
+                    </div>
+                    <div className="progress-text">{progress}%</div>
                 </div>
             </div>
+            <div className="preloader-bg"></div>
         </div>
     )
 })
