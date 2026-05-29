@@ -32,7 +32,10 @@ const Navigation = () => {
     <nav className={`navigation ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <Link to="/" className="logo">
-          <img src="/logo.png" alt="Onekana Logo" style={{ width: '120px', height: 'auto' }} />
+          <picture>
+            <source srcSet="/logo.png" media="(prefers-color-scheme: dark)" />
+            <img src="/logo-1.png" alt="Onekana Logo" style={{ width: '120px', height: 'auto' }} />
+          </picture>
         </Link>
 
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
@@ -230,7 +233,10 @@ const Footer = () => {
             <div className="footer-brand-col">
               <Link to="/" className="footer-logo">
                 {/* Onekana<span className="text-accent">.</span> */}
-                <img src="/logo-1.png" alt="Onekana Logo" style={{ width: '130px', height: 'auto' }} />
+                <picture>
+                  <source srcSet="/logo-1.png" media="(prefers-color-scheme: dark)" />
+                  <img src="/logo.png" alt="Onekana Logo" style={{ width: '130px', height: 'auto' }} />
+                </picture>
               </Link>
               <p className="footer-description">
                 {t({

@@ -67,7 +67,10 @@ const Preloader = forwardRef(({ isLoading }, ref) => {
         <div className={`premium-preloader ${isFadingOut ? 'slide-up' : ''}`}>
             <div className="premium-preloader-inner">
                 <div className="preloader-brand">
-                    <img src="/logo.png" alt="Onekana" className="preloader-logo" />
+                    <picture>
+                        <source srcSet="/logo.png" media="(prefers-color-scheme: dark)" />
+                        <img src="/logo-1.png" alt="Onekana" className="preloader-logo" />
+                    </picture>
                 </div>
                 <div className="preloader-progress-container">
                     <div className="progress-bar-wrap">
