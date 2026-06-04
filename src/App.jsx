@@ -4,7 +4,7 @@ import { Rocket, Globe, Star } from 'lucide-react'
 import { useLanguage } from './hooks/useLanguage'
 import './App.css'
 import './mobile.css'
-import { Home, Agence, Campaigns, Expertise, Portfolio, Contact, Blog } from './pages'
+import { Home, Agence, Expertise, Contact, Blog } from './pages'
 import Preloader from './components/Preloader'
 import CookiePopup from './components/CookiePopup'
 
@@ -25,8 +25,9 @@ const Navigation = () => {
 
   // Close menu when route changes
   useEffect(() => {
-    setMenuOpen(false)
-  }, [location])
+    const frame = requestAnimationFrame(() => setMenuOpen(false))
+    return () => cancelAnimationFrame(frame)
+  }, [location.pathname])
 
   return (
     <nav className={`navigation ${scrolled ? 'scrolled' : ''}`}>
@@ -73,14 +74,7 @@ const Navigation = () => {
           <button 
             className="mobile-lang-toggle" 
             onClick={() => toggleLanguage()}
-            style={{ 
-              '--i': 5,
-              background: 'none', border: 'none', color: '#0a0a0a', 
-              fontSize: '1.2rem', fontFamily: 'var(--font-heading)',
-              padding: '0.65rem 0', width: '100%', textAlign: 'left', paddingLeft: '1.5rem',
-              display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
-              borderBottom: '1px solid rgba(0,0,0,0.06)'
-            }}
+            style={{ '--i': 5 }}
           >
             <Globe size={20} />
             {lang === 'fr' ? 'EN' : 'FR'}
@@ -97,14 +91,9 @@ const Navigation = () => {
             className="desktop-lang-toggle" 
             onClick={() => toggleLanguage()} 
             aria-label="Toggle language"
-            style={{
-              background: 'none', border: 'none', color: 'var(--color-text)',
-              display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer',
-              padding: '0.5rem'
-            }}
           >
-            <Globe size={18} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{lang.toUpperCase()}</span>
+            <span className={`lang-option ${lang === 'en' ? 'active' : ''}`}>EN</span>
+            <span className={`lang-option ${lang === 'fr' ? 'active' : ''}`}>FR</span>
           </button>
 
           <Link to="/contact" className="btn btn-primary nav-btn">
@@ -209,6 +198,15 @@ const Footer = () => {
     { name: 'Dribbble', icon: <DribbbleIcon />, url: '#' },
   ]
 
+  const expertiseLinks = [
+    'Onekana MediaMove',
+    'Onekana Streets',
+    'Onekana DOOH',
+    'Onekana Connect',
+    'Onekana Studio',
+    'Onekana Life',
+  ]
+
   return (
     <footer className="footer" style={{ position: 'relative' }}>
       {/* CTA Section */}
@@ -284,6 +282,15 @@ const Footer = () => {
                 <Link to="/blog">{t({ fr: 'Blog', en: 'Blog' })}</Link>
 
                 <Link to="/contact">{t({ fr: 'Contact', en: 'Contact' })}</Link>
+              </nav>
+            </div>
+
+            <div className="footer-col">
+              <h4>{t({ fr: "Pôles d'expertise", en: 'Expertise Hubs' })}</h4>
+              <nav className="footer-nav">
+                {expertiseLinks.map((label) => (
+                  <Link key={label} to="/expertise">{label}</Link>
+                ))}
               </nav>
             </div>
 
@@ -445,14 +452,17 @@ const AppContent = () => {
   useEffect(() => {
     if (!isInitialLoad) {
       // Show preloader on route change
-      setIsPageLoading(true)
+      const showTimer = setTimeout(() => setIsPageLoading(true), 0)
 
       // Hide preloader after a short delay
       const timer = setTimeout(() => {
         setIsPageLoading(false)
       }, 800) // 800ms for page transitions
 
-      return () => clearTimeout(timer)
+      return () => {
+        clearTimeout(showTimer)
+        clearTimeout(timer)
+      }
     }
   }, [pathname, isInitialLoad])
 
@@ -475,9 +485,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/agence" element={<Agence />} />
-          <Route path="/campaigns" element={<Campaigns />} />
           <Route path="/expertise" element={<Expertise />} />
-          {/* <Route path="/portfolio" element={<Portfolio />} /> */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />
 

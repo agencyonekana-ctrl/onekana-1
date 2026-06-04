@@ -4,7 +4,7 @@ import {
   Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle,
   Car, Store, Smartphone, Target, ArrowRight, Backpack, Play,
   MousePointer, Sun, Check, Star, Download, FileText, ChevronDown,
-  TrendingUp, Users, Award, Zap, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet
+  TrendingUp, Users, Award, Zap, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet, Monitor
 } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
 
@@ -15,7 +15,6 @@ const BrochureDropdown = () => {
 
   const brochures = [
     { label: 'Présentation commerciale', file: '/brochures/03_2025_12_Présentation_commerciale_ Onekana.pptx.pdf' },
-    { label: 'Présentation & Prix', file: '/brochures/2025_12_Présentation_commerciale_ Onekana_Prix.pptx.pdf' },
   ]
 
   useEffect(() => {
@@ -47,36 +46,8 @@ const BrochureDropdown = () => {
   )
 }
 
-/* ─── Animated Counter ─── */
-const Counter = ({ end, suffix = '', duration = 2000 }) => {
-  const [count, setCount] = useState(0)
-  const ref = useRef(null)
-  const started = useRef(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true
-        const start = Date.now()
-        const step = () => {
-          const elapsed = Date.now() - start
-          const progress = Math.min(elapsed / duration, 1)
-          const eased = 1 - Math.pow(1 - progress, 3)
-          setCount(Math.floor(eased * end))
-          if (progress < 1) requestAnimationFrame(step)
-        }
-        requestAnimationFrame(step)
-      }
-    }, { threshold: 0.5 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [end, duration])
-
-  return <span ref={ref}>{count}{suffix}</span>
-}
-
 /* ─── Magnetic Button ─── */
-const MagneticBtn = ({ children, className, to, href, ...props }) => {
+const MagneticBtn = ({ children, className, to, ...props }) => {
   const ref = useRef(null)
 
   const handleMouseMove = (e) => {
@@ -236,6 +207,10 @@ const Hero = () => {
 
   return (
     <section className="hero-cinematic">
+      <video className="hero-bg-video" autoPlay muted loop playsInline aria-hidden="true">
+        <source src="/hero-bg.mp4" type="video/mp4" />
+      </video>
+      <div className="hero-video-overlay" />
       <canvas ref={canvasRef} className="hero-canvas" />
       <div className="cinematic-grid-bg" />
       <div
@@ -296,8 +271,8 @@ const Hero = () => {
           <MagneticBtn className="magnetic-wrap" style={{ position: 'relative', zIndex: 100 }}>
             <BrochureDropdown />
           </MagneticBtn>
-          <MagneticBtn to="/contact" className="btn-hero-secondary magnetic-wrap" style={{ position: 'relative', zIndex: 1 }}>
-            <Play size={16} /> {t({ fr: 'Voir la vidéo', en: 'Watch Video' })}
+          <MagneticBtn to="/expertise" className="btn-hero-secondary magnetic-wrap" style={{ position: 'relative', zIndex: 1 }}>
+            <ArrowRight size={16} /> {t({ fr: 'Voir nos supports', en: 'View our media' })}
           </MagneticBtn>
         </div>
 
@@ -308,28 +283,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Stats strip */}
-      <div className="hero-stats-strip reveal-up active" style={{ transitionDelay: '0.4s' }}>
-        <div className="hero-stat">
-          <span className="stat-num"><Counter end={50} suffix="+" /></span>
-          <span className="stat-lbl">Clients actifs</span>
-        </div>
-        <div className="hero-stat-divider" />
-        <div className="hero-stat">
-          <span className="stat-num"><Counter end={200} suffix="+" /></span>
-          <span className="stat-lbl">Campagnes lancées</span>
-        </div>
-        <div className="hero-stat-divider" />
-        <div className="hero-stat">
-          <span className="stat-num"><Counter end={3} suffix=" ans" /></span>
-          <span className="stat-lbl">D'expérience</span>
-        </div>
-        <div className="hero-stat-divider" />
-        <div className="hero-stat">
-          <span className="stat-num"><Counter end={98} suffix="%" /></span>
-          <span className="stat-lbl">Satisfaction client</span>
-        </div>
-      </div>
     </section>
   )
 }
@@ -408,10 +361,10 @@ const AboutPreview = () => {
       <div className="cinematic-grid-bg" />
       <div className="container">
         <div className="section-eyebrow about-reveal reveal-up">
-          {t({ fr: 'Notre Vision', en: 'Our Vision' })}
+          {t({ fr: 'À propos', en: 'About' })}
         </div>
         <h2 className="section-heading about-reveal reveal-up" style={{ transitionDelay: '0.1s' }}>
-          {t({ fr: 'Marketing Urbain', en: 'Urban Marketing' })} <span className="text-accent">{t({ fr: 'Redéfini', en: 'Redefined' })}</span>
+          {t({ fr: 'Une agence de terrain', en: 'A field-first agency' })} <span className="text-accent">{t({ fr: 'mesurable', en: 'built to measure' })}</span>
         </h2>
 
         <div className="about-grid reveal-stagger about-reveal">
@@ -424,13 +377,13 @@ const AboutPreview = () => {
             <div className="acard-icon-wrap">
               <Move3d size={32} strokeWidth={1.5} />
             </div>
-            <h3 className="acard-title">{t({ fr: 'Nous transformons', en: 'We transform' })}</h3>
+            <h3 className="acard-title">{t({ fr: 'Nous activons', en: 'We activate' })}</h3>
             <ul className="acard-list">
-              <li><span className="acard-bullet" />{t({ fr: 'les déplacements', en: 'commutes' })}</li>
-              <li><span className="acard-bullet" />{t({ fr: "les temps d'attente", en: 'waiting times' })}</li>
-              <li><span className="acard-bullet" />{t({ fr: 'les espaces urbains', en: 'urban spaces' })}</li>
+              <li><span className="acard-bullet" />{t({ fr: 'les véhicules', en: 'vehicles' })}</li>
+              <li><span className="acard-bullet" />{t({ fr: 'les rues', en: 'streets' })}</li>
+              <li><span className="acard-bullet" />{t({ fr: 'les écrans', en: 'screens' })}</li>
             </ul>
-            <p className="acard-cta">{t({ fr: 'en opportunités commerciales concrètes.', en: 'into concrete business opportunities.' })}</p>
+            <p className="acard-cta">{t({ fr: 'pour créer une visibilité locale utile, mémorisable et non intrusive.', en: 'to create useful, memorable and non-intrusive local visibility.' })}</p>
           </div>
 
           {/* Card 2 — accent */}
@@ -449,9 +402,9 @@ const AboutPreview = () => {
                 { icon: Brain, label: t({ fr: 'Mémorisé', en: 'Remembered' }) },
                 { icon: Phone, label: t({ fr: 'Contacté', en: 'Contacted' }) },
                 { icon: CheckCircle, label: t({ fr: 'Choisi', en: 'Chosen' }) },
-              ].map(({ icon: Icon, label }, i) => (
+              ].map(({ label }, i) => (
                 <div key={i} className="chain-step">
-                  <div className="chain-icon"><Icon size={20} strokeWidth={1.5} /></div>
+                  <div className="chain-icon"><CheckCircle size={20} strokeWidth={1.5} /></div>
                   <span>{label}</span>
                   {i < 3 && <div className="chain-arrow">→</div>}
                 </div>
@@ -468,14 +421,14 @@ const AboutPreview = () => {
             <div className="acard-icon-wrap">
               <Network size={32} strokeWidth={1.5} />
             </div>
-            <h3 className="acard-title">{t({ fr: 'Notre logique', en: 'Our logic' })}</h3>
+            <h3 className="acard-title">{t({ fr: 'Notre méthode', en: 'Our method' })}</h3>
             <div className="funnel">
               {[
-                t({ fr: 'Exposition physique', en: 'Physical exposure' }),
-                t({ fr: 'Interaction', en: 'Interaction' }),
-                t({ fr: 'Donnée', en: 'Data' }),
-                t({ fr: 'Relance', en: 'Retargeting' }),
-                t({ fr: 'Conversion ✓', en: 'Conversion ✓' }),
+                t({ fr: 'Création', en: 'Creation' }),
+                t({ fr: 'Diffusion terrain', en: 'Field activation' }),
+                t({ fr: 'Observation', en: 'Observation' }),
+                t({ fr: 'Reporting', en: 'Reporting' }),
+                t({ fr: 'Optimisation', en: 'Optimization' }),
               ].map((s, i) => (
                 <div key={i} className="funnel-step" style={{ width: `${100 - i * 12}%`, opacity: 1 - i * 0.05 }}>
                   {s}
@@ -487,8 +440,8 @@ const AboutPreview = () => {
 
         <div className="about-cta-wrap about-reveal reveal-up" style={{ transitionDelay: '0.4s' }}>
           <MagneticBtn className="magnetic-wrap">
-            <Link to="/agence" className="btn btn-primary btn-large">
-              {t({ fr: 'Découvrir notre approche', en: 'Discover our approach' })} <ArrowRight size={18} />
+            <Link to="/agence" className="btn btn-primary about-cta-link">
+              {t({ fr: "Découvrir l'agence", en: 'Discover the agency' })} <ArrowRight size={18} />
             </Link>
           </MagneticBtn>
         </div>
@@ -580,6 +533,139 @@ const WhyLubumbashi = () => {
         <div className="wl-result wl-reveal reveal-up" style={{ transitionDelay: '0.6s' }}>
           <ArrowRight size={24} strokeWidth={2} />
           <p><strong>{t({ fr: 'Résultat :', en: 'Result:' })}</strong> {t({ fr: "plus d'impact dans la masse de sollicitations publicitaires", en: 'more impact in the mass of advertising messages' })}</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const SUPPORT_IMAGES = {
+  carFlyers: '/images/onekana/supports/car-flyers.png',
+  carMedia: '/images/onekana/supports/car-media.png',
+  carScreen: '/images/onekana/supports/car-screen.png',
+  taxiTop: '/images/onekana/supports/taxi-top.png',
+  tetiere: '/images/onekana/supports/tetiere.png',
+  backpackFlag: '/images/onekana/supports/backpack-flag.png',
+  backpackMediaStreets: '/images/onekana/supports/backpack-media-streets.png',
+  backpackMediaDooh: '/images/onekana/supports/backpack-media-dooh.png',
+  carScreenDooh: '/images/onekana/supports/car-screen-dooh.png',
+  reporting: '/images/onekana/supports/reporting.png',
+  design: '/images/onekana/supports/design-flyers-affiches.png',
+  clips: '/images/onekana/supports/clips-publicitaires.png',
+  magazine: '/images/onekana/supports/onekana-life-magazine.png',
+}
+
+const PillarsSection = () => {
+  useScrollReveal('.pillar-reveal')
+
+  const pillars = [
+    {
+      icon: Car,
+      title: 'Onekana MediaMove',
+      image: SUPPORT_IMAGES.carMedia,
+      desc: 'Tous supports mobiles sur véhicules: taxis, sièges, écrans embarqués, têtières et enseignes lumineuses.',
+    },
+    {
+      icon: Backpack,
+      title: 'Onekana Streets',
+      image: SUPPORT_IMAGES.backpackFlag,
+      desc: 'Supports mobiles piétons, stands et animations de zones pour créer le contact direct avec le public.',
+    },
+    {
+      icon: Monitor,
+      title: 'Onekana DOOH',
+      image: SUPPORT_IMAGES.backpackMediaDooh,
+      desc: 'Supports digitaux sur site et en mobilité, pensés pour des campagnes visibles et dynamiques.',
+    },
+    {
+      icon: BarChart3,
+      title: 'Onekana Connect',
+      image: SUPPORT_IMAGES.reporting,
+      desc: 'Services marketing mesurables: statistiques, reporting et lecture claire des retombées.',
+    },
+    {
+      icon: Award,
+      title: 'Onekana Studio',
+      image: SUPPORT_IMAGES.design,
+      desc: 'Création de flyers, affiches, concepts visuels et clips publicitaires adaptés au terrain.',
+    },
+    {
+      icon: FileText,
+      title: 'Onekana Life',
+      image: SUPPORT_IMAGES.magazine,
+      desc: 'Le magazine Onekana: contenu, culture urbaine et espace éditorial pour raconter les marques.',
+    },
+  ]
+
+  return (
+    <section className="onekana-pillars section">
+      <div className="container">
+        <div className="section-eyebrow pillar-reveal reveal-up" style={{ textAlign: 'center' }}>Pôles d'expertise</div>
+        <h2 className="section-heading pillar-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s' }}>
+          Comment votre publicité circule avec <span className="text-accent">Onekana</span>
+        </h2>
+        <p className="pillars-note pillar-reveal reveal-up" style={{ transitionDelay: '0.15s' }}>
+          Des supports physiques, digitaux et créatifs coordonnés pour être vus dans la rue, compris par le public et suivis avec des données utiles.
+        </p>
+
+        <div className="pillars-grid pillar-reveal reveal-stagger">
+          {pillars.map((pillar, index) => (
+            <article key={pillar.title} className="pillar-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
+              <img src={pillar.image} alt="" className="pillar-image" loading="lazy" />
+              <div className="pillar-content">
+                <div className="pillar-icon"><pillar.icon size={24} strokeWidth={1.6} /></div>
+                <span className="pillar-index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{pillar.title}</h3>
+                <p>{pillar.desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="visual-disclaimer pillar-reveal reveal-up">
+          Visuels générés à vocation d'inspiration pour équilibrer l'esthétique générale, notamment les couleurs.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+const SupportsShowcase = () => {
+  useScrollReveal('.support-reveal')
+
+  const supports = [
+    { group: 'Onekana MediaMove', title: 'Car Flyers', image: SUPPORT_IMAGES.carFlyers, desc: 'Panneau de siège avec espace flyers pour capter les passagers pendant le trajet.' },
+    { group: 'Onekana MediaMove', title: 'Car Media', image: SUPPORT_IMAGES.carMedia, desc: 'Aimants taxi pour transformer les véhicules en supports de visibilité mobile.' },
+    { group: 'Onekana MediaMove', title: 'Car Screen', image: SUPPORT_IMAGES.carScreen, desc: 'Écran taxi pour diffuser des contenus dynamiques dans les déplacements urbains.' },
+    { group: 'Onekana MediaMove', title: 'Taxi Top', image: SUPPORT_IMAGES.taxiTop, desc: 'Enseigne lumineuse placée sur taxi pour une présence forte de jour comme de nuit.' },
+    { group: 'Onekana MediaMove', title: 'Têtière', image: SUPPORT_IMAGES.tetiere, desc: "Housse d'appui-tête publicitaire, visible à hauteur de regard pendant le trajet." },
+    { group: 'Onekana Streets', title: 'Backpack Flag', image: SUPPORT_IMAGES.backpackFlag, desc: 'Sac à dos drapeau avec distribution de flyers pour les activations de zones.' },
+    { group: 'Onekana Streets', title: 'Backpack Media', image: SUPPORT_IMAGES.backpackMediaStreets, desc: 'Sac à dos écran avec distribution de flyers pour une présence mobile et animée.' },
+    { group: 'Onekana DOOH', title: 'Backpack Media DOOH', image: SUPPORT_IMAGES.backpackMediaDooh, desc: 'Écran porté pour diffuser des messages digitaux dans les lieux à fort passage.' },
+    { group: 'Onekana DOOH', title: 'Car Screen DOOH', image: SUPPORT_IMAGES.carScreenDooh, desc: 'Écran embarqué taxi pour une campagne vidéo visible en mobilité.' },
+    { group: 'Onekana Connect', title: 'Statistiques / Reporting', image: SUPPORT_IMAGES.reporting, desc: 'Suivi des actions, synthèse des performances et reporting exploitable.' },
+    { group: 'Onekana Studio', title: 'Design flyers / affiches', image: SUPPORT_IMAGES.design, desc: 'Création de visuels prêts à vivre sur les supports terrain et digitaux.' },
+    { group: 'Onekana Studio', title: 'Clips publicitaires', image: SUPPORT_IMAGES.clips, desc: 'Production audiovisuelle pour écrans, réseaux et campagnes urbaines.' },
+    { group: 'Onekana Life', title: 'Magazine Onekana', image: SUPPORT_IMAGES.magazine, desc: "Un format éditorial pour prolonger l'histoire des marques et des lieux." },
+  ]
+
+  return (
+    <section className="supports-showcase section section-alt">
+      <div className="container">
+        <div className="section-eyebrow support-reveal reveal-up" style={{ textAlign: 'center' }}>Supports & services</div>
+        <h2 className="section-heading support-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s' }}>
+          Chaque point de contact a son <span className="text-accent">rôle</span>
+        </h2>
+        <div className="supports-grid support-reveal reveal-stagger">
+          {supports.map((support) => (
+            <article key={`${support.group}-${support.title}`} className="support-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
+              <img src={support.image} alt="" className="support-image" loading="lazy" />
+              <div className="support-content">
+                <span>{support.group}</span>
+                <h3>{support.title}</h3>
+                <p>{support.desc}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -798,8 +884,8 @@ const Testimonials = () => {
       name: 'Jean-Bosco M.',
       role: t({ fr: 'Gérant, Supermarché', en: 'Manager, Supermarket' }),
       text: t({
-        fr: "Depuis que nous utilisons l'affichage Digi'Street, notre fréquentation a augmenté de 30% le weekend. Un investissement qui se voit !",
-        en: "Since we started using Digi'Street display, our weekend traffic has increased by 30%. An investment that shows!"
+        fr: "Depuis que nous utilisons les supports mobiles Onekana, notre fréquentation a augmenté le weekend. Un investissement qui se voit.",
+        en: "Since we started using Onekana mobile media, our weekend traffic has increased. An investment people notice."
       }),
       stars: 5,
       avatar: 'JB'
@@ -818,8 +904,8 @@ const Testimonials = () => {
       name: 'Dieudonné T.',
       role: t({ fr: 'Fondateur, Startup', en: 'Founder, Startup' }),
       text: t({
-        fr: "Le ROI est mesurable et l'équipe Onekana est très réactive. Le pack Impact Trafic a vraiment boosté nos ventes.",
-        en: 'The ROI is measurable and the Onekana team is very responsive. The Traffic Impact pack has really boosted our sales.'
+        fr: "Le suivi est clair et l'équipe Onekana est très réactive. La campagne terrain a vraiment renforcé notre présence locale.",
+        en: 'The reporting is clear and the Onekana team is very responsive. The field campaign really strengthened our local presence.'
       }),
       stars: 4,
       avatar: 'DT'
@@ -960,7 +1046,7 @@ const CTABanner = () => {
           <div className="cta-btns">
             <MagneticBtn className="magnetic-wrap">
               <Link to="/contact" className="btn btn-primary btn-large">
-                {t({ fr: 'Démarrer maintenant', en: 'Get Started Now' })} <ArrowRight size={18} />
+                {t({ fr: 'Commencer une campagne', en: 'Start a campaign' })} <ArrowRight size={18} />
               </Link>
             </MagneticBtn>
             <Link to="/expertise" className="btn-ghost">
@@ -981,13 +1067,9 @@ function Home() {
     <>
       <Hero />
       <Marquee />
-      <Partners />
       <AboutPreview />
-      <WhyLubumbashi />
-      <Digistreet />
-      <ServicesStrip />
-      <PaymentSection />
-      <Testimonials />
+      <PillarsSection />
+      <SupportsShowcase />
       <CTABanner />
     </>
   )

@@ -807,4 +807,89 @@
     letter-spacing: 0.05em;
   }
 
+  /* Overflow guards */
+  html,
+  body,
+  #root,
+  .app,
+  main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  .navigation,
+  .nav-container,
+  .container,
+  .section,
+  .page-header,
+  .hero-cinematic,
+  .hero-cinematic-inner,
+  .footer,
+  .footer-cta,
+  .footer-main,
+  .footer-bottom-bar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .nav-links.open {
+    width: min(100%, 360px) !important;
+    max-width: calc(100vw - 1.25rem) !important;
+    overflow-x: hidden;
+  }
+
+  .hero-actions,
+  .cta-btns,
+  .footer-cta-content,
+  .contact-form-modern,
+  .campaign-popup,
+  .popup-options {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-large,
+  .btn-hero-primary,
+  .btn-hero-secondary,
+  .nav-mobile-cta {
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    border-radius: 999px;
+  }
+
+  .section-heading,
+  .section-title,
+  .page-title,
+  .hero-headline,
+  .cta-heading,
+  .footer-cta h2 {
+    overflow-wrap: anywhere;
+  }
+
+  .testi-item,
+  .partner-card,
+  .service-expertise-card,
+  .value-card-agence,
+  .stat-item-agence,
+  .popup-option {
+    max-width: 100% !important;
+  }
+
 }
