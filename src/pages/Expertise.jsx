@@ -1,14 +1,13 @@
-import { useEffect } from 'react'
-import { ArrowRight, Backpack, BarChart3, Car, FileText, Monitor, Palette } from 'lucide-react'
+import { Backpack, BarChart3, Car, FileText, MapPin, Monitor, Palette, Target, Users } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import AccentText from '../components/AccentText'
+import InnerPageHero from '../components/InnerPageHero'
 
 const supportImages = {
   carFlyers: '/images/onekana/supports/car-flyers.png',
-  carMedia: '/images/onekana/supports/car-media.png',
   carScreen: '/images/onekana/supports/car-screen.png',
-  taxiTop: '/images/onekana/supports/taxi-top.png',
   tetiere: '/images/onekana/supports/tetiere.png',
-  backpackFlag: '/images/onekana/supports/backpack-flag.png',
   backpackMediaStreets: '/images/onekana/supports/backpack-media-streets.png',
   backpackMediaDooh: '/images/onekana/supports/backpack-media-dooh.png',
   carScreenDooh: '/images/onekana/supports/car-screen-dooh.png',
@@ -27,41 +26,26 @@ const handleMouseMoveSpotlight = (e) => {
 function Expertise() {
   const { t } = useLanguage()
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('active')
-        })
-      },
-      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
-    )
-
-    document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-stagger, .reveal-scale, .reveal-blur, .reveal-rotate').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+  useScrollReveal()
 
   const pillars = [
     {
       name: 'Onekana MediaMove',
       icon: Car,
-      image: supportImages.carMedia,
-      intro: 'Tous supports mobiles sur véhicules, pour rendre la marque visible pendant les trajets et les arrêts.',
+      image: supportImages.carFlyers,
+      intro: 'Supports disponibles sur véhicules, pour rendre la marque visible pendant les trajets et les arrêts.',
       supports: [
         { title: 'Car Flyers', image: supportImages.carFlyers, desc: 'Panneau de siège avec flyers intégrés pour une exposition captive dans le véhicule.' },
-        { title: 'Car Media', image: supportImages.carMedia, desc: 'Aimants de taxi pour transformer les véhicules en médias mobiles visibles.' },
         { title: 'Car Screen', image: supportImages.carScreen, desc: 'Écran taxi pour diffuser des contenus animés et vidéos en mobilité.' },
-        { title: 'Taxi Top', image: supportImages.taxiTop, desc: 'Enseigne lumineuse sur taxi pour une visibilité haute, urbaine et nocturne.' },
         { title: 'Têtière', image: supportImages.tetiere, desc: "Housse d'appui-tête publicitaire placée dans le champ de regard des passagers." },
       ],
     },
     {
       name: 'Onekana Streets',
       icon: Backpack,
-      image: supportImages.backpackFlag,
-      intro: 'Supports mobiles piétons, stands et animations de zones pour engager les publics là où ils circulent.',
+      image: supportImages.backpackMediaStreets,
+      intro: 'Écrans mobiles piétons, stands et animations de zones pour engager les publics là où ils circulent.',
       supports: [
-        { title: 'Backpack Flag', image: supportImages.backpackFlag, desc: 'Sac à dos drapeau avec distribution de flyers pour activer une zone précise.' },
         { title: 'Backpack Media', image: supportImages.backpackMediaStreets, desc: 'Sac à dos écran avec flyers pour combiner visibilité, mouvement et contact direct.' },
       ],
     },
@@ -105,34 +89,79 @@ function Expertise() {
     },
   ]
 
-  const process = [
-    { step: '01', title: 'Cadrage', desc: 'Objectifs, audience, zones de diffusion et formats adaptés.' },
-    { step: '02', title: 'Création', desc: 'Visuels, contenus vidéos et messages conçus pour le terrain.' },
-    { step: '03', title: 'Activation', desc: 'Déploiement des supports mobiles, digitaux ou piétons.' },
-    { step: '04', title: 'Reporting', desc: 'Retour terrain et statistiques pour mesurer et optimiser.' },
+  const campaignCanvas = [
+    {
+      icon: Target,
+      label: t({ fr: '01 / Intention', en: '01 / Intent' }),
+      title: t({ fr: 'Votre objectif', en: 'Your objective' }),
+      desc: t({ fr: 'Notoriété, lancement, trafic ou proximité : le rôle de la campagne guide tous les choix.', en: 'Awareness, launch, traffic or proximity: the campaign role guides every choice.' }),
+      options: t({ fr: ['Faire connaître', 'Faire agir'], en: ['Build awareness', 'Drive action'] }),
+    },
+    {
+      icon: Users,
+      label: t({ fr: '02 / Public', en: '02 / Audience' }),
+      title: t({ fr: 'Les personnes à toucher', en: 'The people to reach' }),
+      desc: t({ fr: 'Nous identifions les habitudes, les trajets et les moments où le message sera vraiment utile.', en: 'We identify habits, journeys and moments when the message will truly matter.' }),
+      options: t({ fr: ['Flux urbains', 'Communautés'], en: ['Urban flows', 'Communities'] }),
+    },
+    {
+      icon: MapPin,
+      label: t({ fr: '03 / Présence', en: '03 / Presence' }),
+      title: t({ fr: 'Le mix de supports', en: 'The media mix' }),
+      desc: t({ fr: 'Véhicules, agents piétons, écrans et création sont combinés selon le contexte réel.', en: 'Vehicles, street teams, screens and creative assets are combined for the real context.' }),
+      options: t({ fr: ['Mobile', 'Terrain', 'Digital'], en: ['Mobile', 'Field', 'Digital'] }),
+    },
+    {
+      icon: BarChart3,
+      label: t({ fr: '04 / Preuves', en: '04 / Evidence' }),
+      title: t({ fr: 'Les signaux à suivre', en: 'Signals to track' }),
+      desc: t({ fr: 'Les observations terrain et indicateurs utiles sont définis avant le lancement, pas après.', en: 'Useful field observations and indicators are defined before launch, not after.' }),
+      options: t({ fr: ['Reporting', 'Optimisation'], en: ['Reporting', 'Optimization'] }),
+    },
   ]
 
   return (
-    <div className="page">
-      <section className="page-header page-header-expertise">
-        <div className="cinematic-grid-bg" />
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="page-label reveal-up active">{t({ fr: 'Expertise', en: 'Expertise' })}</span>
-          <h1 className="page-title reveal-up active" style={{ transitionDelay: '0.1s' }}>{t({ fr: "Pôles d'expertise", en: 'Expertise Hubs' })}</h1>
-          <p className="page-subtitle reveal-up active" style={{ transitionDelay: '0.2s' }}>
-            {t({
-              fr: 'Des supports mobiles, digitaux, créatifs et mesurables pour faire vivre votre publicité à Lubumbashi.',
-              en: 'Mobile, digital, creative and measurable media that bring your advertising to life in Lubumbashi.'
-            })}
-          </p>
+    <div className="page expertise-page">
+      <InnerPageHero
+        variant="expertise"
+        eyebrow={t({ fr: 'Expertise', en: 'Expertise' })}
+        title={t({
+          fr: [{ text: 'Des supports qui ' }, { text: 'prennent la ville.', accent: true }],
+          en: [{ text: 'Media that ' }, { text: 'moves through the city.', accent: true }],
+        })}
+        description={t({
+          fr: ['Mobile, terrain, digital et création : un écosystème conçu pour ', { text: 'faire circuler votre message.', accent: true }],
+          en: ['Mobile, field, digital and creative: an ecosystem built to ', { text: 'move your message.', accent: true }],
+        })}
+        meta={t({ fr: ['6 pôles', '13 supports', '1 réseau'], en: ['6 hubs', '13 formats', '1 network'] })}
+      >
+        <div className="expertise-hero-stack">
+          <figure className="expertise-hero-tile tile-car">
+            <img src={supportImages.carFlyers} alt="Onekana MediaMove" />
+            <figcaption>MediaMove</figcaption>
+          </figure>
+          <figure className="expertise-hero-tile tile-street">
+            <img src={supportImages.backpackMediaStreets} alt="Onekana Streets" />
+            <figcaption>Streets</figcaption>
+          </figure>
+          <figure className="expertise-hero-tile tile-screen">
+            <img src={supportImages.backpackMediaDooh} alt="Onekana DOOH" />
+            <figcaption>DOOH</figcaption>
+          </figure>
         </div>
-      </section>
+      </InnerPageHero>
 
       <section className="section expertise-hubs-section">
         <div className="container">
           <div className="section-header reveal-rotate">
-            <span className="section-label">Supports & services</span>
-            <h2 className="section-title">Chaque solution a son contexte visuel</h2>
+            <span className="section-label">{t({ fr: 'Supports & services', en: 'Media & services' })}</span>
+            <h2 className="section-title">{t({ fr: 'Chaque solution joue un rôle précis', en: 'Every solution has a precise role' })}</h2>
+            <p className="section-intro accent-description">
+              <AccentText parts={t({
+                fr: ['Choisissez le contexte, nous construisons ', { text: 'la présence qui lui correspond.', accent: true }],
+                en: ['Choose the context, we build ', { text: 'the presence that fits it.', accent: true }],
+              })} />
+            </p>
           </div>
 
           <div className="expertise-hubs-list">
@@ -166,31 +195,37 @@ function Expertise() {
             ))}
           </div>
 
-          <p className="visual-disclaimer reveal-up">
-            Les visuels générés servent d'inspiration pour équilibrer l'esthétique générale et les couleurs. Ils ne constituent pas des photos contractuelles.
-          </p>
         </div>
       </section>
 
-      <section className="section section-alt">
+      <section className="section section-alt expertise-method-section">
         <div className="container">
-          <div className="section-header reveal-blur">
-            <span className="section-label">Méthodologie</span>
-            <h2 className="section-title">Comment la publicité se fait avec Onekana</h2>
-          </div>
-          <div className="process-expertise-grid reveal-stagger">
-            {process.map((item, index) => (
-              <div key={item.step} className="process-expertise-card">
-                <span className="process-expertise-step">{item.step}</span>
-                <h3 className="process-expertise-title">{item.title}</h3>
-                <p className="process-expertise-description">{item.desc}</p>
-                {index < process.length - 1 && (
-                  <div className="process-connector">
-                    <ArrowRight size={20} strokeWidth={1.5} />
-                  </div>
-                )}
+          <div className="expertise-method-layout">
+            <div className="expertise-method-intro reveal-left">
+              <span className="section-label">{t({ fr: 'Méthodologie', en: 'Methodology' })}</span>
+              <h2 className="section-title">{t({ fr: 'Une architecture de campagne, pas une recette figée', en: 'A campaign architecture, not a fixed recipe' })}</h2>
+              <p>{t({ fr: 'La méthode Onekana met quatre décisions sur la même table. Leur combinaison construit un dispositif adapté à votre marque et à la ville.', en: 'The Onekana method puts four decisions on the same table. Their combination builds a campaign suited to your brand and the city.' })}</p>
+              <div className="expertise-method-summary">
+                <strong>{t({ fr: '1 brief', en: '1 brief' })}</strong>
+                <span>{t({ fr: '4 angles de décision', en: '4 decision angles' })}</span>
               </div>
-            ))}
+            </div>
+
+            <div className="expertise-canvas reveal-stagger">
+              {campaignCanvas.map((item) => (
+                <article key={item.title} className="expertise-canvas-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
+                  <div className="expertise-canvas-card-head">
+                    <div className="expertise-canvas-icon"><item.icon size={24} strokeWidth={1.7} /></div>
+                    <span>{item.label}</span>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                  <div className="expertise-canvas-options">
+                    {item.options.map((option) => <span key={option}>{option}</span>)}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

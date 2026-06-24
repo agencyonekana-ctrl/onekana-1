@@ -3,48 +3,10 @@ import { Link } from 'react-router-dom'
 import {
   Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle,
   Car, Store, Smartphone, Target, ArrowRight, Backpack, Play,
-  MousePointer, Sun, Check, Star, Download, FileText, ChevronDown,
-  TrendingUp, Users, Award, Zap, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet, Monitor
+  MousePointer, Sun, Check, Star, FileText,
+  TrendingUp, Users, Award, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet, Monitor
 } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
-
-/* ─── Brochure Dropdown ─── */
-const BrochureDropdown = () => {
-  const [open, setOpen] = useState(false)
-  const ref = useRef(null)
-
-  const brochures = [
-    { label: 'Présentation commerciale', file: '/brochures/03_2025_12_Présentation_commerciale_ Onekana.pptx.pdf' },
-  ]
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  return (
-    <div className="brochure-dropdown" ref={ref}>
-      <button className="btn-hero-primary" onClick={() => setOpen(v => !v)} aria-expanded={open}>
-        <Download size={18} strokeWidth={2} />
-        Télécharger nos brochures
-        <ChevronDown size={16} strokeWidth={2} className={`brochure-chevron${open ? ' open' : ''}`} />
-      </button>
-      {open && (
-        <div className="brochure-menu">
-          {brochures.map((b, i) => (
-            <a key={i} href={b.file} download className="brochure-item" onClick={() => setOpen(false)}>
-              <FileText size={16} strokeWidth={1.5} />
-              {b.label}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
 
 /* ─── Magnetic Button ─── */
 const MagneticBtn = ({ children, className, to, ...props }) => {
@@ -249,7 +211,7 @@ const Hero = () => {
         </h1>
 
         <p className="hero-lead reveal-up active" style={{ transitionDelay: '0.15s' }}>
-          {t({ fr: 'Marketing urbain & mobile — visible, mémorisé, mesurable.', en: 'Urban & mobile marketing — visible, memorized, measurable.' })}
+          {t({ fr: 'Réseaux de Publicité urbaine — soyez vu, remarqué et mémorisé.', en: 'Urban & mobile advertising — visible, memorized, measurable.' })}
         </p>
 
         {/* Trustpilot Block */}
@@ -268,9 +230,6 @@ const Hero = () => {
         </div>
 
         <div className="hero-actions reveal-up active" style={{ transitionDelay: '0.3s' }}>
-          <MagneticBtn className="magnetic-wrap" style={{ position: 'relative', zIndex: 100 }}>
-            <BrochureDropdown />
-          </MagneticBtn>
           <MagneticBtn to="/expertise" className="btn-hero-secondary magnetic-wrap" style={{ position: 'relative', zIndex: 1 }}>
             <ArrowRight size={16} /> {t({ fr: 'Voir nos supports', en: 'View our media' })}
           </MagneticBtn>
@@ -541,11 +500,8 @@ const WhyLubumbashi = () => {
 
 const SUPPORT_IMAGES = {
   carFlyers: '/images/onekana/supports/car-flyers.png',
-  carMedia: '/images/onekana/supports/car-media.png',
   carScreen: '/images/onekana/supports/car-screen.png',
-  taxiTop: '/images/onekana/supports/taxi-top.png',
   tetiere: '/images/onekana/supports/tetiere.png',
-  backpackFlag: '/images/onekana/supports/backpack-flag.png',
   backpackMediaStreets: '/images/onekana/supports/backpack-media-streets.png',
   backpackMediaDooh: '/images/onekana/supports/backpack-media-dooh.png',
   carScreenDooh: '/images/onekana/supports/car-screen-dooh.png',
@@ -562,14 +518,14 @@ const PillarsSection = () => {
     {
       icon: Car,
       title: 'Onekana MediaMove',
-      image: SUPPORT_IMAGES.carMedia,
-      desc: 'Tous supports mobiles sur véhicules: taxis, sièges, écrans embarqués, têtières et enseignes lumineuses.',
+      image: SUPPORT_IMAGES.carFlyers,
+      desc: 'Supports mobiles disponibles sur véhicules: panneaux de siège, écrans embarqués et têtières.',
     },
     {
       icon: Backpack,
       title: 'Onekana Streets',
-      image: SUPPORT_IMAGES.backpackFlag,
-      desc: 'Supports mobiles piétons, stands et animations de zones pour créer le contact direct avec le public.',
+      image: SUPPORT_IMAGES.backpackMediaStreets,
+      desc: 'Écrans mobiles piétons, stands et animations de zones pour créer le contact direct avec le public.',
     },
     {
       icon: Monitor,
@@ -621,9 +577,6 @@ const PillarsSection = () => {
             </article>
           ))}
         </div>
-        <p className="visual-disclaimer pillar-reveal reveal-up">
-          Visuels générés à vocation d'inspiration pour équilibrer l'esthétique générale, notamment les couleurs.
-        </p>
       </div>
     </section>
   )
@@ -634,11 +587,8 @@ const SupportsShowcase = () => {
 
   const supports = [
     { group: 'Onekana MediaMove', title: 'Car Flyers', image: SUPPORT_IMAGES.carFlyers, desc: 'Panneau de siège avec espace flyers pour capter les passagers pendant le trajet.' },
-    { group: 'Onekana MediaMove', title: 'Car Media', image: SUPPORT_IMAGES.carMedia, desc: 'Aimants taxi pour transformer les véhicules en supports de visibilité mobile.' },
     { group: 'Onekana MediaMove', title: 'Car Screen', image: SUPPORT_IMAGES.carScreen, desc: 'Écran taxi pour diffuser des contenus dynamiques dans les déplacements urbains.' },
-    { group: 'Onekana MediaMove', title: 'Taxi Top', image: SUPPORT_IMAGES.taxiTop, desc: 'Enseigne lumineuse placée sur taxi pour une présence forte de jour comme de nuit.' },
     { group: 'Onekana MediaMove', title: 'Têtière', image: SUPPORT_IMAGES.tetiere, desc: "Housse d'appui-tête publicitaire, visible à hauteur de regard pendant le trajet." },
-    { group: 'Onekana Streets', title: 'Backpack Flag', image: SUPPORT_IMAGES.backpackFlag, desc: 'Sac à dos drapeau avec distribution de flyers pour les activations de zones.' },
     { group: 'Onekana Streets', title: 'Backpack Media', image: SUPPORT_IMAGES.backpackMediaStreets, desc: 'Sac à dos écran avec distribution de flyers pour une présence mobile et animée.' },
     { group: 'Onekana DOOH', title: 'Backpack Media DOOH', image: SUPPORT_IMAGES.backpackMediaDooh, desc: 'Écran porté pour diffuser des messages digitaux dans les lieux à fort passage.' },
     { group: 'Onekana DOOH', title: 'Car Screen DOOH', image: SUPPORT_IMAGES.carScreenDooh, desc: 'Écran embarqué taxi pour une campagne vidéo visible en mobilité.' },
@@ -1022,44 +972,6 @@ const Testimonials = () => {
 }
 
 /* ══════════════════════════════════════════════════════════
-   CTA BANNER
-   ══════════════════════════════════════════════════════════ */
-const CTABanner = () => {
-  useScrollReveal('.cta-reveal')
-  const { t } = useLanguage()
-
-  return (
-    <section className="cta-banner section" style={{ position: 'relative', overflow: 'hidden' }}>
-      <div
-        style={{
-          position: 'absolute', inset: 0, zIndex: 0,
-          background: 'radial-gradient(circle at 20% 30%, rgba(234, 0, 1, 0.04) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(234, 0, 1, 0.03) 0%, transparent 50%)',
-          pointerEvents: 'none'
-        }}
-      />
-      <div className="cta-grid-pattern" style={{ zIndex: 1 }} />
-      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="cta-inner cta-reveal reveal-up">
-          <Zap size={48} strokeWidth={1} className="cta-icon" />
-          <h2 className="cta-heading">{t({ fr: "Prêt à dominer l'espace urbain ?", en: "Ready to dominate the urban space?" })}</h2>
-          <p className="cta-sub">{t({ fr: 'Lancez votre campagne et touchez votre audience là où elle vit.', en: 'Launch your campaign and reach your audience where they live.' })}</p>
-          <div className="cta-btns">
-            <MagneticBtn className="magnetic-wrap">
-              <Link to="/contact" className="btn btn-primary btn-large">
-                {t({ fr: 'Commencer une campagne', en: 'Start a campaign' })} <ArrowRight size={18} />
-              </Link>
-            </MagneticBtn>
-            <Link to="/expertise" className="btn-ghost">
-              {t({ fr: 'Voir nos services', en: 'View our services' })}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
    HOME PAGE
    ══════════════════════════════════════════════════════════ */
 function Home() {
@@ -1070,7 +982,6 @@ function Home() {
       <AboutPreview />
       <PillarsSection />
       <SupportsShowcase />
-      <CTABanner />
     </>
   )
 }

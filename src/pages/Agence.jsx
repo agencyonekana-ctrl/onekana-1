@@ -3,20 +3,21 @@ import { Link } from 'react-router-dom'
 import {
   Award,
   BarChart3,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle,
   Eye,
-  Layers,
   Lightbulb,
   MapPin,
-  Megaphone,
-  MousePointer2,
   Rocket,
-  Route,
   Sparkles,
   Target,
   Users,
 } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import AccentText from '../components/AccentText'
+import InnerPageHero from '../components/InnerPageHero'
 
 const handleMouseMoveSpotlight = (e) => {
   const rect = e.currentTarget.getBoundingClientRect()
@@ -29,29 +30,45 @@ const handleMouseMoveSpotlight = (e) => {
 function Agence() {
   const { t } = useLanguage()
   const [activeFocus, setActiveFocus] = useState('terrain')
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0)
+
+  useScrollReveal()
+
+  const heroSlides = [
+    {
+      image: '/images/onekana/supports/car-flyers.png',
+      label: 'Onekana MediaMove',
+      alt: t({ fr: 'Activation publicitaire mobile Onekana à Lubumbashi', en: 'Onekana mobile advertising activation in Lubumbashi' }),
+    },
+    {
+      image: '/images/onekana/streets-dooh.png',
+      label: 'Onekana Streets & DOOH',
+      alt: t({ fr: 'Activation piétonne et digitale Onekana à Lubumbashi', en: 'Onekana street and digital activation in Lubumbashi' }),
+    },
+    {
+      image: '/images/onekana/studio-connect-life.png',
+      label: 'Onekana Studio & Connect',
+      alt: t({ fr: 'Équipe créative et reporting Onekana', en: 'Onekana creative and reporting team' }),
+    },
+  ]
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('active')
-        })
-      },
-      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
-    )
+    const timer = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % heroSlides.length)
+    }, 4800)
+    return () => window.clearInterval(timer)
+  }, [heroSlides.length])
 
-    document
-      .querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-stagger, .reveal-scale, .reveal-blur, .reveal-rotate, .reveal-wipe')
-      .forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+  const changeHeroSlide = (direction) => {
+    setActiveHeroSlide((current) => (current + direction + heroSlides.length) % heroSlides.length)
+  }
 
   const focusItems = [
     {
       id: 'terrain',
       label: t({ fr: 'Terrain', en: 'Field' }),
       icon: MapPin,
-      image: '/images/onekana/mediamove.png',
+      image: '/images/onekana/supports/car-flyers.png',
       title: t({ fr: 'Nous partons des flux réels', en: 'We start from real movement' }),
       text: t({
         fr: 'Quartiers, taxis, lieux de passage, commerces et habitudes locales guident chaque dispositif.',
@@ -102,12 +119,12 @@ function Agence() {
   const processSteps = [
     {
       icon: Eye,
-      title: t({ fr: 'Observer', en: 'Observe' }),
+      title: t({ fr: 'Ecouter', en: 'Listen' }),
       text: t({ fr: 'Lire les zones, les flux et les habitudes avant de choisir le support.', en: 'Read zones, flows and habits before choosing the medium.' }),
     },
     {
       icon: Lightbulb,
-      title: t({ fr: 'Créer', en: 'Create' }),
+      title: t({ fr: 'Concevoir', en: 'Plan' }),
       text: t({ fr: 'Adapter le message aux véhicules, à la rue, aux écrans et au contact direct.', en: 'Adapt the message to vehicles, streets, screens and direct contact.' }),
     },
     {
@@ -118,45 +135,41 @@ function Agence() {
     {
       icon: BarChart3,
       title: t({ fr: 'Mesurer', en: 'Measure' }),
-      text: t({ fr: 'Rassembler les retours, les chiffres et les apprentissages pour améliorer.', en: 'Collect feedback, numbers and learnings to improve.' }),
+      text: t({ fr: 'Rassembler les retours, les chiffres et les retours d\'expériences pour améliorer.', en: 'Collect feedback, numbers and learnings to improve.' }),
     },
   ]
 
   const values = [
     {
-      icon: Route,
-      title: t({ fr: 'Terrain', en: 'Field' }),
-      metric: t({ fr: 'Ville réelle', en: 'Real city' }),
+      icon: Lightbulb,
+      title: t({ fr: 'Créativité', en: 'Creativity' }),
       description: t({
-        fr: 'Nous concevons les campagnes pour les trajets, les quartiers et les lieux vécus à Lubumbashi.',
-        en: 'We design campaigns for routes, neighborhoods and lived spaces in Lubumbashi.',
+        fr: 'Nous repoussons les limites pour créer des designs uniques et mémorables.',
+        en: 'We push boundaries to create unique and memorable designs.',
       }),
     },
     {
-      icon: Sparkles,
-      title: t({ fr: 'Créativité utile', en: 'Useful creativity' }),
-      metric: t({ fr: 'Compris vite', en: 'Fast clarity' }),
+      icon: Award,
+      title: t({ fr: 'Excellence', en: 'Excellence' }),
       description: t({
-        fr: 'Le beau compte, mais le message doit surtout être clair, mémorisable et adapté au support.',
-        en: 'Beauty matters, but the message must be clear, memorable and adapted to the medium.',
+        fr: 'Chaque projet est une opportunité de dépasser les attentes.',
+        en: 'Every project is an opportunity to exceed expectations.',
       }),
     },
     {
       icon: Users,
-      title: t({ fr: 'Proximité', en: 'Proximity' }),
-      metric: t({ fr: 'Équipe locale', en: 'Local team' }),
+      title: t({ fr: 'Collaboration', en: 'Collaboration' }),
       description: t({
-        fr: 'Nous restons proches des marques, des agents terrain et des réalités de la ville.',
-        en: 'We stay close to brands, field agents and the realities of the city.',
+        fr: 'Nous travaillons main dans la main avec nos clients pour des résultats optimaux.',
+        en: 'We work hand in hand with our clients to achieve the best results.',
       }),
     },
     {
-      icon: BarChart3,
-      title: t({ fr: 'Mesure', en: 'Measure' }),
-      metric: t({ fr: 'Retours lisibles', en: 'Readable returns' }),
+      icon: Rocket,
+      title: t({ fr: 'Innovation', en: 'Innovation' }),
       description: t({
-        fr: 'Les observations et chiffres donnent une base concrète pour décider la suite.',
-        en: 'Observations and numbers provide a concrete base for the next decision.',
+        fr: 'Nous restons à la pointe des dernières technologies et tendances.',
+        en: 'We stay at the forefront of the latest technologies and trends.',
       }),
     },
   ]
@@ -170,27 +183,49 @@ function Agence() {
 
   return (
     <div className="page agence-page">
-      <section className="page-header page-header-agence agence-hero">
-        <div className="cinematic-grid-bg" />
-        <div className="page-header-objects" aria-hidden="true">
-          <Megaphone className="ph-obj ph-obj-1" strokeWidth={1.2} />
-          <MousePointer2 className="ph-obj ph-obj-2" strokeWidth={1.2} />
-          <Layers className="ph-obj ph-obj-3" strokeWidth={1.2} />
-          <MapPin className="ph-obj ph-obj-4" strokeWidth={1.2} />
+      <InnerPageHero
+        variant="agency"
+        eyebrow={t({ fr: "L'Agence", en: 'The Agency' })}
+        title={t({
+          fr: [{ text: 'La ville devient ' }, { text: 'votre média.', accent: true }],
+          en: [{ text: 'The city becomes ' }, { text: 'your media.', accent: true }],
+        })}
+        description={t({
+          fr: ['Une agence ancrée à ', { text: 'Lubumbashi', accent: true }, ', où stratégie, création et terrain avancent ensemble.'],
+          en: ['An agency rooted in ', { text: 'Lubumbashi', accent: true }, ', where strategy, creation and field execution move together.'],
+        })}
+        meta={t({ fr: ['Terrain', 'Création', 'Mesure'], en: ['Field', 'Creation', 'Measure'] })}
+      >
+        <div className="agency-hero-visual">
+          <img
+            key={heroSlides[activeHeroSlide].image}
+            src={heroSlides[activeHeroSlide].image}
+            alt={heroSlides[activeHeroSlide].alt}
+            className="agency-hero-slide"
+          />
+          <div className="agency-hero-stamp"><MapPin size={18} /> Lubumbashi</div>
+          <div className="agency-hero-signal"><span />{t({ fr: 'Présence active', en: 'Live presence' })}</div>
+          <div className="agency-hero-caption" aria-live="polite">
+            <small>{String(activeHeroSlide + 1).padStart(2, '0')} / {String(heroSlides.length).padStart(2, '0')}</small>
+            <strong>{heroSlides[activeHeroSlide].label}</strong>
+          </div>
+          <div className="agency-hero-controls">
+            <button type="button" onClick={() => changeHeroSlide(-1)} aria-label={t({ fr: 'Image précédente', en: 'Previous image' })}><ChevronLeft size={20} /></button>
+            <div className="agency-hero-dots">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={slide.image}
+                  type="button"
+                  className={activeHeroSlide === index ? 'active' : ''}
+                  onClick={() => setActiveHeroSlide(index)}
+                  aria-label={`${t({ fr: 'Afficher', en: 'Show' })} ${slide.label}`}
+                />
+              ))}
+            </div>
+            <button type="button" onClick={() => changeHeroSlide(1)} aria-label={t({ fr: 'Image suivante', en: 'Next image' })}><ChevronRight size={20} /></button>
+          </div>
         </div>
-        <div className="container agence-hero-inner">
-          <span className="page-label reveal-up active">{t({ fr: "L'Agence", en: 'The Agency' })}</span>
-          <h1 className="page-title reveal-up active" style={{ transitionDelay: '0.1s' }}>
-            {t({ fr: 'Onekana fait vivre la publicité dans la ville', en: 'Onekana brings advertising into the city' })}
-          </h1>
-          <p className="page-subtitle reveal-up active" style={{ transitionDelay: '0.2s' }}>
-            {t({
-              fr: 'Une agence urbaine, mobile, créative et mesurable, pensée pour les marques qui veulent être vues à Lubumbashi.',
-              en: 'An urban, mobile, creative and measurable agency built for brands that want to be seen in Lubumbashi.',
-            })}
-          </p>
-        </div>
-      </section>
+      </InnerPageHero>
 
       <section className="agence-focus-section section">
         <div className="container">
@@ -200,11 +235,11 @@ function Agence() {
               <h2 className="section-title">
                 {t({ fr: 'Transformer les rues, les véhicules et les écrans en points de contact.', en: 'Turn streets, vehicles and screens into contact points.' })}
               </h2>
-              <p className="about-text">
-                {t({
-                  fr: "Onekana relie stratégie, création, activation terrain et reporting. L'agence ne raconte pas seulement une marque: elle la rend visible là où les gens circulent, attendent et décident.",
-                  en: 'Onekana connects strategy, creation, field activation and reporting. The agency does not only tell a brand story: it makes it visible where people move, wait and decide.',
-                })}
+              <p className="about-text accent-description">
+                <AccentText parts={t({
+                  fr: ['Onekana relie stratégie, création, activation terrain et reporting. La marque devient ', { text: 'visible dans les vrais mouvements de la ville.', accent: true }],
+                  en: ['Onekana connects strategy, creation, field activation and reporting. The brand becomes ', { text: 'visible in the city’s real movement.', accent: true }],
+                })} />
               </p>
 
               <div className="agence-focus-tabs" role="tablist" aria-label={t({ fr: 'Axes Onekana', en: 'Onekana focus areas' })}>
@@ -250,7 +285,9 @@ function Agence() {
             <span className="section-label">{t({ fr: 'Notre façon de faire', en: 'How we work' })}</span>
             <h2 className="section-title">{t({ fr: 'Un parcours simple, du terrain au reporting', en: 'A simple path from field to reporting' })}</h2>
           </div>
-          <div className="agence-process-grid reveal-stagger">
+          <div className="agence-process-track reveal-stagger">
+            <div className="agence-process-line" aria-hidden="true" />
+            <div className="agence-process-grid">
             {processSteps.map((step, index) => (
               <article key={step.title} className="agence-process-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
                 <span className="process-index">{String(index + 1).padStart(2, '0')}</span>
@@ -259,6 +296,7 @@ function Agence() {
                 <p>{step.text}</p>
               </article>
             ))}
+            </div>
           </div>
         </div>
       </section>
@@ -266,8 +304,8 @@ function Agence() {
       <section className="agence-values-section section">
         <div className="container">
           <div className="section-header reveal-rotate">
-            <span className="section-label">{t({ fr: 'Ce qui nous définit', en: 'What defines us' })}</span>
-            <h2 className="section-title">{t({ fr: 'Des valeurs qui se voient sur le terrain', en: 'Values you can see in the field' })}</h2>
+            <span className="section-label">{t({ fr: 'Nos valeurs', en: 'Our values' })}</span>
+            <h2 className="section-title">{t({ fr: 'Ce qui nous définit', en: 'What defines us' })}</h2>
           </div>
           <div className="agence-values-grid reveal-stagger">
             {values.map((value) => (
@@ -275,7 +313,6 @@ function Agence() {
                 <div className="value-icon">
                   <value.icon size={28} strokeWidth={1.6} />
                 </div>
-                <span>{value.metric}</span>
                 <h3>{value.title}</h3>
                 <p>{value.description}</p>
               </article>

@@ -1,135 +1,88 @@
-import { useState, useEffect } from 'react'
-import { Send, Mail, Phone, MapPin, Clock, Instagram, Linkedin, Twitter, Dribbble } from 'lucide-react'
-import { getCampaignTypes } from '../services/apiService'
+import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { ChevronDown, Clock, Dribbble, Instagram, Linkedin, Mail, MapPin, MessageCircle, Phone, Send, Sparkles, Twitter } from 'lucide-react'
 import { PHP_ENDPOINTS } from '../config/api'
 import { useLanguage } from '../hooks/useLanguage'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import AccentText from '../components/AccentText'
+import InnerPageHero from '../components/InnerPageHero'
 
 function Contact() {
   const { t } = useLanguage()
+  const [searchParams] = useSearchParams()
+  const objectiveSubjects = t({
+    fr: {
+      visibilite: 'Campagne de visibilité de marque',
+      lancement: 'Lancement de produit ou service',
+      activation: 'Activation terrain',
+    },
+    en: {
+      visibilite: 'Brand visibility campaign',
+      lancement: 'Product or service launch',
+      activation: 'Field activation',
+    },
+  })
+  const initialSubject = objectiveSubjects[searchParams.get('objectif')] || ''
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     company: '',
-    campaignTypes: [],
-    budget: '',
-    message: ''
+    subject: initialSubject,
+    pole: '',
+    budgetRange: '',
+    customBudget: '',
+    message: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [formErrors, setFormErrors] = useState({})
-  const [campaignTypes, setCampaignTypes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [openFaq, setOpenFaq] = useState(0)
+  useScrollReveal()
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active')
-          }
-        })
-      },
-      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
-    )
+  const poleOptions = ['Onekana MediaMove', 'Onekana Streets', 'Onekana DOOH', 'Onekana Connect', 'Onekana Studio', 'Onekana Life']
+  const budgetOptions = t({
+    fr: [
+      { value: 'under-250', label: 'Moins de 250 USD' },
+      { value: '250-500', label: '250 - 500 USD' },
+      { value: '500-1000', label: '500 - 1 000 USD' },
+      { value: '1000-1500', label: '1 000 - 1 500 USD' },
+      { value: 'over-1500', label: 'Plus de 1 500 USD' },
+      { value: 'undecided', label: 'À définir' },
+      { value: 'custom', label: 'Montant personnalisé' },
+    ],
+    en: [
+      { value: 'under-250', label: 'Under 250 USD' },
+      { value: '250-500', label: '250 - 500 USD' },
+      { value: '500-1000', label: '500 - 1,000 USD' },
+      { value: '1000-1500', label: '1,000 - 1,500 USD' },
+      { value: 'over-1500', label: 'Over 1,500 USD' },
+      { value: 'undecided', label: 'To be defined' },
+      { value: 'custom', label: 'Custom amount' },
+    ],
+  })
 
-    document.querySelectorAll('.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-stagger, .reveal-scale, .reveal-blur, .reveal-rotate, .reveal-wipe').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
-
-  // Fetch campaign types from API
-  useEffect(() => {
-    const fetchCampaignTypes = async () => {
-      try {
-        setLoading(true)
-        const response = await getCampaignTypes()
-        console.log('API Response:', response)
-
-        if (response && response.data) {
-          setCampaignTypes(response.data)
-        } else if (Array.isArray(response)) {
-          // Si la réponse est directement un tableau
-          setCampaignTypes(response)
-        } else {
-          setCampaignTypes([])
-        }
-      } catch (err) {
-        console.error('Error fetching campaign types:', err)
-        setError(err.message)
-        setCampaignTypes([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCampaignTypes()
-  }, [])
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-
-    if (name === 'campaignTypes') {
-      // Handle multiple selection
-      const selectedOptions = Array.from(e.target.selectedOptions, option => option.value)
-      setFormData({
-        ...formData,
-        campaignTypes: selectedOptions
-      })
-    } else {
-      setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? checked : value
-      })
-    }
-
-    // Clear error when user starts typing
-    if (formErrors[name]) {
-      setFormErrors({
-        ...formErrors,
-        [name]: ''
-      })
-    }
-  }
-
-  const handleCampaignTypeToggle = (campaignType) => {
-    const isSelected = formData.campaignTypes.includes(campaignType.id)
-    const newSelection = isSelected
-      ? formData.campaignTypes.filter(id => id !== campaignType.id)
-      : [...formData.campaignTypes, campaignType.id]
-
-    setFormData({
-      ...formData,
-      campaignTypes: newSelection
-    })
-  }
-
-  const getTotalPrice = () => {
-    return formData.campaignTypes.reduce((total, campaignTypeId) => {
-      const campaignType = campaignTypes.find(ct => ct.id === campaignTypeId)
-      if (campaignType && campaignType.budget_min) {
-        return total + parseFloat(campaignType.budget_min)
-      }
-      return total
-    }, 0)
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setFormData((current) => ({ ...current, [name]: value }))
+    if (formErrors[name]) setFormErrors((current) => ({ ...current, [name]: '' }))
   }
 
   const validateForm = () => {
     const errors = {}
-    if (!formData.name.trim()) {
-      errors.name = 'Votre nom est requis'
+    if (!formData.name.trim()) errors.name = t({ fr: 'Votre nom est requis', en: 'Your name is required' })
+    if (!formData.email.trim()) errors.email = t({ fr: 'Votre email est requis', en: 'Your email is required' })
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = t({ fr: 'Email invalide', en: 'Invalid email' })
+    if (!formData.subject.trim()) errors.subject = t({ fr: 'L’objet de la demande est requis', en: 'The request subject is required' })
+    if (!formData.pole) errors.pole = t({ fr: 'Choisissez un pôle Onekana', en: 'Choose a Onekana hub' })
+    if (formData.budgetRange === 'custom' && (!formData.customBudget || Number(formData.customBudget) <= 0)) {
+      errors.customBudget = t({ fr: 'Indiquez un montant valide', en: 'Enter a valid amount' })
     }
-    if (!formData.email.trim()) {
-      errors.email = 'Votre email est requis'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Email invalide'
-    }
-    if (!formData.message.trim()) {
-      errors.message = 'Votre message est requis'
-    }
+    if (!formData.message.trim()) errors.message = t({ fr: 'Votre message est requis', en: 'Your message is required' })
     return errors
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors)
@@ -137,279 +90,176 @@ function Contact() {
     }
 
     try {
-      // Prepare the contact message data
-      const contactData = {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.company ? `Contact - ${formData.company}` : 'Contact',
-        message: formData.message,
-        status: 'unread'
-      }
-
-      // Send the contact message to the server
+      setSubmitting(true)
+      const selectedBudget = budgetOptions.find((option) => option.value === formData.budgetRange)
+      const budgetLabel = formData.budgetRange === 'custom'
+        ? `${formData.customBudget} USD`
+        : selectedBudget?.label || t({ fr: 'Non renseigné', en: 'Not provided' })
+      const structuredMessage = [
+        `${t({ fr: 'Entreprise', en: 'Company' })}: ${formData.company || '-'}`,
+        `${t({ fr: 'Pôle', en: 'Hub' })}: ${formData.pole}`,
+        `${t({ fr: 'Budget indicatif', en: 'Indicative budget' })}: ${budgetLabel}`,
+        '',
+        `${t({ fr: 'Message', en: 'Message' })}:`,
+        formData.message,
+      ].join('\n')
       const response = await fetch(PHP_ENDPOINTS.CONTACT_MESSAGE_POST, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: `[${formData.pole}] ${formData.subject.trim()}`,
+          message: structuredMessage,
+          status: 'unread',
+        }),
       })
 
-      if (response.ok) {
-        // Success
-        setSubmitted(true)
-        // Reset form after success
-        setTimeout(() => {
-          setSubmitted(false)
-          setFormData({
-            name: '',
-            email: '',
-            company: '',
-            campaignTypes: [],
-            budget: '',
-            message: ''
-          })
-        }, 3000)
-      } else {
-        // Handle server error
-        const errorData = await response.json()
-        setFormErrors({ submit: errorData.message || 'Une erreur est survenue lors de l\'envoi du message' })
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || t({ fr: 'Une erreur est survenue lors de l’envoi.', en: 'An error occurred while sending.' }))
       }
+
+      setSubmitted(true)
+      setFormData({ name: '', email: '', company: '', subject: '', pole: '', budgetRange: '', customBudget: '', message: '' })
     } catch (error) {
-      console.error('Error submitting contact form:', error)
-      setFormErrors({ submit: 'Une erreur réseau est survenue. Veuillez réessayer.' })
+      setFormErrors({ submit: error.message || t({ fr: 'Une erreur réseau est survenue. Veuillez réessayer.', en: 'A network error occurred. Please try again.' }) })
+    } finally {
+      setSubmitting(false)
     }
   }
 
-  const services = [
-    'Stratégie Digitale',
-    'Design UI/UX',
-    'Développement Web',
-    'Branding',
-    'Motion Design',
-    'Autre'
-  ]
-
-
+  const faqs = t({
+    fr: [
+      { question: 'Avec quels supports peut-on lancer une campagne ?', answer: 'Onekana combine véhicules, dispositifs piétons, écrans mobiles, création et reporting selon votre objectif et les zones à couvrir.' },
+      { question: 'Comment choisissez-vous les zones de diffusion ?', answer: 'Nous observons les flux, les habitudes de déplacement et les moments de présence utiles avant de proposer un dispositif.' },
+      { question: 'Pouvez-vous créer les visuels de campagne ?', answer: 'Oui. Onekana Studio conçoit les affiches, flyers et clips courts adaptés aux supports retenus.' },
+      { question: 'Comment suivre ce qui a été déployé ?', answer: 'Onekana Connect rassemble les observations terrain et les indicateurs utiles dans un reporting lisible.' },
+    ],
+    en: [
+      { question: 'Which media can be used for a campaign?', answer: 'Onekana combines vehicles, street formats, mobile screens, creative production and reporting based on your objective and target zones.' },
+      { question: 'How do you select activation zones?', answer: 'We study flows, travel habits and useful moments of presence before recommending a campaign setup.' },
+      { question: 'Can you create the campaign visuals?', answer: 'Yes. Onekana Studio creates posters, flyers and short clips adapted to the selected media.' },
+      { question: 'How can deployment be tracked?', answer: 'Onekana Connect gathers field observations and useful indicators in a clear report.' },
+    ],
+  })
 
   return (
-    <div className="page">
-      {/* Page Header */}
-      <section className="page-header page-header-contact">
-        {/* Objets décoratifs multimédia & publicité */}
-        <div className="page-header-objects" aria-hidden="true">
-          {/* Enveloppe / Message */}
-          <svg className="ph-obj ph-obj-1" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="14" width="52" height="36" rx="4" stroke="currentColor" strokeWidth="2" />
-            <path d="M6 18L32 36L58 18" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-            <line x1="6" y1="50" x2="22" y2="34" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="58" y1="50" x2="42" y2="34" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Smartphone */}
-          <svg className="ph-obj ph-obj-2" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="16" y="4" width="32" height="56" rx="6" stroke="currentColor" strokeWidth="2" />
-            <line x1="16" y1="12" x2="48" y2="12" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="16" y1="52" x2="48" y2="52" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="32" cy="57" r="2" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="22" y="18" width="20" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="22" y1="36" x2="42" y2="36" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="22" y1="41" x2="36" y2="41" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Mégaphone */}
-          <svg className="ph-obj ph-obj-3" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 24H20L44 12V52L20 40H8V24Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-            <line x1="20" y1="40" x2="20" y2="52" stroke="currentColor" strokeWidth="2" />
-            <line x1="14" y1="52" x2="26" y2="52" stroke="currentColor" strokeWidth="2" />
-            <path d="M50 20C52.5 23 52.5 41 50 44" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M54 16C58 21 58 43 54 48" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          {/* Bulle de dialogue */}
-          <svg className="ph-obj ph-obj-4" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 10C8 8 10 6 12 6H52C54 6 56 8 56 10V38C56 40 54 42 52 42H28L16 56V42H12C10 42 8 40 8 38V10Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-            <line x1="18" y1="20" x2="46" y2="20" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="18" y1="28" x2="40" y2="28" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Graphique barres */}
-          <svg className="ph-obj ph-obj-5" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="8" y1="56" x2="56" y2="56" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <rect x="12" y="36" width="10" height="20" rx="1" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="27" y="24" width="10" height="32" rx="1" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="42" y="14" width="10" height="42" rx="1" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Wifi / Signal */}
-          <svg className="ph-obj ph-obj-6" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 24C16 16 48 16 56 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M16 32C22 26 42 26 48 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M24 40C27 37 37 37 40 40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="32" cy="48" r="3" fill="currentColor" />
-          </svg>
-          {/* Localisation / Pin */}
-          <svg className="ph-obj ph-obj-7" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 8C22 8 14 16 14 26C14 40 32 56 32 56C32 56 50 40 50 26C50 16 42 8 32 8Z" stroke="currentColor" strokeWidth="2" />
-            <circle cx="32" cy="26" r="7" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* Étoile */}
-          <svg className="ph-obj ph-obj-8" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 6L38.5 22H56L42.5 32L48 48L32 38L16 48L21.5 32L8 22H25.5L32 6Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
+    <div className="page contact-page">
+      <InnerPageHero
+        variant="contact"
+        eyebrow={t({ fr: 'Contact', en: 'Contact' })}
+        title={t({
+          fr: [{ text: 'Votre idée mérite ' }, { text: 'de circuler.', accent: true }],
+          en: [{ text: 'Your idea deserves ' }, { text: 'to move.', accent: true }],
+        })}
+        description={t({
+          fr: ['Parlez-nous de votre objectif. Nous le transformons en ', { text: 'présence visible dans la ville.', accent: true }],
+          en: ['Tell us your objective. We turn it into ', { text: 'a visible presence in the city.', accent: true }],
+        })}
+        meta={t({ fr: ['Réponse humaine', 'Brief simple', 'Suivi clair'], en: ['Human response', 'Simple brief', 'Clear follow-up'] })}
+      >
+        <div className="contact-hero-conversation">
+          <div className="contact-bubble contact-bubble--brand"><Sparkles size={18} />{t({ fr: 'Quelle visibilité recherchez-vous ?', en: 'What visibility are you looking for?' })}</div>
+          <div className="contact-bubble contact-bubble--client">{t({ fr: 'Je veux être vu dans toute la ville.', en: 'I want to be seen across the city.' })}</div>
+          <div className="contact-bubble contact-bubble--brand"><MessageCircle size={18} />{t({ fr: 'Construisons le bon dispositif.', en: 'Let’s build the right campaign.' })}</div>
+          <span className="contact-response-status"><i />{t({ fr: 'Équipe disponible', en: 'Team available' })}</span>
         </div>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="page-label reveal-up active">{t({ fr: 'Contact', en: 'Contact' })}</span>
-          <h1 className="page-title reveal-up active" style={{ transitionDelay: '0.1s' }}>{t({ fr: 'Discutons de votre projet', en: "Let's discuss your project" })}</h1>
-          <p className="page-subtitle reveal-up active" style={{ transitionDelay: '0.2s' }}>
-            {t({
-              fr: "Prêt à créer quelque chose d'extraordinaire ? Contactez-nous et commençons l'aventure.",
-              en: "Ready to create something extraordinary? Contact us and let's start the adventure."
-            })}
-          </p>
-        </div>
-      </section>
+      </InnerPageHero>
 
-      {/* Contact Content */}
-      <section className="section">
+      <section className="section contact-workspace-section">
         <div className="container">
-          <div className="contact-grid-modern">
-            {/* Contact Info */}
-            <div className="contact-info-block reveal-left">
-              <div className="info-section">
-                <div className="info-section-icon">
-                  <Mail size={24} />
-                </div>
-                <h3>Coordonnées</h3>
-                <div className="info-items">
-                  <div className="info-item">
-                    <span className="info-label">Email</span>
-                    <a href="mailto:hello@onekana.fr">hello@onekana.fr</a>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Téléphone</span>
-                    <a href="tel:+33123456789">+33 1 23 45 67 89</a>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Adresse</span>
-                    <span>15 rue de la Paix<br />75002 Paris, France</span>
-                  </div>
-                </div>
+          <div className="contact-workspace">
+            <aside className="contact-info-panel reveal-left">
+              <span className="section-label">{t({ fr: 'Parlons concrètement', en: 'Let’s make it concrete' })}</span>
+              <h2>{t({ fr: 'Un premier échange, puis une direction claire.', en: 'One first conversation, then a clear direction.' })}</h2>
+              <p className="accent-description">
+                <AccentText parts={t({
+                  fr: ['Décrivez votre marque, votre public et votre ambition. Nous revenons avec ', { text: 'les bonnes questions.', accent: true }],
+                  en: ['Describe your brand, audience and ambition. We come back with ', { text: 'the right questions.', accent: true }],
+                })} />
+              </p>
+
+              <div className="contact-detail-list">
+                <a href="mailto:agencyonekana@gmail.com"><Mail size={20} /><span><small>Email</small>agencyonekana@gmail.com</span></a>
+                <a href="tel:+243986773438"><Phone size={20} /><span><small>{t({ fr: 'Téléphone', en: 'Phone' })}</small>+243 986 773 438</span></a>
+                <div><MapPin size={20} /><span><small>{t({ fr: 'Adresse', en: 'Address' })}</small>Avenue Vangu N°2656, Référence Arrêt du Carmel, Quartier Gambela 2, Commune de Lubumbashi</span></div>
+                <div><Clock size={20} /><span><small>{t({ fr: 'Disponibilité', en: 'Availability' })}</small>{t({ fr: 'Lundi - Vendredi, 9h - 18h', en: 'Monday - Friday, 9am - 6pm' })}</span></div>
               </div>
 
-              <div className="info-section">
-                <div className="info-section-icon">
-                  <Clock size={24} />
-                </div>
-                <h3>Horaires</h3>
-                <div className="info-items">
-                  <div className="info-item">
-                    <span className="info-label">Lundi - Vendredi</span>
-                    <span>9h00 - 18h00</span>
-                  </div>
-                </div>
+              <div className="contact-social-row">
+                <a href="#" aria-label="Instagram"><Instagram size={19} /></a>
+                <a href="#" aria-label="LinkedIn"><Linkedin size={19} /></a>
+                <a href="#" aria-label="Twitter"><Twitter size={19} /></a>
+                <a href="#" aria-label="Dribbble"><Dribbble size={19} /></a>
               </div>
+            </aside>
 
-              <div className="info-section">
-                <div className="info-section-icon">
-                  <MapPin size={24} />
-                </div>
-                <h3>Réseaux Sociaux</h3>
-                <div className="social-links-modern">
-                  <a href="#" className="social-link-modern">
-                    <Instagram size={20} />
-                    <span>Instagram</span>
-                  </a>
-                  <a href="#" className="social-link-modern">
-                    <Linkedin size={20} />
-                    <span>LinkedIn</span>
-                  </a>
-                  <a href="#" className="social-link-modern">
-                    <Twitter size={20} />
-                    <span>Twitter</span>
-                  </a>
-                  <a href="#" className="social-link-modern">
-                    <Dribbble size={20} />
-                    <span>Dribbble</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="contact-form-block reveal-right">
+            <div className="contact-form-shell reveal-right">
               {submitted ? (
-                <div className="form-success-modern">
-                  <div className="success-icon-modern">✓</div>
-                  <h3>Message envoyé !</h3>
-                  <p>Nous vous recontacterons dans les plus brefs délais.</p>
+                <div className="contact-success" role="status">
+                  <div><Send size={30} /></div>
+                  <span className="section-label">{t({ fr: 'Message envoyé', en: 'Message sent' })}</span>
+                  <h3>{t({ fr: 'La conversation est lancée.', en: 'The conversation has started.' })}</h3>
+                  <p>{t({ fr: 'Notre équipe vous répondra dans les meilleurs délais.', en: 'Our team will get back to you as soon as possible.' })}</p>
+                  <button type="button" className="btn btn-outline" onClick={() => setSubmitted(false)}>{t({ fr: 'Envoyer un autre message', en: 'Send another message' })}</button>
                 </div>
               ) : (
-                <form className="contact-form-modern" onSubmit={handleSubmit}>
+                <form className="contact-form-modern" onSubmit={handleSubmit} noValidate>
+                  <div className="contact-form-heading"><span>01</span><div><small>{t({ fr: 'Votre brief', en: 'Your brief' })}</small><h3>{t({ fr: 'Commençons simplement', en: 'Let’s start simply' })}</h3></div></div>
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="name">Nom *</label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Votre nom"
-                        required
-                        className={formErrors.name ? 'input-error' : ''}
-                      />
+                      <label htmlFor="name">{t({ fr: 'Nom', en: 'Name' })} *</label>
+                      <input id="name" name="name" value={formData.name} onChange={handleChange} placeholder={t({ fr: 'Votre nom', en: 'Your name' })} className={formErrors.name ? 'input-error' : ''} />
                       {formErrors.name && <span className="error-message">{formErrors.name}</span>}
                     </div>
                     <div className="form-group">
                       <label htmlFor="email">Email *</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="votre@email.com"
-                        required
-                        className={formErrors.email ? 'input-error' : ''}
-                      />
+                      <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} placeholder="vous@email.com" className={formErrors.email ? 'input-error' : ''} />
                       {formErrors.email && <span className="error-message">{formErrors.email}</span>}
                     </div>
                   </div>
-
-                  <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="company">{t({ fr: 'Entreprise', en: 'Company' })}</label>
+                    <input id="company" name="company" value={formData.company} onChange={handleChange} placeholder={t({ fr: 'Nom de votre entreprise', en: 'Company name' })} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="subject">{t({ fr: 'Objet de la demande', en: 'Request subject' })} *</label>
+                    <input id="subject" name="subject" value={formData.subject} onChange={handleChange} placeholder={t({ fr: 'Ex. Lancement de notre nouveau service', en: 'E.g. Launch of our new service' })} className={formErrors.subject ? 'input-error' : ''} />
+                    {formErrors.subject && <span className="error-message">{formErrors.subject}</span>}
+                  </div>
+                  <div className="form-row contact-qualification-row">
                     <div className="form-group">
-                      <label htmlFor="company">Entreprise</label>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        placeholder="Nom de votre entreprise"
-                      />
+                      <label htmlFor="pole">{t({ fr: 'Pôle concerné', en: 'Relevant hub' })} *</label>
+                      <select id="pole" name="pole" value={formData.pole} onChange={handleChange} className={formErrors.pole ? 'input-error' : ''}>
+                        <option value="">{t({ fr: 'Choisir un pôle', en: 'Choose a hub' })}</option>
+                        {poleOptions.map((pole) => <option key={pole} value={pole}>{pole}</option>)}
+                      </select>
+                      {formErrors.pole && <span className="error-message">{formErrors.pole}</span>}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="budgetRange">{t({ fr: 'Budget indicatif', en: 'Indicative budget' })}</label>
+                      <select id="budgetRange" name="budgetRange" value={formData.budgetRange} onChange={handleChange}>
+                        <option value="">{t({ fr: 'Sélectionner un budget', en: 'Select a budget' })}</option>
+                        {budgetOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                      </select>
                     </div>
                   </div>
-
-
-                  <div className="form-group">
-                    <label htmlFor="message">Votre projet *</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Parlez-nous de votre projet, vos objectifs, vos idées..."
-                      rows="6"
-                      required
-                      className={formErrors.message ? 'input-error' : ''}
-                    ></textarea>
-                    {formErrors.message && <span className="error-message">{formErrors.message}</span>}
-                  </div>
-
-                  {formErrors.submit && (
-                    <div className="error-message error-message-submit">
-                      {formErrors.submit}
+                  {formData.budgetRange === 'custom' && (
+                    <div className="form-group custom-budget-field">
+                      <label htmlFor="customBudget">{t({ fr: 'Montant personnalisé (USD)', en: 'Custom amount (USD)' })}</label>
+                      <input type="number" min="1" step="50" inputMode="numeric" id="customBudget" name="customBudget" value={formData.customBudget} onChange={handleChange} placeholder="1500" className={formErrors.customBudget ? 'input-error' : ''} />
+                      {formErrors.customBudget && <span className="error-message">{formErrors.customBudget}</span>}
                     </div>
                   )}
-                  <button type="submit" className="btn btn-primary btn-large">
-                    <Send size={18} />
-                    Envoyer le message
+                  <div className="form-group">
+                    <label htmlFor="message">{t({ fr: 'Votre projet', en: 'Your project' })} *</label>
+                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder={t({ fr: 'Objectif, audience, zones, idée de départ...', en: 'Objective, audience, zones, starting idea...' })} rows="6" className={formErrors.message ? 'input-error' : ''} />
+                    {formErrors.message && <span className="error-message">{formErrors.message}</span>}
+                  </div>
+                  {formErrors.submit && <div className="error-message error-message-submit">{formErrors.submit}</div>}
+                  <button type="submit" className="btn btn-primary btn-large contact-submit" disabled={submitting}>
+                    <Send size={18} />{submitting ? t({ fr: 'Envoi...', en: 'Sending...' }) : t({ fr: 'Envoyer le message', en: 'Send message' })}
                   </button>
                 </form>
               )}
@@ -418,42 +268,22 @@ function Contact() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="section section-alt">
-        <div className="container">
-          <div className="section-header reveal-rotate">
+      <section className="section section-alt contact-faq-section">
+        <div className="container contact-faq-layout">
+          <div className="reveal-left">
             <span className="section-label">FAQ</span>
-            <h2 className="section-title">Questions fréquentes</h2>
+            <h2 className="section-title">{t({ fr: 'Avant de lancer le mouvement', en: 'Before setting things in motion' })}</h2>
+            <p className="section-intro accent-description"><AccentText parts={t({ fr: ['Les réponses essentielles pour passer ', { text: 'de l’idée au terrain.', accent: true }], en: ['Essential answers to move ', { text: 'from idea to field.', accent: true }] })} /></p>
           </div>
-          <div className="faq-grid-modern">
-            <div className="faq-item-modern reveal-up">
-              <h4>Quel est le délai moyen d'un projet ?</h4>
-              <p>
-                Cela dépend de la complexité du projet. Un site vitrine prend généralement 4-6 semaines,
-                tandis qu'un projet plus complexe peut prendre 3-6 mois.
-              </p>
-            </div>
-            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.1s' }}>
-              <h4>Comment se déroule un projet avec vous ?</h4>
-              <p>
-                Nous commençons par une phase de découverte, suivie de la stratégie, de la création
-                et enfin de la livraison. Vous êtes impliqué à chaque étape du processus.
-              </p>
-            </div>
-            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.2s' }}>
-              <h4>Proposez-vous un accompagnement après livraison ?</h4>
-              <p>
-                Oui, nous proposons des contrats de maintenance et d'évolution pour assurer la
-                pérennité de votre projet.
-              </p>
-            </div>
-            <div className="faq-item-modern reveal-up" style={{ transitionDelay: '0.3s' }}>
-              <h4>Travaillez-vous avec des clients internationaux ?</h4>
-              <p>
-                Absolument ! Nous travaillons avec des clients du monde entier et nous adaptons
-                nos processus pour gérer les différences de fuseaux horaires.
-              </p>
-            </div>
+          <div className="contact-faq-list reveal-stagger">
+            {faqs.map((faq, index) => (
+              <article key={faq.question} className={`contact-faq-item${openFaq === index ? ' open' : ''}`}>
+                <button type="button" onClick={() => setOpenFaq(openFaq === index ? -1 : index)} aria-expanded={openFaq === index}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>{faq.question}<ChevronDown size={20} />
+                </button>
+                <div className="contact-faq-answer"><p>{faq.answer}</p></div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

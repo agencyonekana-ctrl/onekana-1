@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Rocket, Globe, Star } from 'lucide-react'
+import { ArrowRight, Eye, Globe, Radio, Rocket, Star, Zap } from 'lucide-react'
 import { useLanguage } from './hooks/useLanguage'
 import './App.css'
 import './mobile.css'
@@ -30,7 +30,7 @@ const Navigation = () => {
   }, [location.pathname])
 
   return (
-    <nav className={`navigation ${scrolled ? 'scrolled' : ''}`}>
+    <nav className={`navigation ${location.pathname === '/' ? 'home-nav' : 'inner-nav'} ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <Link to="/" className="logo">
           <picture>
@@ -186,6 +186,7 @@ const FloatingLanguageBadge = () => {
 // Footer Component
 const Footer = () => {
   const { t } = useLanguage()
+  const [selectedGoal, setSelectedGoal] = useState('visibilite')
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -207,18 +208,59 @@ const Footer = () => {
     'Onekana Life',
   ]
 
+  const campaignGoals = [
+    {
+      id: 'visibilite',
+      icon: Eye,
+      label: t({ fr: 'Visibilité', en: 'Visibility' }),
+      description: t({ fr: 'Installer votre marque dans les mouvements quotidiens de la ville.', en: 'Place your brand in the city’s everyday movement.' }),
+    },
+    {
+      id: 'lancement',
+      icon: Rocket,
+      label: t({ fr: 'Lancement', en: 'Launch' }),
+      description: t({ fr: 'Donner à un nouveau produit ou service un départ visible et mémorable.', en: 'Give a new product or service a visible and memorable start.' }),
+    },
+    {
+      id: 'activation',
+      icon: Radio,
+      label: t({ fr: 'Activation terrain', en: 'Field activation' }),
+      description: t({ fr: 'Créer un contact direct avec votre public dans les zones qui comptent.', en: 'Create direct contact with your audience in the zones that matter.' }),
+    },
+  ]
+  const activeGoal = campaignGoals.find((goal) => goal.id === selectedGoal) || campaignGoals[0]
+
   return (
     <footer className="footer" style={{ position: 'relative' }}>
       {/* CTA Section */}
       <div className="footer-cta">
         <div className="container">
-          <div className="footer-cta-content">
-            <h2 className="text-accent">{t({ fr: 'Prêt à démarrer votre campagne ?', en: 'Ready to launch your campaign?' })}</h2>
-            <p>{t({ fr: "Discutons de vos idées et créons quelque chose d'extraordinaire ensemble.", en: "Let's discuss your ideas and create something extraordinary together." })}</p>
-            <Link to="/contact" onClick={scrollToTop}
-              className="btn btn-primary btn-large">
-              {t({ fr: 'Commencer une campagne', en: 'Start a campaign' })}
-            </Link>
+          <div className="footer-campaign-launcher">
+            <div className="footer-campaign-copy">
+              <div className="footer-campaign-kicker"><Zap size={20} />{t({ fr: 'Démarrer un brief', en: 'Start a brief' })}</div>
+              <h2>{t({ fr: 'Quel mouvement voulez-vous créer ?', en: 'What movement do you want to create?' })}</h2>
+              <p key={activeGoal.id} className="footer-campaign-description">{activeGoal.description}</p>
+            </div>
+
+            <div className="footer-campaign-actions">
+              <div className="footer-goal-selector" role="group" aria-label={t({ fr: 'Objectif de campagne', en: 'Campaign objective' })}>
+                {campaignGoals.map((goal) => (
+                  <button
+                    key={goal.id}
+                    type="button"
+                    className={selectedGoal === goal.id ? 'active' : ''}
+                    onClick={() => setSelectedGoal(goal.id)}
+                    aria-pressed={selectedGoal === goal.id}
+                  >
+                    <goal.icon size={19} />
+                    <span>{goal.label}</span>
+                  </button>
+                ))}
+              </div>
+              <Link to={`/contact?objectif=${activeGoal.id}`} onClick={scrollToTop} className="footer-campaign-submit">
+                {t({ fr: 'Préparer ma demande', en: 'Prepare my request' })}<ArrowRight size={19} />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -310,17 +352,17 @@ const Footer = () => {
             <div className="footer-col">
               <h4>{t({ fr: 'Contact', en: 'Contact' })}</h4>
               <div className="footer-contact">
-                <a href="mailto:contact@onekana-agency.com" className="contact-item">
+                <a href="mailto:agencyonekana@gmail.com" className="contact-item">
                   <MailIcon />
-                  <span>contact@onekana-agency.com</span>
+                  <span>agencyonekana@gmail.com</span>
                 </a>
-                <a href="tel:+33123456789" className="contact-item">
+                <a href="tel:+243986773438" className="contact-item">
                   <PhoneIcon />
-                  <span>+33 1 23 45 67 89</span>
+                  <span>+243 986 773 438</span>
                 </a>
                 <div className="contact-item">
                   <MapPinIcon />
-                  <span>14C Av/Vangu ,Q/Gambella II,<br />Lubumbashi, RDC</span>
+                  <span>Avenue Vangu N°2656, Référence Arrêt du Carmel,<br />Quartier Gambela 2, Commune de Lubumbashi</span>
                 </div>
               </div>
             </div>
@@ -344,11 +386,6 @@ const Footer = () => {
             </button>
           </div>
         </div>
-      </div>
-      <div className="section-divider divider-top">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z" className="divider-fill-red" />
-        </svg>
       </div>
     </footer>
   )
@@ -437,7 +474,7 @@ const CustomCursor = () => {
 const AppContent = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [isPageLoading, setIsPageLoading] = useState(false)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
 
   // Initial load preloader
   useEffect(() => {
@@ -486,7 +523,7 @@ const AppContent = () => {
           <Route path="/" element={<Home />} />
           <Route path="/agence" element={<Agence />} />
           <Route path="/expertise" element={<Expertise />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact" element={<Contact key={search} />} />
           <Route path="/blog" element={<Blog />} />
 
         </Routes>
