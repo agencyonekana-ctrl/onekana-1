@@ -135,7 +135,9 @@ function Blog() {
           <div className="blog-editorial-head reveal-up">
             <div>
               <span className="section-label">{t({ fr: 'Dernières publications', en: 'Latest stories' })}</span>
-              <h2 className="section-title">{t({ fr: 'Explorer le mouvement', en: 'Explore the movement' })}</h2>
+              <h2 className="section-title">
+                {t({ fr: 'Explorer le ', en: 'Explore the ' })}<span className="text-accent">{t({ fr: 'mouvement', en: 'movement' })}</span>
+              </h2>
               <p className="section-intro accent-description">
                 <AccentText parts={t({
                   fr: ['Des lectures courtes pour transformer ', { text: 'une observation en idée.', accent: true }],

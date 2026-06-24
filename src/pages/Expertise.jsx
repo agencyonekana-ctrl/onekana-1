@@ -8,12 +8,12 @@ const supportImages = {
   carFlyers: '/images/onekana/supports/car-flyers.png',
   carScreen: '/images/onekana/supports/car-screen.png',
   tetiere: '/images/onekana/supports/tetiere.png',
+  backpackFlag: '/images/onekana/supports/backpack-flag.png',
   backpackMediaStreets: '/images/onekana/supports/backpack-media-streets.png',
   backpackMediaDooh: '/images/onekana/supports/backpack-media-dooh.png',
   carScreenDooh: '/images/onekana/supports/car-screen-dooh.png',
   reporting: '/images/onekana/supports/reporting.png',
   design: '/images/onekana/supports/design-flyers-affiches.png',
-  clips: '/images/onekana/supports/clips-publicitaires.png',
   magazine: '/images/onekana/supports/onekana-life-magazine.png',
 }
 
@@ -43,9 +43,10 @@ function Expertise() {
     {
       name: 'Onekana Streets',
       icon: Backpack,
-      image: supportImages.backpackMediaStreets,
-      intro: 'Écrans mobiles piétons, stands et animations de zones pour engager les publics là où ils circulent.',
+      image: supportImages.backpackFlag,
+      intro: 'Backpack Flag, écrans mobiles piétons, stands et animations de zones pour engager les publics là où ils circulent.',
       supports: [
+        { title: 'Backpack Flag', image: supportImages.backpackFlag, desc: 'Sac à dos drapeau avec distribution de flyers pour activer une zone précise.' },
         { title: 'Backpack Media', image: supportImages.backpackMediaStreets, desc: 'Sac à dos écran avec flyers pour combiner visibilité, mouvement et contact direct.' },
       ],
     },
@@ -75,7 +76,6 @@ function Expertise() {
       intro: 'Services créatifs pour concevoir les contenus qui vivent sur les supports Onekana.',
       supports: [
         { title: 'Design flyers / affiches', image: supportImages.design, desc: 'Création de supports visuels adaptés à la rue, aux véhicules et aux écrans.' },
-        { title: 'Clips publicitaires', image: supportImages.clips, desc: 'Création audiovisuelle courte pour écrans, activations et diffusion digitale.' },
       ],
     },
     {
@@ -141,7 +141,7 @@ function Expertise() {
             <figcaption>MediaMove</figcaption>
           </figure>
           <figure className="expertise-hero-tile tile-street">
-            <img src={supportImages.backpackMediaStreets} alt="Onekana Streets" />
+            <img src={supportImages.backpackFlag} alt="Onekana Streets" />
             <figcaption>Streets</figcaption>
           </figure>
           <figure className="expertise-hero-tile tile-screen">
@@ -155,7 +155,9 @@ function Expertise() {
         <div className="container">
           <div className="section-header reveal-rotate">
             <span className="section-label">{t({ fr: 'Supports & services', en: 'Media & services' })}</span>
-            <h2 className="section-title">{t({ fr: 'Chaque solution joue un rôle précis', en: 'Every solution has a precise role' })}</h2>
+            <h2 className="section-title">
+              {t({ fr: 'Chaque solution joue ', en: 'Every solution has ' })}<span className="text-accent">{t({ fr: 'un rôle précis', en: 'a precise role' })}</span>
+            </h2>
             <p className="section-intro accent-description">
               <AccentText parts={t({
                 fr: ['Choisissez le contexte, nous construisons ', { text: 'la présence qui lui correspond.', accent: true }],
@@ -174,7 +176,6 @@ function Expertise() {
                   <div className="expertise-hub-title">
                     <div className="expertise-hub-icon"><pillar.icon size={28} strokeWidth={1.5} /></div>
                     <div>
-                      <span>Pôle d'expertise</span>
                       <h3>{pillar.name}</h3>
                     </div>
                   </div>
@@ -201,9 +202,11 @@ function Expertise() {
       <section className="section section-alt expertise-method-section">
         <div className="container">
           <div className="expertise-method-layout">
-            <div className="expertise-method-intro reveal-left">
+            <div className="expertise-method-intro reveal-up">
               <span className="section-label">{t({ fr: 'Méthodologie', en: 'Methodology' })}</span>
-              <h2 className="section-title">{t({ fr: 'Une architecture de campagne, pas une recette figée', en: 'A campaign architecture, not a fixed recipe' })}</h2>
+              <h2 className="section-title">
+                {t({ fr: 'Une architecture de campagne, ', en: 'A campaign architecture, ' })}<span className="text-accent">{t({ fr: 'pas une recette figée', en: 'not a fixed recipe' })}</span>
+              </h2>
               <p>{t({ fr: 'La méthode Onekana met quatre décisions sur la même table. Leur combinaison construit un dispositif adapté à votre marque et à la ville.', en: 'The Onekana method puts four decisions on the same table. Their combination builds a campaign suited to your brand and the city.' })}</p>
               <div className="expertise-method-summary">
                 <strong>{t({ fr: '1 brief', en: '1 brief' })}</strong>

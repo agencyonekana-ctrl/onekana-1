@@ -83,8 +83,8 @@ function Agence() {
       image: '/images/onekana/studio-connect-life.png',
       title: t({ fr: 'Nous créons pour être compris vite', en: 'We create for fast understanding' }),
       text: t({
-        fr: 'Flyers, affiches, clips et messages sont pensés pour la rue, le mouvement et les écrans.',
-        en: 'Flyers, posters, clips and messages are designed for streets, movement and screens.',
+        fr: 'Flyers, affiches et messages sont pensés pour la rue, le mouvement et les écrans.',
+        en: 'Flyers, posters and messages are designed for streets, movement and screens.',
       }),
       stat: t({ fr: 'Visuels terrain', en: 'Field visuals' }),
     },
@@ -229,19 +229,22 @@ function Agence() {
 
       <section className="agence-focus-section section">
         <div className="container">
+          <div className="agence-role-header section-header reveal-up">
+            <span className="section-label">{t({ fr: 'Notre rôle', en: 'Our role' })}</span>
+            <h2 className="section-title">
+              {t({ fr: 'Transformer les rues, les véhicules et les écrans en ', en: 'Turn streets, vehicles and screens into ' })}
+              <span className="text-accent">{t({ fr: 'points de contact.', en: 'contact points.' })}</span>
+            </h2>
+            <p className="about-text accent-description">
+              <AccentText parts={t({
+                fr: ['Onekana relie stratégie, création, activation terrain et reporting. La marque devient ', { text: 'visible dans les vrais mouvements de la ville.', accent: true }],
+                en: ['Onekana connects strategy, creation, field activation and reporting. The brand becomes ', { text: 'visible in the city’s real movement.', accent: true }],
+              })} />
+            </p>
+          </div>
+
           <div className="agence-focus-grid">
             <div className="agence-focus-copy reveal-left">
-              <span className="section-label">{t({ fr: 'Notre rôle', en: 'Our role' })}</span>
-              <h2 className="section-title">
-                {t({ fr: 'Transformer les rues, les véhicules et les écrans en points de contact.', en: 'Turn streets, vehicles and screens into contact points.' })}
-              </h2>
-              <p className="about-text accent-description">
-                <AccentText parts={t({
-                  fr: ['Onekana relie stratégie, création, activation terrain et reporting. La marque devient ', { text: 'visible dans les vrais mouvements de la ville.', accent: true }],
-                  en: ['Onekana connects strategy, creation, field activation and reporting. The brand becomes ', { text: 'visible in the city’s real movement.', accent: true }],
-                })} />
-              </p>
-
               <div className="agence-focus-tabs" role="tablist" aria-label={t({ fr: 'Axes Onekana', en: 'Onekana focus areas' })}>
                 {focusItems.map((item) => (
                   <button
@@ -283,7 +286,10 @@ function Agence() {
         <div className="container">
           <div className="section-header reveal-rotate">
             <span className="section-label">{t({ fr: 'Notre façon de faire', en: 'How we work' })}</span>
-            <h2 className="section-title">{t({ fr: 'Un parcours simple, du terrain au reporting', en: 'A simple path from field to reporting' })}</h2>
+            <h2 className="section-title">
+              {t({ fr: 'Un parcours simple, ', en: 'A simple path ' })}
+              <span className="text-accent">{t({ fr: 'du terrain au reporting', en: 'from field to reporting' })}</span>
+            </h2>
           </div>
           <div className="agence-process-track reveal-stagger">
             <div className="agence-process-line" aria-hidden="true" />
@@ -305,7 +311,9 @@ function Agence() {
         <div className="container">
           <div className="section-header reveal-rotate">
             <span className="section-label">{t({ fr: 'Nos valeurs', en: 'Our values' })}</span>
-            <h2 className="section-title">{t({ fr: 'Ce qui nous définit', en: 'What defines us' })}</h2>
+            <h2 className="section-title">
+              {t({ fr: 'Ce qui nous ', en: 'What ' })}<span className="text-accent">{t({ fr: 'définit', en: 'defines us' })}</span>
+            </h2>
           </div>
           <div className="agence-values-grid reveal-stagger">
             {values.map((value) => (

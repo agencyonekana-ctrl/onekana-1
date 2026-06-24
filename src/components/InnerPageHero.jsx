@@ -9,7 +9,6 @@ function InnerPageHero({ variant, eyebrow, title, description, children, meta = 
 
       <div className="container inner-hero-layout">
         <div className="inner-hero-copy">
-          <span className="inner-hero-eyebrow reveal-up active">{eyebrow}</span>
           <h1 className="inner-hero-title reveal-up active" style={{ transitionDelay: '0.08s' }}>
             {title.map((part, index) => (
               <span key={`${part.text}-${index}`} className={part.accent ? 'accent' : ''}>{part.text}</span>

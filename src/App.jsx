@@ -238,7 +238,9 @@ const Footer = () => {
           <div className="footer-campaign-launcher">
             <div className="footer-campaign-copy">
               <div className="footer-campaign-kicker"><Zap size={20} />{t({ fr: 'Démarrer un brief', en: 'Start a brief' })}</div>
-              <h2>{t({ fr: 'Quel mouvement voulez-vous créer ?', en: 'What movement do you want to create?' })}</h2>
+              <h2>
+                {t({ fr: 'Quel mouvement voulez-vous ', en: 'What movement do you want to ' })}<span className="text-accent">{t({ fr: 'créer ?', en: 'create?' })}</span>
+              </h2>
               <p key={activeGoal.id} className="footer-campaign-description">{activeGoal.description}</p>
             </div>
 

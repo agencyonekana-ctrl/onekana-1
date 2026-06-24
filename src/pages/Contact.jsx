@@ -42,20 +42,10 @@ function Contact() {
   const poleOptions = ['Onekana MediaMove', 'Onekana Streets', 'Onekana DOOH', 'Onekana Connect', 'Onekana Studio', 'Onekana Life']
   const budgetOptions = t({
     fr: [
-      { value: 'under-250', label: 'Moins de 250 USD' },
-      { value: '250-500', label: '250 - 500 USD' },
-      { value: '500-1000', label: '500 - 1 000 USD' },
-      { value: '1000-1500', label: '1 000 - 1 500 USD' },
-      { value: 'over-1500', label: 'Plus de 1 500 USD' },
       { value: 'undecided', label: 'À définir' },
       { value: 'custom', label: 'Montant personnalisé' },
     ],
     en: [
-      { value: 'under-250', label: 'Under 250 USD' },
-      { value: '250-500', label: '250 - 500 USD' },
-      { value: '500-1000', label: '500 - 1,000 USD' },
-      { value: '1000-1500', label: '1,000 - 1,500 USD' },
-      { value: 'over-1500', label: 'Over 1,500 USD' },
       { value: 'undecided', label: 'To be defined' },
       { value: 'custom', label: 'Custom amount' },
     ],
@@ -147,8 +137,7 @@ function Contact() {
   return (
     <div className="page contact-page">
       <InnerPageHero
-        variant="contact"
-        eyebrow={t({ fr: 'Contact', en: 'Contact' })}
+        
         title={t({
           fr: [{ text: 'Votre idée mérite ' }, { text: 'de circuler.', accent: true }],
           en: [{ text: 'Your idea deserves ' }, { text: 'to move.', accent: true }],
@@ -172,7 +161,9 @@ function Contact() {
           <div className="contact-workspace">
             <aside className="contact-info-panel reveal-left">
               <span className="section-label">{t({ fr: 'Parlons concrètement', en: 'Let’s make it concrete' })}</span>
-              <h2>{t({ fr: 'Un premier échange, puis une direction claire.', en: 'One first conversation, then a clear direction.' })}</h2>
+              <h2>
+                {t({ fr: 'Un premier échange, puis une ', en: 'One first conversation, then a ' })}<span className="text-accent">{t({ fr: 'direction claire.', en: 'clear direction.' })}</span>
+              </h2>
               <p className="accent-description">
                 <AccentText parts={t({
                   fr: ['Décrivez votre marque, votre public et votre ambition. Nous revenons avec ', { text: 'les bonnes questions.', accent: true }],
@@ -272,7 +263,9 @@ function Contact() {
         <div className="container contact-faq-layout">
           <div className="reveal-left">
             <span className="section-label">FAQ</span>
-            <h2 className="section-title">{t({ fr: 'Avant de lancer le mouvement', en: 'Before setting things in motion' })}</h2>
+            <h2 className="section-title">
+              {t({ fr: 'Avant de lancer ', en: 'Before setting things ' })}<span className="text-accent">{t({ fr: 'le mouvement', en: 'in motion' })}</span>
+            </h2>
             <p className="section-intro accent-description"><AccentText parts={t({ fr: ['Les réponses essentielles pour passer ', { text: 'de l’idée au terrain.', accent: true }], en: ['Essential answers to move ', { text: 'from idea to field.', accent: true }] })} /></p>
           </div>
           <div className="contact-faq-list reveal-stagger">

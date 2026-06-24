@@ -11011,6 +11011,130 @@
   }
 }
 
+/* Expertise support cards: size from available content width, never from item count. */
+.expertise-supports-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+
+.expertise-support-item,
+.expertise-support-item:only-child {
+  width: 100%;
+  max-width: 100%;
+  grid-column: auto / span 1;
+  grid-template-columns: 112px minmax(0, 1fr);
+  box-sizing: border-box;
+}
+
+.expertise-support-item img {
+  width: 112px;
+  max-width: 100%;
+}
+
+.expertise-support-item h4,
+.expertise-support-item p {
+  max-width: 100%;
+}
+
+@media (max-width: 480px) {
+  .expertise-supports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expertise-support-item,
+  .expertise-support-item:only-child {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .expertise-support-item img {
+    width: 84px;
+  }
+}
+
+/* Imposing centered introductions for Agency role and Expertise methodology */
+.agence-role-header,
+.expertise-method-intro {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto 3.25rem;
+  text-align: center;
+}
+
+.agence-role-header .section-label,
+.expertise-method-intro .section-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.agence-role-header .section-title,
+.expertise-method-intro .section-title {
+  max-width: 1040px;
+  margin: 0 auto;
+  color: #0a0a0a;
+  font-size: 4rem;
+  line-height: 1.03;
+}
+
+.agence-role-header .about-text,
+.expertise-method-intro > p {
+  max-width: 800px;
+  margin: 1.5rem auto 0;
+  color: rgba(10, 10, 10, 0.7);
+  font-size: 1.12rem;
+  line-height: 1.75;
+}
+
+.expertise-method-layout {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.expertise-method-intro {
+  position: static;
+}
+
+.expertise-method-summary {
+  margin: 1.8rem auto 0;
+}
+
+.expertise-canvas {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.agence-focus-copy .agence-focus-tabs {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .agence-role-header,
+  .expertise-method-intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .agence-role-header .section-title,
+  .expertise-method-intro .section-title {
+    font-size: 3.2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .agence-role-header .section-title,
+  .expertise-method-intro .section-title {
+    font-size: 2.35rem;
+    line-height: 1.08;
+  }
+
+  .agence-role-header .about-text,
+  .expertise-method-intro > p {
+    margin-top: 1rem;
+    font-size: 0.98rem;
+  }
+
+}
+
 @media (prefers-reduced-motion: reduce) {
   .footer-cta::before,
   .footer-cta::after,
@@ -11051,7 +11175,7 @@
 }
 
 .footer-campaign-copy h2 {
-  color: #ea0001;
+  color: #0a0a0a;
   font-size: 2.65rem;
   line-height: 1.08;
 }

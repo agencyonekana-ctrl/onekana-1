@@ -211,7 +211,7 @@ const Hero = () => {
         </h1>
 
         <p className="hero-lead reveal-up active" style={{ transitionDelay: '0.15s' }}>
-          {t({ fr: 'Réseaux de Publicité urbaine — soyez vu, remarqué et mémorisé.', en: 'Urban & mobile advertising — visible, memorized, measurable.' })}
+          {t({ fr: 'Réseau urbain de Publicité — soyez vu, remarqué et mémorisé.', en: 'Urban & mobile advertising — visible, memorized, measurable.' })}
         </p>
 
         {/* Trustpilot Block */}
@@ -502,12 +502,12 @@ const SUPPORT_IMAGES = {
   carFlyers: '/images/onekana/supports/car-flyers.png',
   carScreen: '/images/onekana/supports/car-screen.png',
   tetiere: '/images/onekana/supports/tetiere.png',
+  backpackFlag: '/images/onekana/supports/backpack-flag.png',
   backpackMediaStreets: '/images/onekana/supports/backpack-media-streets.png',
   backpackMediaDooh: '/images/onekana/supports/backpack-media-dooh.png',
   carScreenDooh: '/images/onekana/supports/car-screen-dooh.png',
   reporting: '/images/onekana/supports/reporting.png',
   design: '/images/onekana/supports/design-flyers-affiches.png',
-  clips: '/images/onekana/supports/clips-publicitaires.png',
   magazine: '/images/onekana/supports/onekana-life-magazine.png',
 }
 
@@ -524,8 +524,8 @@ const PillarsSection = () => {
     {
       icon: Backpack,
       title: 'Onekana Streets',
-      image: SUPPORT_IMAGES.backpackMediaStreets,
-      desc: 'Écrans mobiles piétons, stands et animations de zones pour créer le contact direct avec le public.',
+      image: SUPPORT_IMAGES.backpackFlag,
+      desc: 'Backpack Flag, écrans mobiles piétons, stands et animations de zones pour créer le contact direct avec le public.',
     },
     {
       icon: Monitor,
@@ -543,7 +543,7 @@ const PillarsSection = () => {
       icon: Award,
       title: 'Onekana Studio',
       image: SUPPORT_IMAGES.design,
-      desc: 'Création de flyers, affiches, concepts visuels et clips publicitaires adaptés au terrain.',
+      desc: 'Création de flyers, affiches et concepts visuels adaptés aux supports et au terrain.',
     },
     {
       icon: FileText,
@@ -589,12 +589,12 @@ const SupportsShowcase = () => {
     { group: 'Onekana MediaMove', title: 'Car Flyers', image: SUPPORT_IMAGES.carFlyers, desc: 'Panneau de siège avec espace flyers pour capter les passagers pendant le trajet.' },
     { group: 'Onekana MediaMove', title: 'Car Screen', image: SUPPORT_IMAGES.carScreen, desc: 'Écran taxi pour diffuser des contenus dynamiques dans les déplacements urbains.' },
     { group: 'Onekana MediaMove', title: 'Têtière', image: SUPPORT_IMAGES.tetiere, desc: "Housse d'appui-tête publicitaire, visible à hauteur de regard pendant le trajet." },
+    { group: 'Onekana Streets', title: 'Backpack Flag', image: SUPPORT_IMAGES.backpackFlag, desc: 'Sac à dos drapeau avec distribution de flyers pour rendre une activation visible dans une zone précise.' },
     { group: 'Onekana Streets', title: 'Backpack Media', image: SUPPORT_IMAGES.backpackMediaStreets, desc: 'Sac à dos écran avec distribution de flyers pour une présence mobile et animée.' },
     { group: 'Onekana DOOH', title: 'Backpack Media DOOH', image: SUPPORT_IMAGES.backpackMediaDooh, desc: 'Écran porté pour diffuser des messages digitaux dans les lieux à fort passage.' },
     { group: 'Onekana DOOH', title: 'Car Screen DOOH', image: SUPPORT_IMAGES.carScreenDooh, desc: 'Écran embarqué taxi pour une campagne vidéo visible en mobilité.' },
     { group: 'Onekana Connect', title: 'Statistiques / Reporting', image: SUPPORT_IMAGES.reporting, desc: 'Suivi des actions, synthèse des performances et reporting exploitable.' },
     { group: 'Onekana Studio', title: 'Design flyers / affiches', image: SUPPORT_IMAGES.design, desc: 'Création de visuels prêts à vivre sur les supports terrain et digitaux.' },
-    { group: 'Onekana Studio', title: 'Clips publicitaires', image: SUPPORT_IMAGES.clips, desc: 'Production audiovisuelle pour écrans, réseaux et campagnes urbaines.' },
     { group: 'Onekana Life', title: 'Magazine Onekana', image: SUPPORT_IMAGES.magazine, desc: "Un format éditorial pour prolonger l'histoire des marques et des lieux." },
   ]
 
