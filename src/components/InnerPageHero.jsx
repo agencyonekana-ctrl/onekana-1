@@ -1,6 +1,6 @@
 import AccentText from './AccentText'
 
-function InnerPageHero({ variant, eyebrow, title, description, children, meta = [] }) {
+function InnerPageHero({ variant, title, description, children, meta = [] }) {
   return (
     <section className={`inner-hero inner-hero--${variant}`}>
       <div className="inner-hero-grid" aria-hidden="true" />

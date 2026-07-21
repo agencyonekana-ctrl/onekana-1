@@ -133,15 +133,6 @@ function Campaigns() {
         }))
     }
 
-    const handlePackToggle = (packId) => {
-        setCampaignData(prev => ({
-            ...prev,
-            packs: prev.packs.includes(packId)
-                ? prev.packs.filter(id => id !== packId)
-                : [...prev.packs, packId]
-        }))
-    }
-
     const calculateBudget = () => {
         let total = 0
 
@@ -297,7 +288,6 @@ function Campaigns() {
         }
     }
 
-    const currentBudget = calculateBudget()
     const hasSelection = campaignData.campaignTypes.length > 0
 
     const calculateMonthlyBudget = () => {

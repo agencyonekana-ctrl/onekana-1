@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronDown, Clock, Dribbble, Instagram, Linkedin, Mail, MapPin, MessageCircle, Phone, Send, Sparkles, Twitter } from 'lucide-react'
-import { PHP_ENDPOINTS } from '../config/api'
+import { ChevronDown, ClipboardCheck, Clock, Facebook, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import AccentText from '../components/AccentText'
 import InnerPageHero from '../components/InnerPageHero'
+
+const CONTACT_EMAIL = 'contact@onekana-agency.com'
+const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
 
 function Contact() {
   const { t } = useLanguage()
@@ -22,13 +24,23 @@ function Contact() {
       activation: 'Field activation',
     },
   })
-  const initialSubject = objectiveSubjects[searchParams.get('objectif')] || ''
+  const poleParams = {
+    mediamove: 'Onekana MediaMove',
+    streets: 'Onekana Streets',
+    dooh: 'Onekana DOOH',
+    connect: 'Onekana Connect',
+    studio: 'Onekana Studio',
+    life: 'Onekana Life',
+  }
+  const requestedSupport = searchParams.get('support') || ''
+  const initialSubject = objectiveSubjects[searchParams.get('objectif')]
+    || (requestedSupport ? t({ fr: `Demande pour ${requestedSupport}`, en: `${requestedSupport} enquiry` }) : '')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     company: '',
     subject: initialSubject,
-    pole: '',
+    pole: poleParams[searchParams.get('pole')] || '',
     budgetRange: '',
     customBudget: '',
     message: '',
@@ -50,6 +62,13 @@ function Contact() {
       { value: 'custom', label: 'Custom amount' },
     ],
   })
+  const completedBriefFields = [formData.name, formData.email, formData.subject, formData.pole, formData.message]
+    .filter((value) => value.trim()).length
+  const briefProgress = completedBriefFields * 20
+  const selectedBudgetOption = budgetOptions.find((option) => option.value === formData.budgetRange)
+  const budgetSummary = formData.budgetRange === 'custom' && formData.customBudget
+    ? `${formData.customBudget} USD`
+    : selectedBudgetOption?.label || t({ fr: 'À préciser', en: 'To be specified' })
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -71,7 +90,7 @@ function Contact() {
     return errors
   }
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
@@ -85,31 +104,20 @@ function Contact() {
       const budgetLabel = formData.budgetRange === 'custom'
         ? `${formData.customBudget} USD`
         : selectedBudget?.label || t({ fr: 'Non renseigné', en: 'Not provided' })
+      const subject = `[${formData.pole}] ${formData.subject.trim()}`
       const structuredMessage = [
+        `${t({ fr: 'Nom', en: 'Name' })}: ${formData.name}`,
+        `Email: ${formData.email}`,
         `${t({ fr: 'Entreprise', en: 'Company' })}: ${formData.company || '-'}`,
         `${t({ fr: 'Pôle', en: 'Hub' })}: ${formData.pole}`,
+        requestedSupport ? `${t({ fr: 'Support', en: 'Medium' })}: ${requestedSupport}` : null,
         `${t({ fr: 'Budget indicatif', en: 'Indicative budget' })}: ${budgetLabel}`,
         '',
         `${t({ fr: 'Message', en: 'Message' })}:`,
         formData.message,
-      ].join('\n')
-      const response = await fetch(PHP_ENDPOINTS.CONTACT_MESSAGE_POST, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: `[${formData.pole}] ${formData.subject.trim()}`,
-          message: structuredMessage,
-          status: 'unread',
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || t({ fr: 'Une erreur est survenue lors de l’envoi.', en: 'An error occurred while sending.' }))
-      }
-
+      ].filter((line) => line !== null).join('\n')
+      const mailtoHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(structuredMessage)}`
+      window.location.href = mailtoHref
       setSubmitted(true)
       setFormData({ name: '', email: '', company: '', subject: '', pole: '', budgetRange: '', customBudget: '', message: '' })
     } catch (error) {
@@ -172,17 +180,14 @@ function Contact() {
               </p>
 
               <div className="contact-detail-list">
-                <a href="mailto:agencyonekana@gmail.com"><Mail size={20} /><span><small>Email</small>agencyonekana@gmail.com</span></a>
+                <a href={`mailto:${CONTACT_EMAIL}`}><Mail size={20} /><span><small>Email</small>{CONTACT_EMAIL}</span></a>
                 <a href="tel:+243986773438"><Phone size={20} /><span><small>{t({ fr: 'Téléphone', en: 'Phone' })}</small>+243 986 773 438</span></a>
                 <div><MapPin size={20} /><span><small>{t({ fr: 'Adresse', en: 'Address' })}</small>Avenue Vangu N°2656, Référence Arrêt du Carmel, Quartier Gambela 2, Commune de Lubumbashi</span></div>
                 <div><Clock size={20} /><span><small>{t({ fr: 'Disponibilité', en: 'Availability' })}</small>{t({ fr: 'Lundi - Vendredi, 9h - 18h', en: 'Monday - Friday, 9am - 6pm' })}</span></div>
               </div>
 
               <div className="contact-social-row">
-                <a href="#" aria-label="Instagram"><Instagram size={19} /></a>
-                <a href="#" aria-label="LinkedIn"><Linkedin size={19} /></a>
-                <a href="#" aria-label="Twitter"><Twitter size={19} /></a>
-                <a href="#" aria-label="Dribbble"><Dribbble size={19} /></a>
+                <a href={FACEBOOK_URL} aria-label="Facebook Onekana" target="_blank" rel="noopener noreferrer"><Facebook size={19} /></a>
               </div>
             </aside>
 
@@ -190,14 +195,50 @@ function Contact() {
               {submitted ? (
                 <div className="contact-success" role="status">
                   <div><Send size={30} /></div>
-                  <span className="section-label">{t({ fr: 'Message envoyé', en: 'Message sent' })}</span>
-                  <h3>{t({ fr: 'La conversation est lancée.', en: 'The conversation has started.' })}</h3>
-                  <p>{t({ fr: 'Notre équipe vous répondra dans les meilleurs délais.', en: 'Our team will get back to you as soon as possible.' })}</p>
+                  <span className="section-label">{t({ fr: 'Email prêt', en: 'Email ready' })}</span>
+                  <h3>{t({ fr: 'Votre client email est ouvert.', en: 'Your email client is open.' })}</h3>
+                  <p>{t({ fr: 'Vérifiez le message prérempli puis finalisez l’envoi à Onekana.', en: 'Review the pre-filled message, then send it to Onekana.' })}</p>
                   <button type="button" className="btn btn-outline" onClick={() => setSubmitted(false)}>{t({ fr: 'Envoyer un autre message', en: 'Send another message' })}</button>
                 </div>
               ) : (
                 <form className="contact-form-modern" onSubmit={handleSubmit} noValidate>
                   <div className="contact-form-heading"><span>01</span><div><small>{t({ fr: 'Votre brief', en: 'Your brief' })}</small><h3>{t({ fr: 'Commençons simplement', en: 'Let’s start simply' })}</h3></div></div>
+                  <aside className="contact-brief-summary" aria-live="polite">
+                    <div className="contact-brief-summary-head">
+                      <div><ClipboardCheck size={20} /><span>{t({ fr: 'Récapitulatif de la demande', en: 'Request summary' })}</span></div>
+                      <strong>{briefProgress}%</strong>
+                    </div>
+                    <div
+                      className="contact-brief-progress"
+                      role="progressbar"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow={briefProgress}
+                      aria-label={t({ fr: 'Progression du brief', en: 'Brief progress' })}
+                    >
+                      <span style={{ width: `${briefProgress}%` }} />
+                    </div>
+                    <div className="contact-brief-summary-grid">
+                      <div className={formData.subject ? 'filled' : ''}>
+                        <small>{t({ fr: 'Objet', en: 'Subject' })}</small>
+                        <span>{formData.subject || t({ fr: 'À préciser', en: 'To be specified' })}</span>
+                      </div>
+                      <div className={formData.pole ? 'filled' : ''}>
+                        <small>{t({ fr: 'Pôle', en: 'Hub' })}</small>
+                        <span>{formData.pole || t({ fr: 'À choisir', en: 'To be selected' })}</span>
+                      </div>
+                      <div className={formData.budgetRange ? 'filled' : ''}>
+                        <small>{t({ fr: 'Budget', en: 'Budget' })}</small>
+                        <span>{budgetSummary}</span>
+                      </div>
+                      {requestedSupport && (
+                        <div className="filled">
+                          <small>{t({ fr: 'Support conseillé', en: 'Recommended medium' })}</small>
+                          <span>{requestedSupport}</span>
+                        </div>
+                      )}
+                    </div>
+                  </aside>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">{t({ fr: 'Nom', en: 'Name' })} *</label>

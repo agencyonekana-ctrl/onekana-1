@@ -2,7 +2,6 @@
 // Service de récupération des données API PHP
 // ============================================
 
-import { useState, useEffect } from 'react';
 import { PHP_API_BASE_URL, PHP_ENDPOINTS } from '../config/api';
 
 // ── Utilitaire fetch générique ──────────────────────────────────────────────
@@ -522,28 +521,5 @@ export async function bulkDeleteNotifications(ids) {
  * const { data: campaigns, loading, error } = useApi(getCampaigns, []);
  * const { data: campaign } = useApi(() => getCampaignById(id), null, [id]);
  */
-export function useApi(fetchFn, initial = null, deps = []) {
-    const [data, setData] = useState(initial);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const execute = () => {
-        let cancelled = false;
-        setLoading(true);
-        setError(null);
-
-        fetchFn()
-            .then((result) => { if (!cancelled) setData(result); })
-            .catch((err) => { if (!cancelled) setError(err.message); })
-            .finally(() => { if (!cancelled) setLoading(false); });
-
-        return () => { cancelled = true; };
-    };
-
-    useEffect(execute, deps);
-
-    return { data, loading, error, refetch: execute };
-}
-
 // ── Export base URL ─────────────────────────────────────────────────────────
 export { PHP_API_BASE_URL };

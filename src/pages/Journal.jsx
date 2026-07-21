@@ -12,7 +12,7 @@ const handleMouseMoveSpotlight = (event) => {
   event.currentTarget.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`)
 }
 
-function Blog() {
+function Journal() {
   const { t } = useLanguage()
   const [activeCategory, setActiveCategory] = useState('all')
   const [selectedArticle, setSelectedArticle] = useState(null)
@@ -105,9 +105,9 @@ function Blog() {
   }, [selectedArticle])
 
   return (
-    <div className="page blog-page">
+    <div className="page journal-page">
       <InnerPageHero
-        variant="blog"
+        variant="journal"
         eyebrow={t({ fr: 'Le journal Onekana', en: 'The Onekana journal' })}
         title={t({
           fr: [{ text: 'Les idées qui font ' }, { text: 'bouger la ville.', accent: true }],
@@ -119,10 +119,10 @@ function Blog() {
         })}
         meta={t({ fr: ['Terrain', 'Culture', 'Insights'], en: ['Field', 'Culture', 'Insights'] })}
       >
-        <button type="button" className="blog-hero-feature" onClick={() => setSelectedArticle(featured)}>
+        <button type="button" className="journal-hero-feature" onClick={() => setSelectedArticle(featured)}>
           <img src={featured.image} alt="" />
-          <span className="blog-hero-feature-shade" />
-          <span className="blog-hero-feature-copy">
+          <span className="journal-hero-feature-shade" />
+          <span className="journal-hero-feature-copy">
             <small>{t({ fr: 'À la une', en: 'Featured' })}</small>
             <strong>{featured.title}</strong>
             <em>{featured.readTime}</em>
@@ -130,9 +130,9 @@ function Blog() {
         </button>
       </InnerPageHero>
 
-      <section className="section blog-editorial-section">
+      <section className="section journal-editorial-section">
         <div className="container">
-          <div className="blog-editorial-head reveal-up">
+          <div className="journal-editorial-head reveal-up">
             <div>
               <span className="section-label">{t({ fr: 'Dernières publications', en: 'Latest stories' })}</span>
               <h2 className="section-title">
@@ -145,7 +145,7 @@ function Blog() {
                 })} />
               </p>
             </div>
-            <div className="blog-filter" aria-label={t({ fr: 'Filtrer les articles', en: 'Filter articles' })}>
+            <div className="journal-filter" aria-label={t({ fr: 'Filtrer les articles', en: 'Filter articles' })}>
               {categories.map((category) => (
                 <button key={category.key} type="button" className={activeCategory === category.key ? 'active' : ''} onClick={() => setActiveCategory(category.key)}>
                   {category.label}
@@ -154,18 +154,18 @@ function Blog() {
             </div>
           </div>
 
-          <div className="blog-story-grid reveal-stagger">
+          <div className="journal-story-grid reveal-stagger">
             {filteredArticles.map((article) => (
-              <article key={article.id} className="blog-story-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
-                <button type="button" className="blog-story-media" onClick={() => setSelectedArticle(article)} aria-label={`${t({ fr: 'Ouvrir', en: 'Open' })} ${article.title}`}>
-                  <img src={article.image} alt="" loading="lazy" />
+              <article key={article.id} className="journal-story-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
+                <button type="button" className="journal-story-media" onClick={() => setSelectedArticle(article)} aria-label={`${t({ fr: 'Ouvrir', en: 'Open' })} ${article.title}`}>
+                  <img src={article.image} alt="" loading="lazy" decoding="async" />
                   <span>{article.category}</span>
                 </button>
-                <div className="blog-story-content">
-                  <div className="blog-story-meta"><Calendar size={14} /> {article.date}<span /><Clock3 size={14} /> {article.readTime}</div>
+                <div className="journal-story-content">
+                  <div className="journal-story-meta"><Calendar size={14} /> {article.date}<span /><Clock3 size={14} /> {article.readTime}</div>
                   <h3>{article.title}</h3>
                   <p>{article.excerpt}</p>
-                  <button type="button" className="blog-read-button" onClick={() => setSelectedArticle(article)}>
+                  <button type="button" className="journal-read-button" onClick={() => setSelectedArticle(article)}>
                     {t({ fr: 'Lire l’aperçu', en: 'Read preview' })}<ArrowRight size={17} />
                   </button>
                 </div>
@@ -198,4 +198,4 @@ function Blog() {
   )
 }
 
-export default Blog
+export default Journal

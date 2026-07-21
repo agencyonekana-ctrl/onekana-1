@@ -6,6 +6,11 @@
 
 @media (max-width: 768px) {
 
+  .expertise-hero-tile.tile-car figcaption {
+    top: 0.8rem;
+    bottom: auto;
+  }
+
   /* ── Base ─────────────────────────────────────── */
   html { font-size: 15px; -webkit-text-size-adjust: 100%; }
 
@@ -95,7 +100,6 @@
     width: 100%;
   }
 
-  .btn-hero-primary,
   .btn-hero-secondary {
     width: 100%;
     justify-content: center;
@@ -104,50 +108,11 @@
     border-radius: 8px;
   }
 
-  .brochure-dropdown {
-    width: 100%;
-  }
-
-  .brochure-dropdown .btn-hero-primary {
-    width: 100%;
-  }
-
-  .brochure-menu {
-    width: 100%;
-    left: 0;
-    right: 0;
-  }
-
   .hero-scroll-indicator {
     display: none;
   }
 
   /* Stats strip */
-  .hero-stats-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    padding: 1.25rem 1rem;
-    margin: 0 1rem;
-    border-radius: 12px;
-  }
-
-  .hero-stat {
-    padding: 0.75rem 0.5rem;
-    text-align: center;
-  }
-
-  .hero-stat-divider {
-    display: none;
-  }
-
-  .stat-num {
-    font-size: 1.6rem;
-  }
-
-  .stat-lbl {
-    font-size: 0.72rem;
-  }
 
   /* ── Marquee ──────────────────────────────────── */
   .marquee-bar {
@@ -156,9 +121,6 @@
   }
 
   /* ── Partners ─────────────────────────────────── */
-  .partners-section {
-    padding: 3rem 0 !important;
-  }
 
   .section-eyebrow {
     font-size: 0.75rem;
@@ -167,16 +129,6 @@
   .section-heading {
     font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
     margin-bottom: 2rem !important;
-  }
-
-  .partner-card {
-    padding: 0.75rem 1rem;
-    min-width: 110px;
-  }
-
-  .partner-img {
-    max-height: 30px;
-    max-width: 90px;
   }
 
   /* ── About/Cards ──────────────────────────────── */
@@ -228,100 +180,11 @@
   }
 
   /* ── Why Lubumbashi ───────────────────────────── */
-  .wl-section {
-    padding: 4rem 0 !important;
-  }
-
-  .wl-cards-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-  }
-
-  .wl-card {
-    padding: 1.25rem 1rem;
-    border-radius: 12px;
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .wl-card-icon {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    border-radius: 10px;
-  }
-
-  .wl-card-title {
-    font-size: 1rem;
-    margin-bottom: 0.35rem;
-  }
-
-  .wl-card-text {
-    font-size: 0.85rem;
-    line-height: 1.55;
-  }
-
-  .wl-result {
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 1rem 1.25rem;
-    text-align: center;
-    border-radius: 10px;
-    margin-top: 2rem;
-  }
 
   /* ── DigiStreet ───────────────────────────────── */
-  .ds-section {
-    padding: 4rem 0 !important;
-  }
 
-  .ds-layout {
-    flex-direction: column !important;
-    gap: 2rem;
-  }
-
-  .ds-left,
-  .ds-right {
-    width: 100% !important;
-  }
-
-  .ds-heading,
   .section-heading {
     font-size: clamp(1.6rem, 7vw, 2.4rem) !important;
-  }
-
-  .ds-lead {
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .ds-features {
-    grid-template-columns: 1fr !important;
-    gap: 0.75rem;
-  }
-
-  .ds-feature {
-    gap: 0.75rem;
-    padding: 0.9rem 1rem;
-    border-radius: 10px;
-  }
-
-  .ds-feature-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-
-  .ds-visual {
-    height: 220px !important;
-    border-radius: 16px !important;
-  }
-
-  .ds-visual img {
-    border-radius: 16px !important;
   }
 
   /* ── Services Strip ───────────────────────────── */
@@ -339,16 +202,6 @@
     border-radius: 12px;
   }
 
-  .ss-title {
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .ss-desc {
-    font-size: 0.8rem;
-    line-height: 1.45;
-  }
-
   .ss-icon {
     width: 40px;
     height: 40px;
@@ -357,71 +210,11 @@
   }
 
   /* ── Testimonials ─────────────────────────────── */
-  .testi-section {
-    padding: 3rem 0 !important;
-  }
-
-  .testi-item {
-    min-width: 280px !important;
-    width: 280px !important;
-    max-width: 280px !important;
-    padding: 1.2rem !important;
-  }
-
-  .testi-item-text {
-    font-size: 0.9rem !important;
-    line-height: 1.6 !important;
-    -webkit-line-clamp: 3 !important;
-    max-height: 5rem !important;
-  }
-
-  .testi-marquee,
-  .testi-row-left,
-  .testi-row-right {
-    gap: 1rem !important;
-  }
-
-  .testi-section .testi-row-left {
-    animation: marquee-left 28s linear infinite !important;
-  }
-
-  .testi-section .testi-row-right {
-    animation: marquee-right 32s linear infinite !important;
-  }
 
   /* ── CTA Banner ───────────────────────────────── */
-  .cta-banner {
-    padding: 4rem 0 !important;
-  }
-
-  .cta-inner {
-    padding: 2.5rem 1.25rem;
-    border-radius: 16px;
-    text-align: center;
-  }
-
-  .cta-heading {
-    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
-    margin-bottom: 1rem;
-  }
-
-  .cta-sub {
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-  }
-
-  .cta-btns {
-    flex-direction: column;
-    gap: 0.8rem;
-    align-items: center;
-  }
-
-  .cta-btns > * {
-    width: 100%;
-  }
 
   .btn-ghost,
-  .btn-large {
+.btn-large {
     width: 100%;
     justify-content: center;
     font-size: 0.9rem;
@@ -501,53 +294,11 @@
     justify-content: center;
   }
 
-  .floating-lang-btn {
-    display: none !important;
-  }
-
   /* ── Page Headers ─────────────────────────────── */
-  .page-header {
-    padding: 100px 0 3.5rem !important;
-    min-height: 45dvh;
-  }
 
-  .page-label {
-    font-size: 0.7rem;
-  }
-
-  .page-title {
-    font-size: clamp(2rem, 8vw, 3rem);
-    margin: 0.5rem 0 1rem;
-  }
-
-  .page-subtitle {
-    font-size: 0.9rem;
-    line-height: 1.65;
-  }
-
-  .page-header-objects {
-    opacity: 0.08;
-  }
-
-  /* ── Blog Cards ───────────────────────────────── */
-  .blog-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.25rem !important;
-  }
-
-  .blog-card-content {
-    padding: 1.25rem !important;
-  }
-
-  .blog-card-image {
-    height: 160px !important;
-  }
+  /* ── Journal Cards ───────────────────────────────── */
 
   /* ── Contact Page ─────────────────────────────── */
-  .contact-grid-modern {
-    grid-template-columns: 1fr !important;
-    gap: 2rem;
-  }
 
   .contact-form-modern .form-row {
     flex-direction: column;
@@ -558,8 +309,8 @@
   }
 
   .form-group input,
-  .form-group textarea,
-  .form-group select {
+.form-group textarea,
+.form-group select {
     font-size: 16px; /* Prevents iOS zoom */
     padding: 0.85rem 1rem;
     border-radius: 8px;
@@ -570,81 +321,11 @@
     justify-content: center;
   }
 
-  .faq-grid-modern {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-  }
-
-  .faq-item-modern {
-    padding: 1.25rem 1rem;
-    border-radius: 10px;
-  }
-
   /* ── Expertise Page ───────────────────────────── */
-  .services-expertise-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-  }
-
-  .service-expertise-card {
-    padding: 1.5rem 1.25rem;
-    border-radius: 12px;
-  }
-
-  .additional-services-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.85rem;
-  }
-
-  .process-expertise-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.85rem;
-  }
-
-  .process-expertise-card {
-    padding: 1.25rem 1rem;
-    border-radius: 10px;
-  }
-
-  .process-connector {
-    display: none;
-  }
 
   /* ── Agence Page ──────────────────────────────── */
-  .about-grid-agence {
-    grid-template-columns: 1fr !important;
-    gap: 2rem;
-  }
-
-  .values-grid-agence {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.85rem;
-  }
-
-  .value-card-agence {
-    padding: 1.25rem 1rem;
-    border-radius: 10px;
-  }
-
-  .stats-grid-agence {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.85rem;
-  }
-
-  .stat-item-agence {
-    padding: 1.25rem 1rem;
-    border-radius: 10px;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-  }
 
   /* ── Packs Page ───────────────────────────────── */
-  .packs-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.25rem;
-  }
 
   /* ── Section common ───────────────────────────── */
   .section-header {
@@ -683,60 +364,11 @@
 
   /* ── Custom Cursor off ────────────────────────── */
   .cursor-follower,
-  .cursor-follower-outer {
+.cursor-follower-outer {
     display: none !important;
   }
 
   /* ── Payment Section ──────────────────────────── */
-  .payment-methods-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem;
-  }
-
-  .payment-method-card {
-    padding: 1.8rem;
-    text-align: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .payment-logos-showcase {
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .payment-brand-logo-large {
-    height: 32px;
-    padding: 4px 8px;
-  }
-
-  .payment-icon-wrap {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-  }
-
-  .payment-method-name {
-    font-size: 0.82rem;
-  }
-
-  .payment-method-desc {
-    font-size: 0.72rem;
-  }
-
-  .payment-trust-badges {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-  }
-
-  .payment-trust-badge {
-    font-size: 0.72rem;
-    padding: 0.35rem 0.7rem;
-    border-radius: 20px;
-  }
 
   /* ── Preloader ────────────────────────────────── */
   .preloader-logo img {
@@ -745,7 +377,9 @@
 
   /* ── Animations — reduce motion on mobile ──────── */
   @media (prefers-reduced-motion: reduce) {
-    *, ::before, ::after {
+    *,
+::before,
+::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
@@ -762,10 +396,6 @@
   .floating-campaign-btn {
     bottom: max(1.25rem, env(safe-area-inset-bottom));
     right: max(1.25rem, env(safe-area-inset-right));
-  }
-
-  .floating-lang-btn {
-    left: max(0.75rem, env(safe-area-inset-left));
   }
 
   /* ── Floating Language Badge ────────────────────── */
@@ -809,39 +439,38 @@
 
   /* Overflow guards */
   html,
-  body,
-  #root,
-  .app,
-  main {
+body,
+#root,
+.app,
+main {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
   }
 
   *,
-  *::before,
-  *::after {
+*::before,
+*::after {
     box-sizing: border-box;
   }
 
   img,
-  video,
-  canvas,
-  svg {
+video,
+canvas,
+svg {
     max-width: 100%;
   }
 
   .navigation,
-  .nav-container,
-  .container,
-  .section,
-  .page-header,
-  .hero-cinematic,
-  .hero-cinematic-inner,
-  .footer,
-  .footer-cta,
-  .footer-main,
-  .footer-bottom-bar {
+.nav-container,
+.container,
+.section,
+.hero-cinematic,
+.hero-cinematic-inner,
+.footer,
+.footer-cta,
+.footer-main,
+.footer-bottom-bar {
     width: 100%;
     max-width: 100%;
   }
@@ -853,21 +482,18 @@
   }
 
   .hero-actions,
-  .cta-btns,
-  .footer-cta-content,
-  .contact-form-modern,
-  .campaign-popup,
-  .popup-options {
+.contact-form-modern,
+.campaign-popup,
+.popup-options {
     max-width: 100%;
     min-width: 0;
   }
 
   .btn,
-  .btn-primary,
-  .btn-large,
-  .btn-hero-primary,
-  .btn-hero-secondary,
-  .nav-mobile-cta {
+.btn-primary,
+.btn-large,
+.btn-hero-secondary,
+.nav-mobile-cta {
     max-width: 100%;
     min-width: 0;
     white-space: normal;
@@ -875,19 +501,12 @@
   }
 
   .section-heading,
-  .section-title,
-  .page-title,
-  .hero-headline,
-  .cta-heading,
-  .footer-cta h2 {
+.section-title,
+.hero-headline,
+.footer-cta h2 {
     overflow-wrap: anywhere;
   }
 
-  .testi-item,
-  .partner-card,
-  .service-expertise-card,
-  .value-card-agence,
-  .stat-item-agence,
   .popup-option {
     max-width: 100% !important;
   }

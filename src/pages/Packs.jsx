@@ -62,7 +62,7 @@ const BrochureDropdown = () => {
 }
 
 // Pack Icon Selector
-const getPackIcon = (name) => {
+const _getPackIcon = (name) => {
     if (!name || typeof name !== 'string') return Eye
     const nameUpper = name.toUpperCase()
     if (nameUpper.includes('START')) return Eye
@@ -87,13 +87,11 @@ const formatBudget = (pack) => {
 
 // Pack Card Component
 const PackCard = ({ pack }) => {
-    const IconComponent = getPackIcon(pack.name)
-
     return (
         <div className="pack-card">
             <div className="pack-header">
                 <div className="pack-icon">
-                    <IconComponent size={24} strokeWidth={1.5} />
+                    <Eye size={24} strokeWidth={1.5} />
                 </div>
                 <h3 className="pack-name">{pack.name}</h3>
                 <div className="pack-budget">
@@ -279,7 +277,7 @@ function Packs() {
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
     const [categoryFilter, setCategoryFilter] = useState('')
-    const [showModal, setShowModal] = useState(false)
+    const [_showModal, setShowModal] = useState(false)
     const [editingPack, setEditingPack] = useState(null)
 
     useEffect(() => {
@@ -327,17 +325,17 @@ function Packs() {
         }
     }
 
-    const handleAddPack = () => {
+    const _handleAddPack = () => {
         setEditingPack(null)
         setShowModal(true)
     }
 
-    const handleEditPack = (pack) => {
+    const _handleEditPack = (pack) => {
         setEditingPack(pack)
         setShowModal(true)
     }
 
-    const handleDeletePack = async (packId) => {
+    const _handleDeletePack = async (packId) => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ce pack ?')) {
             try {
                 await deletePack(packId)
@@ -349,7 +347,7 @@ function Packs() {
         }
     }
 
-    const handleSavePack = async (packData) => {
+    const _handleSavePack = async (packData) => {
         try {
             if (editingPack) {
                 await updatePack(editingPack.id, packData)

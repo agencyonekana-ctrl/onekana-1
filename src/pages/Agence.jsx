@@ -29,7 +29,7 @@ const handleMouseMoveSpotlight = (e) => {
 
 function Agence() {
   const { t } = useLanguage()
-  const [activeFocus, setActiveFocus] = useState('terrain')
+  const [activeTeamRole, setActiveTeamRole] = useState('strategy')
   const [activeHeroSlide, setActiveHeroSlide] = useState(0)
 
   useScrollReveal()
@@ -63,58 +63,59 @@ function Agence() {
     setActiveHeroSlide((current) => (current + direction + heroSlides.length) % heroSlides.length)
   }
 
-  const focusItems = [
+  const teamRoles = [
     {
-      id: 'terrain',
-      label: t({ fr: 'Terrain', en: 'Field' }),
-      icon: MapPin,
-      image: '/images/onekana/supports/car-flyers.png',
-      title: t({ fr: 'Nous partons des flux réels', en: 'We start from real movement' }),
+      id: 'strategy',
+      label: t({ fr: 'Stratégie', en: 'Strategy' }),
+      icon: Target,
+      image: '/images/onekana/agency-behind-campaign.png',
+      title: t({ fr: 'Donner une direction au mouvement', en: 'Give direction to the movement' }),
       text: t({
-        fr: 'Quartiers, taxis, lieux de passage, commerces et habitudes locales guident chaque dispositif.',
-        en: 'Neighborhoods, taxis, high-traffic places, shops and local habits guide every campaign.',
+        fr: 'L’équipe transforme l’objectif de la marque en choix de publics, de zones et de supports cohérents.',
+        en: 'The team turns the brand objective into coherent audience, area and media choices.',
       }),
-      stat: t({ fr: 'Zones utiles', en: 'Useful zones' }),
+      output: t({ fr: 'Direction de campagne', en: 'Campaign direction' }),
     },
     {
-      id: 'creation',
+      id: 'creative',
       label: t({ fr: 'Création', en: 'Creation' }),
       icon: Sparkles,
       image: '/images/onekana/studio-connect-life.png',
-      title: t({ fr: 'Nous créons pour être compris vite', en: 'We create for fast understanding' }),
+      title: t({ fr: 'Créer pour être compris dans la ville', en: 'Create for understanding in the city' }),
       text: t({
-        fr: 'Flyers, affiches et messages sont pensés pour la rue, le mouvement et les écrans.',
-        en: 'Flyers, posters and messages are designed for streets, movement and screens.',
+        fr: 'Les messages et visuels sont adaptés au rythme de la rue, des véhicules et des écrans.',
+        en: 'Messages and visuals are adapted to the pace of streets, vehicles and screens.',
       }),
-      stat: t({ fr: 'Visuels terrain', en: 'Field visuals' }),
+      output: t({ fr: 'Concepts prêts pour le terrain', en: 'Field-ready concepts' }),
     },
     {
-      id: 'mesure',
-      label: t({ fr: 'Mesure', en: 'Measure' }),
+      id: 'field',
+      label: t({ fr: 'Terrain', en: 'Field' }),
+      icon: MapPin,
+      image: '/images/onekana/streets-dooh.png',
+      title: t({ fr: 'Faire vivre le dispositif au bon endroit', en: 'Bring the campaign to life in the right place' }),
+      text: t({
+        fr: 'Les coordinateurs organisent les supports, les équipes et les points de contact dans la ville.',
+        en: 'Coordinators organize the media, teams and touchpoints across the city.',
+      }),
+      output: t({ fr: 'Activation coordonnée', en: 'Coordinated activation' }),
+    },
+    {
+      id: 'measurement',
+      label: t({ fr: 'Mesure', en: 'Measurement' }),
       icon: BarChart3,
       image: '/images/onekana/supports/reporting.png',
-      title: t({ fr: 'Nous rendons l’action lisible', en: 'We make action readable' }),
+      title: t({ fr: 'Transformer le terrain en lecture utile', en: 'Turn field activity into useful insight' }),
       text: t({
-        fr: 'Onekana Connect structure les retours terrain, les statistiques et les observations utiles.',
-        en: 'Onekana Connect structures field feedback, statistics and useful observations.',
+        fr: 'Les observations et données disponibles sont structurées pour comprendre et améliorer la campagne.',
+        en: 'Available observations and data are structured to understand and improve the campaign.',
       }),
-      stat: t({ fr: 'Reporting clair', en: 'Clear reporting' }),
-    },
-    {
-      id: 'impact',
-      label: t({ fr: 'Impact', en: 'Impact' }),
-      icon: Target,
-      image: '/images/onekana/streets-dooh.png',
-      title: t({ fr: 'Nous prolongeons la présence de marque', en: 'We extend brand presence' }),
-      text: t({
-        fr: 'Les supports mobiles, piétons, digitaux et éditoriaux créent une présence qui reste visible.',
-        en: 'Mobile, pedestrian, digital and editorial media create presence that remains visible.',
-      }),
-      stat: t({ fr: 'Présence locale', en: 'Local presence' }),
+      output: t({ fr: 'Reporting compréhensible', en: 'Clear reporting' }),
     },
   ]
 
-  const active = focusItems.find((item) => item.id === activeFocus) || focusItems[0]
+  const activeTeam = teamRoles.find((role) => role.id === activeTeamRole) || teamRoles[0]
+  const ActiveTeamIcon = activeTeam.icon
 
   const processSteps = [
     {
@@ -172,13 +173,6 @@ function Agence() {
         en: 'We stay at the forefront of the latest technologies and trends.',
       }),
     },
-  ]
-
-  const stats = [
-    { number: '50+', label: t({ fr: 'Clients actifs', en: 'Active clients' }) },
-    { number: '200+', label: t({ fr: 'Campagnes lancées', en: 'Campaigns launched' }) },
-    { number: '3 ans', label: t({ fr: "D'expérience", en: 'Experience' }) },
-    { number: '98%', label: t({ fr: 'Satisfaction client', en: 'Client satisfaction' }) },
   ]
 
   return (
@@ -243,39 +237,61 @@ function Agence() {
             </p>
           </div>
 
-          <div className="agence-focus-grid">
-            <div className="agence-focus-copy reveal-left">
-              <div className="agence-focus-tabs" role="tablist" aria-label={t({ fr: 'Axes Onekana', en: 'Onekana focus areas' })}>
-                {focusItems.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className={`agence-focus-tab${activeFocus === item.id ? ' active' : ''}`}
-                    onClick={() => setActiveFocus(item.id)}
-                  >
-                    <item.icon size={18} strokeWidth={1.8} />
-                    {item.label}
-                  </button>
-                ))}
+          <div className="agence-role-team-label reveal-up">
+            <span>{t({ fr: 'Derrière chaque campagne', en: 'Behind every campaign' })}</span>
+            <p>{t({
+              fr: 'Une même équipe relie la réflexion, la création, le terrain et la lecture des résultats.',
+              en: 'One team connects thinking, creation, field execution and the reading of results.',
+            })}</p>
+          </div>
+
+          <div className="agence-team-layout">
+            <figure className="agence-team-visual reveal-left">
+              <img
+                key={activeTeam.image}
+                src={activeTeam.image}
+                alt={t({
+                  fr: `Expertise ${activeTeam.label} de l’équipe Onekana à Lubumbashi`,
+                  en: `Onekana ${activeTeam.label} expertise in Lubumbashi`,
+                })}
+                className="agence-team-image-active"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>
+                <span />
+                {t({ fr: 'Création et coordination en équipe', en: 'Team creation and coordination' })}
+              </figcaption>
+            </figure>
+
+            <div className="agence-team-workspace reveal-right">
+              <div className="agence-team-tabs" role="tablist" aria-label={t({ fr: 'Métiers Onekana', en: 'Onekana skills' })}>
+                {teamRoles.map((role) => {
+                  const RoleIcon = role.icon
+                  return (
+                    <button
+                      key={role.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTeamRole === role.id}
+                      className={activeTeamRole === role.id ? 'active' : ''}
+                      onClick={() => setActiveTeamRole(role.id)}
+                    >
+                      <RoleIcon size={19} strokeWidth={1.8} />
+                      {role.label}
+                    </button>
+                  )
+                })}
               </div>
 
-              <div className="agence-focus-panel card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
-                <span>{active.stat}</span>
-                <h3>{active.title}</h3>
-                <p>{active.text}</p>
-              </div>
-            </div>
-
-            <div className="agence-visual-card reveal-right">
-              <img src={active.image} alt="" className="agence-visual-image" />
-              <div className="agence-floating-badge badge-terrain">
-                <MapPin size={16} /> {t({ fr: 'Terrain', en: 'Field' })}
-              </div>
-              <div className="agence-floating-badge badge-creation">
-                <Sparkles size={16} /> {t({ fr: 'Création', en: 'Creation' })}
-              </div>
-              <div className="agence-floating-badge badge-mesure">
-                <BarChart3 size={16} /> {t({ fr: 'Mesure', en: 'Measure' })}
+              <div className="agence-team-panel" key={activeTeamRole} role="tabpanel">
+                <ActiveTeamIcon size={30} strokeWidth={1.6} aria-hidden="true" />
+                <h3>{activeTeam.title}</h3>
+                <p>{activeTeam.text}</p>
+                <div className="agence-team-output">
+                  <CheckCircle size={18} aria-hidden="true" />
+                  <span>{activeTeam.output}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -329,17 +345,8 @@ function Agence() {
         </div>
       </section>
 
-      <section className="agence-stats-section section section-alt">
+      <section className="agence-cta-section section section-alt">
         <div className="container">
-          <div className="agence-stats-card reveal-up">
-            {stats.map((stat, index) => (
-              <div key={stat.label} className="agence-stat-item">
-                <strong>{stat.number}</strong>
-                <span>{stat.label}</span>
-                {index < stats.length - 1 && <i aria-hidden="true" />}
-              </div>
-            ))}
-          </div>
           <div className="agence-bottom-cta reveal-up">
             <p>{t({ fr: 'Besoin de rendre votre marque visible dans la ville ?', en: 'Need to make your brand visible in the city?' })}</p>
             <Link to="/contact" className="btn btn-primary">

@@ -2,9 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Move3d, Layers, Network, Eye, Brain, Phone, CheckCircle,
-  Car, Store, Smartphone, Target, ArrowRight, Backpack, Play,
-  MousePointer, Sun, Check, Star, FileText,
-  TrendingUp, Users, Award, MapPin, Radio, BarChart3, CreditCard, ShieldCheck, Wallet, Monitor
+  Car, ArrowRight, Backpack, FileText, Award, BarChart3, Monitor,
+  MessageSquareText, Route, ChartNoAxesCombined
 } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
 
@@ -169,7 +168,7 @@ const Hero = () => {
 
   return (
     <section className="hero-cinematic">
-      <video className="hero-bg-video" autoPlay muted loop playsInline aria-hidden="true">
+      <video className="hero-bg-video" autoPlay muted loop playsInline preload="metadata" poster="/images/hero_bg_3d.png" aria-hidden="true">
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
       <div className="hero-video-overlay" />
@@ -193,7 +192,7 @@ const Hero = () => {
       <div className="container hero-cinematic-inner">
         <div className="hero-badge reveal-up active">
           <span className="badge-dot" />
-          {t({ fr: 'Agence #1 à Lubumbashi', en: '#1 Agency in Lubumbashi' })}
+          {t({ fr: 'Publicité urbaine à Lubumbashi', en: 'Urban advertising in Lubumbashi' })}
         </div>
 
         <h1 className="hero-headline reveal-up active">
@@ -213,21 +212,6 @@ const Hero = () => {
         <p className="hero-lead reveal-up active" style={{ transitionDelay: '0.15s' }}>
           {t({ fr: 'Réseau urbain de Publicité — soyez vu, remarqué et mémorisé.', en: 'Urban & mobile advertising — visible, memorized, measurable.' })}
         </p>
-
-        {/* Trustpilot Block */}
-        <div className="hero-trustpilot reveal-up active" style={{ transitionDelay: '0.2s' }}>
-          <div className="trustpilot-stars">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="tp-star"><Star fill="white" size={14} color="white" /></div>
-            ))}
-          </div>
-          <span className="trustpilot-text">
-            {t({ fr: 'Excellent ', en: 'Excellent ' })}
-            <strong>4.9/5</strong>
-            {t({ fr: ' sur ', en: ' on ' })}
-            <strong>Trustpilot</strong>
-          </span>
-        </div>
 
         <div className="hero-actions reveal-up active" style={{ transitionDelay: '0.3s' }}>
           <MagneticBtn to="/expertise" className="btn-hero-secondary magnetic-wrap" style={{ position: 'relative', zIndex: 1 }}>
@@ -271,45 +255,6 @@ const Marquee = () => {
 
 /* ══════════════════════════════════════════════════════════
    PARTNERS SECTION
-   ══════════════════════════════════════════════════════════ */
-const Partners = () => {
-  const { t } = useLanguage()
-  useScrollReveal('.partners-reveal')
-
-  const partnerLogos = [
-    { name: 'Rawbank', logo: <img src="/images/partners/rawbank-logo.png" alt="Rawbank" className="partner-img" /> },
-    { name: 'Vodacom', logo: <img src="/images/partners/vodacom-logo.png" alt="Vodacom" className="partner-img" /> },
-    { name: 'Airtel', logo: <img src="/images/partners/airtel-logo.png" alt="Airtel" className="partner-img" /> },
-    { name: 'Orange', logo: <img src="/images/partners/orange-logo.png" alt="Orange" className="partner-img" /> },
-    { name: 'Canal+', logo: <img src="/images/partners/canalplus-logo.png" alt="Canal+" className="partner-img" /> },
-    { name: 'BCDC', logo: <img src="/images/partners/equity-bank-logo.png" alt="Equity BCDC" className="partner-img" /> },
-  ]
-
-  return (
-    <section className="partners-section section">
-      <div className="container">
-        <div className="section-eyebrow partners-reveal reveal-up" style={{ textAlign: 'center' }}>
-          {t({ fr: 'Partenaires', en: 'Partners' })}
-        </div>
-        <h2 className="section-heading partners-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s', marginBottom: '3rem' }}>
-          {t({ fr: 'Ils nous font confiance', en: 'They Trust Us' })}
-        </h2>
-        <div className="partners-logos-container partners-reveal reveal-up" style={{ transitionDelay: '0.2s' }}>
-          <div className="partners-track">
-            {[...partnerLogos, ...partnerLogos, ...partnerLogos].map((p, i) => (
-              <div key={i} className="partner-card">
-                {p.logo}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
-   ABOUT SECTION — with staggered cards & Spotlight hover
    ══════════════════════════════════════════════════════════ */
 const AboutPreview = () => {
   useScrollReveal('.about-reveal')
@@ -409,95 +354,121 @@ const AboutPreview = () => {
   )
 }
 
-/* ══════════════════════════════════════════════════════════
-   WHY LUBUMBASHI — with Staggered spotlight cards
-   ══════════════════════════════════════════════════════════ */
-const WhyLubumbashi = () => {
+const CampaignJourney = () => {
+  useScrollReveal('.journey-reveal')
   const { t } = useLanguage()
-  useScrollReveal('.wl-reveal')
+  const [activeStep, setActiveStep] = useState(0)
 
-  const reasons = [
+  const steps = [
     {
-      icon: Car,
-      title: t({ fr: 'Médias mobiles', en: 'Mobile Media' }),
-      text: t({
-        fr: 'Les taxis sont des médias mobiles permanents, circulant partout dans la ville.',
-        en: 'Taxis are permanent mobile media, circulating everywhere in the city.'
-      })
+      icon: MessageSquareText,
+      label: t({ fr: 'Votre brief', en: 'Your brief' }),
+      title: t({ fr: 'Nous clarifions le mouvement à créer.', en: 'We clarify the movement to create.' }),
+      description: t({
+        fr: 'Objectif, public et zones prioritaires deviennent une direction simple pour la campagne.',
+        en: 'Your objective, audience and priority areas become a clear campaign direction.',
+      }),
+      result: t({ fr: 'Une recommandation adaptée', en: 'A tailored recommendation' }),
+      image: SUPPORT_IMAGES.design,
     },
     {
-      icon: Store,
-      title: t({ fr: 'Commerces de proximité', en: 'Local Shops' }),
-      text: t({
-        fr: 'Les commerces concentrent l\'attention et drainent un trafic qualifié quotidien.',
-        en: 'Shops concentrate attention and drain qualified daily traffic.'
-      })
+      icon: Route,
+      label: t({ fr: 'Le déploiement', en: 'Deployment' }),
+      title: t({ fr: 'Votre message entre dans la ville.', en: 'Your message enters the city.' }),
+      description: t({
+        fr: 'Onekana coordonne les supports, les équipes et les points de contact adaptés au terrain.',
+        en: 'Onekana coordinates the media, teams and touchpoints suited to the field.',
+      }),
+      result: t({ fr: 'Une présence visible et cohérente', en: 'A visible, consistent presence' }),
+      image: SUPPORT_IMAGES.backpackMediaStreets,
     },
     {
-      icon: Smartphone,
-      title: t({ fr: 'WhatsApp #1', en: 'WhatsApp #1' }),
-      text: t({
-        fr: 'WhatsApp est le canal numéro 1 de conversion dans notre marché.',
-        en: 'WhatsApp is the number 1 conversion channel in our market.'
-      })
-    },
-    {
-      icon: Eye,
-      title: t({ fr: 'Faible concurrence', en: 'Low Competition' }),
-      text: t({
-        fr: 'Peu de concurrence sur le DOOH & médias mobiles — une opportunité réelle.',
-        en: 'Little competition on DOOH & mobile media — a real opportunity.'
-      })
-    },
-    {
-      icon: Target,
-      title: t({ fr: 'Forte mémorisation', en: 'High Memorization' }),
-      text: t({
-        fr: 'Les supports utiles et visibles génèrent une mémorisation supérieure.',
-        en: 'Useful and visible mediums generate superior recall.'
-      })
+      icon: ChartNoAxesCombined,
+      label: t({ fr: 'Le suivi', en: 'Tracking' }),
+      title: t({ fr: 'Vous gardez une lecture claire.', en: 'You keep a clear view.' }),
+      description: t({
+        fr: 'Les observations terrain et les données utiles sont réunies dans un reporting compréhensible.',
+        en: 'Field observations and useful data come together in an easy-to-read report.',
+      }),
+      result: t({ fr: 'Des enseignements pour la suite', en: 'Insights for what comes next' }),
+      image: SUPPORT_IMAGES.reporting,
     },
   ]
 
+  const active = steps[activeStep]
+  const ActiveIcon = active.icon
+
   return (
-    <section id="why-lubumbashi" className="wl-section section">
-      <div className="wl-bg-accent" />
+    <section className="home-journey section" aria-labelledby="home-journey-title">
       <div className="container">
-        <div className="section-eyebrow wl-reveal reveal-up" style={{ color: 'rgba(10,10,10,0.6)' }}>
-          {t({ fr: 'Pourquoi Onekana', en: 'Why Onekana' })}
+        <div className="home-journey-heading journey-reveal reveal-up">
+          <div>
+            <div className="section-eyebrow">{t({ fr: 'De l’idée au terrain', en: 'From idea to field' })}</div>
+            <h2 id="home-journey-title" className="section-heading">
+              {t({ fr: 'Une campagne,', en: 'One campaign,' })}{' '}
+              <span className="text-accent">{t({ fr: 'trois temps clairs.', en: 'three clear stages.' })}</span>
+            </h2>
+          </div>
+          <p>
+            {t({
+              fr: 'Vous partagez votre ambition. Onekana construit, déploie et suit le dispositif.',
+              en: 'You share your ambition. Onekana builds, deploys and tracks the campaign.',
+            })}
+          </p>
         </div>
-        <h2 className="section-heading wl-reveal reveal-up" style={{ color: '#0a0a0a', transitionDelay: '0.1s' }}>
-          {t({ fr: 'À Lubumbashi ?', en: 'In Lubumbashi?' })}
-        </h2>
-        <p className="wl-subtitle wl-reveal reveal-up" style={{ color: '#555555', transitionDelay: '0.2s' }}>
-          {t({ fr: 'Onekana est conçue pour le terrain lushois', en: 'Onekana is designed for the Lubumbashi market' })}
-        </p>
 
-        <div className="wl-cards-grid wl-reveal reveal-stagger">
-          {reasons.map((r, i) => (
-            <div
-              key={i}
-              className="wl-card card-spotlight"
-              onMouseMove={handleMouseMoveSpotlight}
-            >
-              <div className="wl-card-icon">
-                <r.icon size={28} strokeWidth={1.5} />
-              </div>
-              <h4 className="wl-card-title">{r.title}</h4>
-              <p className="wl-card-text">{r.text}</p>
+        <div className="home-journey-shell journey-reveal reveal-up" style={{ transitionDelay: '0.12s' }}>
+          <div className="home-journey-tabs" role="tablist" aria-label={t({ fr: 'Étapes de campagne', en: 'Campaign steps' })}>
+            {steps.map((step, index) => {
+              const Icon = step.icon
+              return (
+                <button
+                  key={step.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeStep === index}
+                  aria-controls="home-journey-panel"
+                  className={activeStep === index ? 'active' : ''}
+                  onClick={() => setActiveStep(index)}
+                >
+                  <span className="home-journey-index">0{index + 1}</span>
+                  <Icon size={21} strokeWidth={1.8} />
+                  <span>{step.label}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div id="home-journey-panel" className="home-journey-panel" role="tabpanel" key={activeStep}>
+            <div className="home-journey-media">
+              <img src={active.image} alt="" loading="lazy" decoding="async" />
+              <span>{t({ fr: 'Étape', en: 'Step' })} 0{activeStep + 1}</span>
             </div>
-          ))}
-        </div>
-
-        <div className="wl-result wl-reveal reveal-up" style={{ transitionDelay: '0.6s' }}>
-          <ArrowRight size={24} strokeWidth={2} />
-          <p><strong>{t({ fr: 'Résultat :', en: 'Result:' })}</strong> {t({ fr: "plus d'impact dans la masse de sollicitations publicitaires", en: 'more impact in the mass of advertising messages' })}</p>
+            <div className="home-journey-copy">
+              <ActiveIcon size={28} strokeWidth={1.7} aria-hidden="true" />
+              <h3>{active.title}</h3>
+              <p>{active.description}</p>
+              <div className="home-journey-result">
+                <CheckCircle size={18} aria-hidden="true" />
+                <span>{active.result}</span>
+              </div>
+              <Link to={activeStep === 0 ? '/contact' : '/expertise'} className="home-journey-link">
+                {activeStep === 0
+                  ? t({ fr: 'Parler de votre projet', en: 'Discuss your project' })
+                  : t({ fr: 'Découvrir les supports', en: 'Discover the media' })}
+                <ArrowRight size={18} />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   )
 }
 
+/* ══════════════════════════════════════════════════════════
+   WHY LUBUMBASHI — with Staggered spotlight cards
+   ══════════════════════════════════════════════════════════ */
 const SUPPORT_IMAGES = {
   carFlyers: '/images/onekana/supports/car-flyers.png',
   carScreen: '/images/onekana/supports/car-screen.png',
@@ -567,7 +538,7 @@ const PillarsSection = () => {
         <div className="pillars-grid pillar-reveal reveal-stagger">
           {pillars.map((pillar, index) => (
             <article key={pillar.title} className="pillar-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
-              <img src={pillar.image} alt="" className="pillar-image" loading="lazy" />
+              <img src={pillar.image} alt="" className="pillar-image" loading="lazy" decoding="async" />
               <div className="pillar-content">
                 <div className="pillar-icon"><pillar.icon size={24} strokeWidth={1.6} /></div>
                 <span className="pillar-index">{String(index + 1).padStart(2, '0')}</span>
@@ -608,7 +579,7 @@ const SupportsShowcase = () => {
         <div className="supports-grid support-reveal reveal-stagger">
           {supports.map((support) => (
             <article key={`${support.group}-${support.title}`} className="support-card card-spotlight" onMouseMove={handleMouseMoveSpotlight}>
-              <img src={support.image} alt="" className="support-image" loading="lazy" />
+              <img src={support.image} alt="" className="support-image" loading="lazy" decoding="async" />
               <div className="support-content">
                 <span>{support.group}</span>
                 <h3>{support.title}</h3>
@@ -625,361 +596,13 @@ const SupportsShowcase = () => {
 /* ══════════════════════════════════════════════════════════
    DIGISTREET — Bold feature section with 3D Orbit
    ══════════════════════════════════════════════════════════ */
-const Digistreet = () => {
-  useScrollReveal('.ds-reveal')
-  const { t } = useLanguage()
-
-  const features = [
-    { icon: Backpack, label: t({ fr: 'Sac à dos', en: 'Backpack display' }), sub: t({ fr: 'Écran LED haute luminosité', en: 'High-brightness LED screen' }) },
-    { icon: Play, label: t({ fr: 'Vidéo/Animation', en: 'Video/Animation' }), sub: t({ fr: 'Contenus dynamiques', en: 'Dynamic content' }) },
-    { icon: MousePointer, label: t({ fr: 'Interaction directe', en: 'Direct interaction' }), sub: t({ fr: 'Engagement immédiat', en: 'Immediate engagement' }) },
-    { icon: Sun, label: t({ fr: 'Jour & nuit', en: 'Day & night' }), sub: t({ fr: 'Visibilité 24/7', en: '24/7 visibility' }) },
-  ]
-
-  return (
-    <section id="digistreet" className="ds-section section">
-      <div className="container">
-        <div className="ds-layout">
-          <div className="ds-left ds-reveal reveal-left">
-            <div className="section-eyebrow" style={{ color: 'var(--color-accent)' }}>
-              {t({ fr: 'Innovation Publicitaire', en: 'Advertising Innovation' })}
-            </div>
-            <h2 className="section-heading">
-              Digi'<span className="text-accent">Street</span>
-            </h2>
-            <p className="ds-lead">
-              {t({
-                fr: "L'affichage mobile qui s'impose là où les gens vivent, se déplacent et s'arrêtent.",
-                en: "Mobile advertising that stands out where people live, move and stop."
-              })}
-            </p>
-            <div className="ds-features">
-              {features.map((f, i) => (
-                <div key={i} className="ds-feature">
-                  <div className="ds-feature-icon"><f.icon size={22} strokeWidth={1.5} /></div>
-                  <div>
-                    <strong>{f.label}</strong>
-                    <span>{f.sub}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="ds-objective">
-              <Target size={20} strokeWidth={2} />
-              <span>
-                <strong>{t({ fr: 'Objectif :', en: 'Goal:' })}</strong> {t({ fr: 'impact visuel fort, contact direct, mémorisation maximale', en: 'strong visual impact, direct contact, maximum recall' })}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
-   SERVICES STRIP — with spotlight cards
-   ══════════════════════════════════════════════════════════ */
-const ServicesStrip = () => {
-  useScrollReveal('.ss-reveal')
-
-  const services = [
-    { icon: Radio, title: 'Affichage DOOH', desc: 'Écrans LED mobiles en zones à fort trafic' },
-    { icon: Car, title: 'Pub Taxi', desc: 'Branding sur flotte de taxis urbains' },
-    { icon: Smartphone, title: 'WhatsApp Mktg', desc: 'Campagnes ciblées sur le canal n°1' },
-    { icon: BarChart3, title: 'Analytics', desc: 'Mesure précise de vos retombées' },
-    { icon: MapPin, title: 'Géolocalisation', desc: 'Ciblage hyper-local par quartier' },
-    { icon: Award, title: 'Branding', desc: 'Identité visuelle forte et mémorable' },
-  ]
-
-  return (
-    <section className="ss-section section">
-      <div className="container">
-        <div className="section-eyebrow ss-reveal reveal-up" style={{ textAlign: 'center' }}>Nos Services</div>
-        <h2 className="section-heading ss-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s' }}>
-          Ce que nous faisons
-        </h2>
-
-        <div className="ss-grid ss-reveal reveal-stagger">
-          {services.map((s, i) => (
-            <div
-              key={i}
-              className="ss-card card-spotlight"
-              onMouseMove={handleMouseMoveSpotlight}
-            >
-              <div className="ss-card-top">
-                <div className="ss-icon"><s.icon size={28} strokeWidth={1.5} /></div>
-                <div className="ss-num">0{i + 1}</div>
-              </div>
-              <h4 className="ss-title">{s.title}</h4>
-              <p className="ss-desc">{s.desc}</p>
-              <div className="ss-hover-line" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
-   PAYMENT SECTION — Modern payment options overview
-   ══════════════════════════════════════════════════════════ */
-const PaymentSection = () => {
-  const { t } = useLanguage()
-  useScrollReveal('.pay-reveal')
-
-  const payments = [
-    {
-      type: 'image',
-      logos: [
-        '/images/partners/airtel-money-logo.png',
-        '/images/partners/orange-money-logo.png',
-        '/images/partners/mpesa-logo.png', // M-Pesa is Vodacom
-        '/images/partners/afrimoney-logo.png'
-      ],
-      title: t({ fr: 'Mobile Money', en: 'Mobile Money' }),
-      desc: t({
-        fr: 'M-Pesa, Airtel Money, Orange Money. Simple et instantané.',
-        en: 'M-Pesa, Airtel Money, Orange Money. Simple & instant.'
-      }),
-      color: '#eab308'
-    },
-    {
-      type: 'image',
-      logos: [
-        '/images/partners/visa-logo.png',
-        '/images/partners/mastercard-logo.png'
-      ],
-      title: t({ fr: 'Cartes de Crédit', en: 'Credit Cards' }),
-      desc: t({
-        fr: 'Visa, Mastercard acceptées de manière sécurisée.',
-        en: 'Visa, Mastercard accepted securely.'
-      }),
-      color: '#3b82f6'
-    },
-    {
-      type: 'icon',
-      icon: Wallet,
-      title: t({ fr: 'Virement & Cash', en: 'Transfer & Cash' }),
-      desc: t({
-        fr: 'Virements bancaires nationaux/internationaux, ou paiement physique.',
-        en: 'National/international bank transfers, or physical payments.'
-      }),
-      color: '#10b981'
-    }
-  ]
-
-  return (
-    <section className="payment-section section section-alt">
-      <div className="container">
-        <div className="section-eyebrow pay-reveal reveal-up" style={{ textAlign: 'center' }}>
-          {t({ fr: 'Solutions de Paiement', en: 'Payment Solutions' })}
-        </div>
-        <h2 className="section-heading pay-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.1s', marginBottom: '1.5rem' }}>
-          {t({ fr: 'Payez en toute ', en: 'Pay with absolute ' })}<span className="text-accent">{t({ fr: 'simplicité', en: 'simplicity' })}</span>
-        </h2>
-        <p className="pay-subtitle pay-reveal reveal-up" style={{ textAlign: 'center', transitionDelay: '0.15s', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto', color: 'var(--color-text-muted)' }}>
-          {t({
-            fr: 'Nous proposons une large gamme de méthodes de paiement locales et internationales adaptées à vos besoins professionnels.',
-            en: 'We offer a wide range of local and international payment methods tailored to your business needs.'
-          })}
-        </p>
-
-        <div className="payment-methods-grid pay-reveal reveal-stagger">
-          {payments.map((p, i) => (
-            <div
-              key={i}
-              className="payment-method-card card-spotlight"
-              onMouseMove={handleMouseMoveSpotlight}
-            >
-              {p.type === 'image' ? (
-                <div className="payment-logos-showcase">
-                  {p.logos.map((logo, idx) => (
-                    <img key={idx} src={logo} alt="Payment Logo" className="payment-brand-logo-large" />
-                  ))}
-                </div>
-              ) : (
-                <div className="payment-icon-wrap" style={{ '--icon-color': p.color }}>
-                  <p.icon size={26} strokeWidth={1.5} style={{ color: p.color }} />
-                </div>
-              )}
-              <h4 className="payment-method-name">{p.title}</h4>
-              <p className="payment-method-desc">{p.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="payment-trust-badges pay-reveal reveal-up" style={{ transitionDelay: '0.4s' }}>
-          <div className="payment-trust-badge">
-            <ShieldCheck size={16} /> {t({ fr: 'Transactions 100% sécurisées', en: '100% Secure Transactions' })}
-          </div>
-          <div className="payment-trust-badge" style={{ marginLeft: '1rem' }}>
-            <Check size={16} /> {t({ fr: 'Facturation transparente', en: 'Transparent Invoicing' })}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
-   TESTIMONIALS — double marquee: two rows scrolling in opposite directions
-   ══════════════════════════════════════════════════════════ */
-const Testimonials = () => {
-  const { t } = useLanguage()
-
-  const testimonials = [
-    {
-      name: 'Jean-Bosco M.',
-      role: t({ fr: 'Gérant, Supermarché', en: 'Manager, Supermarket' }),
-      text: t({
-        fr: "Depuis que nous utilisons les supports mobiles Onekana, notre fréquentation a augmenté le weekend. Un investissement qui se voit.",
-        en: "Since we started using Onekana mobile media, our weekend traffic has increased. An investment people notice."
-      }),
-      stars: 5,
-      avatar: 'JB'
-    },
-    {
-      name: 'Nadia K.',
-      role: t({ fr: 'Directrice Marketing', en: 'Marketing Director' }),
-      text: t({
-        fr: "Une approche innovante qui nous a permis de toucher notre cible directement dans les quartiers populaires.",
-        en: 'An innovative approach that allowed us to reach our target audience directly in popular neighborhoods.'
-      }),
-      stars: 5,
-      avatar: 'NK'
-    },
-    {
-      name: 'Dieudonné T.',
-      role: t({ fr: 'Fondateur, Startup', en: 'Founder, Startup' }),
-      text: t({
-        fr: "Le suivi est clair et l'équipe Onekana est très réactive. La campagne terrain a vraiment renforcé notre présence locale.",
-        en: 'The reporting is clear and the Onekana team is very responsive. The field campaign really strengthened our local presence.'
-      }),
-      stars: 4,
-      avatar: 'DT'
-    },
-  ]
-
-  const items = testimonials.map(s => ({ text: s.text, name: s.name }))
-
-  const rowStyles = {
-    display: 'flex',
-    gap: '1.5rem',
-    flexWrap: 'nowrap',
-    overflow: 'hidden',
-    alignItems: 'flex-start',
-    minWidth: 'max-content',
-  }
-
-  const rowLeftStyles = {
-    ...rowStyles,
-    animation: 'marquee-left 26s linear infinite',
-  }
-
-  const rowRightStyles = {
-    ...rowStyles,
-    animation: 'marquee-right 32s linear infinite',
-  }
-
-  const itemStyles = {
-    minWidth: '360px',
-    maxWidth: '420px',
-    background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)',
-    border: '2px solid #ea0001',
-    borderRadius: '20px',
-    padding: '1.8rem 1.6rem',
-    flex: '0 0 auto',
-    boxShadow: '0 20px 50px rgba(234,0,1,0.2), inset 0 1px 0 rgba(255,255,255,0.9)',
-    position: 'relative',
-    overflow: 'hidden',
-    transition: 'all 0.3s ease',
-  }
-
-  const quoteStyle = {
-    position: 'absolute',
-    top: '0.5rem',
-    left: '1rem',
-    fontSize: '3.5rem',
-    color: 'rgba(234,0,1,0.15)',
-    fontFamily: 'Georgia, serif',
-    lineHeight: '1',
-  }
-
-  const starContainerStyle = {
-    display: 'flex',
-    gap: '0.3rem',
-    marginBottom: '0.8rem',
-  }
-
-  const starStyle = {
-    color: '#ea0001',
-    fontSize: '1.2rem',
-  }
-
-  const sectionStyle = {
-    background: 'linear-gradient(180deg, rgba(234,0,1,0.03) 0%, rgba(255,255,255,0.5) 50%, rgba(234,0,1,0.02) 100%)',
-    padding: '4.5rem 0',
-    position: 'relative',
-  }
-
-  return (
-    <section className="testi-section section" style={sectionStyle}>
-      <div className="testi-bg-blob" />
-      <div className="container">
-        <div className="section-eyebrow" style={{ textAlign: 'center', color: 'rgba(10,10,10,0.6)' }}>
-          {t({ fr: 'Témoignages', en: 'Testimonials' })}
-        </div>
-        <h2 className="section-heading" style={{ textAlign: 'center', color: '#0a0a0a', marginBottom: '2.5rem' }}>
-          {t({ fr: 'Ce que disent nos clients', en: 'What our clients say' })}
-        </h2>
-
-        <div className="testi-marquee-wrapper" style={{ overflow: 'hidden', width: '100%', display: 'block' }}>
-          <div className="testi-marquee testi-row-left" style={rowLeftStyles}>
-            {[...items, ...items].map((it, i) => (
-              <div key={i} className="testi-item" style={itemStyles}>
-                <div style={quoteStyle}>"</div>
-                <div style={starContainerStyle}>
-                  {[...Array(5)].map((_, j) => (
-                    <span key={j} style={starStyle}>★</span>
-                  ))}
-                </div>
-                <p className="testi-item-text" style={{ margin: 0, lineHeight: 1.7, color: '#222', fontSize: '1rem', fontWeight: 500, paddingTop: '0.5rem' }}>{it.text}</p>
-                <div className="testi-item-by" style={{ marginTop: '1.2rem', fontSize: '1rem', color: '#ea0001', fontWeight: 700, letterSpacing: '0.5px' }}>— {it.name}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="testi-marquee testi-row-right" style={rowRightStyles}>
-            {[...items, ...items].map((it, i) => (
-              <div key={i} className="testi-item" style={itemStyles}>
-                <div style={quoteStyle}>"</div>
-                <div style={starContainerStyle}>
-                  {[...Array(5)].map((_, j) => (
-                    <span key={j} style={starStyle}>★</span>
-                  ))}
-                </div>
-                <p className="testi-item-text" style={{ margin: 0, lineHeight: 1.7, color: '#222', fontSize: '1rem', fontWeight: 500, paddingTop: '0.5rem' }}>{it.text}</p>
-                <div className="testi-item-by" style={{ marginTop: '1.2rem', fontSize: '1rem', color: '#ea0001', fontWeight: 700, letterSpacing: '0.5px' }}>— {it.name}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════
-   HOME PAGE
-   ══════════════════════════════════════════════════════════ */
 function Home() {
   return (
     <>
       <Hero />
       <Marquee />
       <AboutPreview />
+      <CampaignJourney />
       <PillarsSection />
       <SupportsShowcase />
     </>

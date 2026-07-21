@@ -1,0 +1,162 @@
+/* ============================================
+   AGENCE PAGE STYLES - NOUVEAU DESIGN
+   ============================================ */
+
+/* About Grid Agence */
+
+/* Responsive adjustments for "Notre Histoire" section */
+
+@media (max-width: 480px) {
+  
+  .about-text {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+
+/* Values Grid Agence */
+
+.value-icon {
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: var(--color-accent);
+  transition: all 0.3s ease;
+}
+
+/* Team Grid Agence */
+
+/* Stats Grid Agence */
+
+/* ============================================
+   PORTFOLIO PAGE STYLES - MODERN DESIGN
+   ============================================ */
+
+/* Filter Bar Modern */
+
+/* Portfolio Grid Modern */
+
+/* Portfolio Item Modern */
+
+/* Portfolio Image Modern */
+
+/* Portfolio Info Modern */
+
+/* Testimonials Grid Modern */
+
+/* Testimonial Card Modern */
+
+/* Testimonial Stars */
+
+/* Testimonial Text */
+
+/* Testimonial Author */
+
+/* ============================================
+   CONTACT PAGE STYLES - MODERN DESIGN
+   ============================================ */
+
+/* Contact Grid Modern */
+
+/* Contact Info Block */
+
+/* Social Links Modern */
+
+/* Contact Form Block */
+
+/* Contact Form Modern */
+.contact-form-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Input Error */
+.input-error {
+  border-color: #ff4444 !important;
+  background: rgba(255, 68, 68, 0.05) !important;
+}
+
+.error-message {
+  font-size: 0.85rem;
+  color: #ff4444;
+  margin-top: 0.25rem;
+}
+
+/* Budget Options Modern */
+
+/* Form Success Modern */
+
+/* FAQ Grid Modern */
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+.footer-cta {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+  padding: 6rem 0;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(234, 0, 1, 0.05) 0%, transparent 50%);
+}
+

@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { ArrowRight, Eye, Globe, Radio, Rocket, Star, Zap } from 'lucide-react'
+import { lazy, Suspense, useState, useEffect, useRef } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
+import { ArrowRight, Eye, Globe, Radio, Rocket, Zap } from 'lucide-react'
 import { useLanguage } from './hooks/useLanguage'
 import './App.css'
-import './mobile.css'
-import { Home, Agence, Expertise, Contact, Blog } from './pages'
+import Home from './pages/Home'
 import Preloader from './components/Preloader'
 import CookiePopup from './components/CookiePopup'
+
+const Agence = lazy(() => import('./pages/Agence'))
+const Expertise = lazy(() => import('./pages/Expertise'))
+const Contact = lazy(() => import('./pages/Contact'))
+const Journal = lazy(() => import('./pages/Journal'))
 
 // Navigation Component
 const Navigation = () => {
@@ -62,8 +66,8 @@ const Navigation = () => {
           <Link to="/expertise" className={location.pathname === '/expertise' ? 'active' : ''} style={{ '--i': 2 }}>
             {t({ fr: 'Expertise', en: 'Expertise' })}
           </Link>
-          <Link to="/blog" className={location.pathname === '/blog' ? 'active' : ''} style={{ '--i': 3 }}>
-            {t({ fr: 'Blog', en: 'Blog' })}
+          <Link to="/journal" className={location.pathname === '/journal' ? 'active' : ''} style={{ '--i': 3 }}>
+            {t({ fr: 'Journal', en: 'Journal' })}
           </Link>
 
           <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''} style={{ '--i': 5 }}>
@@ -109,33 +113,13 @@ const Navigation = () => {
   )
 }
 
+const CONTACT_EMAIL = 'contact@onekana-agency.com'
+const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
+
 // Social Icons
-const InstagramIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-  </svg>
-)
-
-const LinkedInIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-    <rect x="2" y="9" width="4" height="12"></rect>
-    <circle cx="4" cy="4" r="2"></circle>
-  </svg>
-)
-
-const TwitterIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-  </svg>
-)
-
-const DribbbleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"></path>
+const FacebookIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M14 8.5h2V5h-2.4C10.7 5 9 6.7 9 9.4V11H7v3.5h2V21h3.8v-6.5h2.7L16 11h-3.2V9.7c0-.8.4-1.2 1.2-1.2Z" />
   </svg>
 )
 
@@ -192,11 +176,7 @@ const Footer = () => {
   }
 
   const socialLinks = [
-    { name: 'Instagram', icon: <InstagramIcon />, url: '#' },
-    // { name: 'YouTube', icon: <YouTubeIcon />, url: '#' },
-    { name: 'LinkedIn', icon: <LinkedInIcon />, url: '#' },
-    { name: 'Twitter', icon: <TwitterIcon />, url: '#' },
-    { name: 'Dribbble', icon: <DribbbleIcon />, url: '#' },
+    { name: 'Facebook', icon: <FacebookIcon />, url: FACEBOOK_URL },
   ]
 
   const expertiseLinks = [
@@ -287,20 +267,6 @@ const Footer = () => {
                 })}
               </p>
               
-              <div className="footer-trustpilot">
-                <div className="trustpilot-stars">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="tp-star"><Star fill="white" size={14} color="white" /></div>
-                  ))}
-                </div>
-                <span className="trustpilot-text">
-                  {t({ fr: 'Excellent ', en: 'Excellent ' })} 
-                  <strong>4.9/5</strong> 
-                  {t({ fr: ' sur ', en: ' on ' })} 
-                  <strong>Trustpilot</strong>
-                </span>
-              </div>
-
               <div className="footer-social">
                 {socialLinks.map((social, index) => (
                   <a
@@ -309,6 +275,8 @@ const Footer = () => {
                     className="social-icon"
                     aria-label={social.name}
                     title={social.name}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {social.icon}
                   </a>
@@ -323,7 +291,7 @@ const Footer = () => {
                 <Link to="/">{t({ fr: 'Accueil', en: 'Home' })}</Link>
                 <Link to="/agence">{t({ fr: "L'Agence", en: 'The Agency' })}</Link>
                 <Link to="/expertise">{t({ fr: 'Expertise', en: 'Expertise' })}</Link>
-                <Link to="/blog">{t({ fr: 'Blog', en: 'Blog' })}</Link>
+                <Link to="/journal">{t({ fr: 'Journal', en: 'Journal' })}</Link>
 
                 <Link to="/contact">{t({ fr: 'Contact', en: 'Contact' })}</Link>
               </nav>
@@ -354,9 +322,9 @@ const Footer = () => {
             <div className="footer-col">
               <h4>{t({ fr: 'Contact', en: 'Contact' })}</h4>
               <div className="footer-contact">
-                <a href="mailto:agencyonekana@gmail.com" className="contact-item">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="contact-item">
                   <MailIcon />
-                  <span>agencyonekana@gmail.com</span>
+                  <span>{CONTACT_EMAIL}</span>
                 </a>
                 <a href="tel:+243986773438" className="contact-item">
                   <PhoneIcon />
@@ -406,68 +374,79 @@ const ScrollToTop = () => {
 
 // Custom Cursor Component
 const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [outerPosition, setOuterPosition] = useState({ x: 0, y: 0 })
-  const [cursorState, setCursorState] = useState('') // 'hovered' or 'link-hovered' or ''
+  const cursorRef = useRef(null)
+  const outerRef = useRef(null)
+  const targetPosition = useRef({ x: 0, y: 0 })
+  const outerPosition = useRef({ x: 0, y: 0 })
+  const [cursorState, setCursorState] = useState('')
+  const [enabled, setEnabled] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 992px) and (pointer: fine)').matches
+  ))
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    const media = window.matchMedia('(min-width: 992px) and (pointer: fine)')
+    const handleChange = (event) => setEnabled(event.matches)
+    media.addEventListener('change', handleChange)
+    return () => media.removeEventListener('change', handleChange)
   }, [])
 
   useEffect(() => {
+    if (!enabled) return undefined
+    const handleMouseMove = (e) => {
+      targetPosition.current = { x: e.clientX, y: e.clientY }
+      if (cursorRef.current) {
+        cursorRef.current.style.left = `${e.clientX}px`
+        cursorRef.current.style.top = `${e.clientY}px`
+      }
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [enabled])
+
+  useEffect(() => {
+    if (!enabled) return undefined
     let frameId
     const updateOuter = () => {
-      setOuterPosition((prev) => {
-        const dx = position.x - prev.x
-        const dy = position.y - prev.y
-        return {
-          x: prev.x + dx * 0.15,
-          y: prev.y + dy * 0.15,
-        }
-      })
+      const current = outerPosition.current
+      current.x += (targetPosition.current.x - current.x) * 0.15
+      current.y += (targetPosition.current.y - current.y) * 0.15
+      if (outerRef.current) {
+        outerRef.current.style.left = `${current.x}px`
+        outerRef.current.style.top = `${current.y}px`
+      }
       frameId = requestAnimationFrame(updateOuter)
     }
     frameId = requestAnimationFrame(updateOuter)
     return () => cancelAnimationFrame(frameId)
-  }, [position])
+  }, [enabled])
 
   useEffect(() => {
-    const addListeners = () => {
-      const links = document.querySelectorAll('a, button, [role="button"], .brochure-dropdown, .magnetic-wrap')
-      links.forEach((el) => {
-        el.addEventListener('mouseenter', () => {
-          if (el.classList.contains('btn') || el.classList.contains('btn-hero-primary') || el.classList.contains('btn-hero-secondary')) {
-            setCursorState('link-hovered')
-          } else {
-            setCursorState('hovered')
-          }
-        })
-        el.addEventListener('mouseleave', () => {
-          setCursorState('')
-        })
-      })
+    if (!enabled) return undefined
+    const selector = 'a, button, [role="button"], .magnetic-wrap'
+    const handlePointerOver = (event) => {
+      const interactive = event.target.closest(selector)
+      if (!interactive) return
+      setCursorState(interactive.classList.contains('btn') || interactive.classList.contains('btn-hero-secondary') ? 'link-hovered' : 'hovered')
+    }
+    const handlePointerOut = (event) => {
+      const interactive = event.target.closest(selector)
+      if (interactive && !interactive.contains(event.relatedTarget)) setCursorState('')
     }
 
-    addListeners()
-    const observer = new MutationObserver(addListeners)
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => observer.disconnect()
-  }, [])
+    document.addEventListener('pointerover', handlePointerOver)
+    document.addEventListener('pointerout', handlePointerOut)
+    return () => {
+      document.removeEventListener('pointerover', handlePointerOver)
+      document.removeEventListener('pointerout', handlePointerOut)
+    }
+  }, [enabled])
+
+  if (!enabled) return null
 
   return (
     <>
-      <div 
-        className={`cursor-follower ${cursorState}`} 
-        style={{ left: `${position.x}px`, top: `${position.y}px` }} 
-      />
-      <div 
-        className={`cursor-follower-outer ${cursorState}`} 
-        style={{ left: `${outerPosition.x}px`, top: `${outerPosition.y}px` }} 
-      />
+      <div ref={cursorRef} className={`cursor-follower ${cursorState}`} />
+      <div ref={outerRef} className={`cursor-follower-outer ${cursorState}`} />
     </>
   )
 }
@@ -477,6 +456,7 @@ const AppContent = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [isPageLoading, setIsPageLoading] = useState(false)
   const { pathname, search } = useLocation()
+  const previousPath = useRef(pathname)
 
   // Initial load preloader
   useEffect(() => {
@@ -489,7 +469,8 @@ const AppContent = () => {
 
   // Page transition preloader - show on every route change
   useEffect(() => {
-    if (!isInitialLoad) {
+    if (!isInitialLoad && previousPath.current !== pathname) {
+      previousPath.current = pathname
       // Show preloader on route change
       const showTimer = setTimeout(() => setIsPageLoading(true), 0)
 
@@ -503,6 +484,7 @@ const AppContent = () => {
         clearTimeout(timer)
       }
     }
+    return undefined
   }, [pathname, isInitialLoad])
 
   return (
@@ -513,22 +495,24 @@ const AppContent = () => {
       <FloatingLanguageBadge />
 
       {/* Initial Load Preloader */}
-      {isInitialLoad && <Preloader isLoading={isInitialLoad} />}
+      {isInitialLoad && <Preloader />}
 
       {/* Page Transition Preloader */}
-      {!isInitialLoad && <Preloader isLoading={isPageLoading} />}
+      {!isInitialLoad && isPageLoading && <Preloader />}
 
       <ScrollToTop />
       <Navigation />
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/agence" element={<Agence />} />
-          <Route path="/expertise" element={<Expertise />} />
-          <Route path="/contact" element={<Contact key={search} />} />
-          <Route path="/blog" element={<Blog />} />
-
-        </Routes>
+        <Suspense fallback={<Preloader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/agence" element={<Agence />} />
+            <Route path="/expertise" element={<Expertise />} />
+            <Route path="/contact" element={<Contact key={search} />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/blog" element={<Navigate to="/journal" replace />} />
+          </Routes>
+        </Suspense>
       </main>
       <Footer />
 

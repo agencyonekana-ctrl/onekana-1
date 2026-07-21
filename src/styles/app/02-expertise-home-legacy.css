@@ -1,0 +1,181 @@
+/* Services Expertise Grid */
+
+/* Additional Services Grid */
+
+/* Process Expertise Grid */
+
+/* Tech Expertise Grid */
+
+/* ============================================
+   MODERN ABOUT SECTION - NEW DESIGN
+   ============================================ */
+
+/* Card Icon */
+.card-icon {
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  color: var(--color-accent);
+  transition: all 0.3s ease;
+}
+
+.card-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* Card Title */
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+/* Card List (Transform card) */
+.card-list {
+  list-style: none;
+  margin-bottom: 1.5rem;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card-list li:last-child {
+  border-bottom: none;
+}
+
+.card-list .bullet {
+  color: var(--color-accent);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Promise Flow */
+
+/* Logic Chain */
+
+/* About CTA */
+.about-cta {
+  text-align: center;
+}
+
+/* ============================================
+   WHY LUBUMBASHI SECTION
+   ============================================ */
+
+/* Result Card */
+
+/* ============================================
+   PACK SECTION
+   ============================================ */
+
+/* Responsive adjustments for packs grid */
+
+/* ============================================
+   DIGI'STREET SECTION
+   ============================================ */
+
+/* DigiStreet Objective */
+
+/* ============================================
+   CONTACT CTA SECTION
+   ============================================ */
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.btn:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.btn-large {
+  padding: 1.25rem 3rem;
+  font-size: 1rem;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   PAGE HEADER (for inner pages)
+   ============================================ */
+
+/* ============================================
+   PAGE HEADER DECORATIVE OBJECTS
+   ============================================ */
+
+/* Base style for all decorative SVG objects */
+
+/* Individual object positions, sizes & animations */
+
+/* Floating keyframe animations */
+
+/* Override transform for centered objects (ph-obj-5, ph-obj-6, ph-obj-7, ph-obj-8) */
+
+/* Subtle pulse on hover for the whole header */
+
+/* ============================================
+   BROCHURE DROPDOWN BUTTON
+   ============================================ */
+
