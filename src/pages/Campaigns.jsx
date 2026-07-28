@@ -257,8 +257,7 @@ function Campaigns() {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
 
-            const result = await response.json()
-            console.log('Campaign created successfully:', result)
+            await response.json()
 
             setSuccess(true)
 

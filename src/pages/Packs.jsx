@@ -288,7 +288,6 @@ function Packs() {
         try {
             setLoading(true)
             const response = await getPacksCommerciaux()
-            console.log('API Response for packs:', response)
 
             // Transformation des données API vers format frontend
             let packsData = []
@@ -315,7 +314,6 @@ function Packs() {
                 fonctionnalites: pack.fonctionnalites || []
             }))
 
-            console.log('Transformed packs:', JSON.stringify(frontendPacks, null, 2))
             setPacks(frontendPacks)
         } catch (err) {
             console.error('Error fetching packs:', err)

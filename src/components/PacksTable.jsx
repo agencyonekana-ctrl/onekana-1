@@ -13,7 +13,6 @@ const PackTable = () => {
             try {
                 setLoading(true)
                 const response = await getCampaignTypes()
-                console.log('API Response for packs:', response)
 
                 if (response && response.data) {
                     setPacks(response.data)

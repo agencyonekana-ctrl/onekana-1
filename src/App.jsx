@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState, useEffect, useRef } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
-import { ArrowRight, Eye, Globe, Radio, Rocket, Zap } from 'lucide-react'
+import { ArrowRight, Bot, Eye, Globe, Linkedin, MessageCircle, Radio, Rocket, Send, X, Zap } from 'lucide-react'
 import { useLanguage } from './hooks/useLanguage'
 import './App.css'
 import Home from './pages/Home'
@@ -115,6 +115,7 @@ const Navigation = () => {
 
 const CONTACT_EMAIL = 'contact@onekana-agency.com'
 const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/agence-onekana-officiel-512075421'
 
 // Social Icons
 const FacebookIcon = () => (
@@ -177,6 +178,7 @@ const Footer = () => {
 
   const socialLinks = [
     { name: 'Facebook', icon: <FacebookIcon />, url: FACEBOOK_URL },
+    { name: 'LinkedIn', icon: <Linkedin size={20} aria-hidden="true" />, url: LINKEDIN_URL },
   ]
 
   const expertiseLinks = [
@@ -525,89 +527,136 @@ const AppContent = () => {
   )
 }
 
-// Floating Campaign Button Component with Popup
 const FloatingCampaignButton = () => {
+  const { lang, t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
-  const { t } = useLanguage()
+  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([])
+  const [isSending, setIsSending] = useState(false)
+  const [chatError, setChatError] = useState('')
+  const aiChatUrl = window.ONEKANA_CONFIG?.aiChatUrl?.trim() || ''
+  const label = t({ fr: "Ouvrir l'assistant IA Onekana", en: 'Open the Onekana AI assistant' })
 
-  const togglePopup = () => {
-    setIsOpen(!isOpen)
-  }
+  const handleChatSubmit = async (event) => {
+    event.preventDefault()
+    const userMessage = message.trim()
 
-  const closePopup = () => {
-    setIsOpen(false)
+    if (!userMessage || !aiChatUrl || isSending) return
+
+    setMessages((current) => [...current, { role: 'user', content: userMessage }])
+    setMessage('')
+    setChatError('')
+    setIsSending(true)
+
+    try {
+      const response = await fetch(aiChatUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          language: lang,
+        }),
+      })
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message)
+      }
+
+      const assistantMessage = result.reply || result.response || result.message
+      if (!assistantMessage) {
+        throw new Error()
+      }
+
+      setMessages((current) => [...current, { role: 'assistant', content: assistantMessage }])
+    } catch {
+      setChatError(t({
+        fr: "L'assistant est momentanément indisponible. Veuillez réessayer.",
+        en: 'The assistant is temporarily unavailable. Please try again.',
+      }))
+    } finally {
+      setIsSending(false)
+    }
   }
 
   return (
     <div className="floating-campaign-btn">
-      <button
-        className="btn btn-primary btn-large"
-        title={t({ fr: "Créer une campagne", en: "Create a campaign" })}
-        onClick={togglePopup}
-      >
-        <Rocket size={32} />
-      </button>
-
-      {/* Popup Overlay */}
       {isOpen && (
-        <div className="campaign-popup-overlay" onClick={closePopup}>
-          <div className="campaign-popup" onClick={(e) => e.stopPropagation()}>
-            <button className="popup-close-btn" onClick={closePopup}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+        <section className="ai-chat-panel" role="dialog" aria-modal="false" aria-labelledby="ai-chat-title">
+          <header className="ai-chat-header">
+            <div className="ai-chat-identity">
+              <span className="ai-chat-avatar"><Bot size={21} /></span>
+              <div>
+                <strong id="ai-chat-title">Onekana Assistant</strong>
+                <span>{t({ fr: 'Conseils et orientation', en: 'Advice and guidance' })}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="ai-chat-close"
+              onClick={() => setIsOpen(false)}
+              aria-label={t({ fr: 'Fermer le chat', en: 'Close chat' })}
+            >
+              <X size={20} />
             </button>
+          </header>
 
-            <div className="popup-header">
-              <Rocket size={40} className="popup-icon" />
-              <h3>{t({ fr: "Lancez votre campagne", en: "Launch your campaign" })}</h3>
-              <p>{t({ fr: "Choisissez comment vous souhaitez procéder", en: "Choose how you would like to proceed" })}</p>
+          <div className="ai-chat-messages" aria-live="polite">
+            <div className="ai-chat-message assistant">
+              {t({
+                fr: 'Bonjour, je suis l’assistant Onekana. Comment pouvons-nous faire circuler votre marque ?',
+                en: 'Hello, I am the Onekana assistant. How can we help your brand move through the city?',
+              })}
             </div>
-
-            <div className="popup-options">
-              <a href="http://localhost:5375/" className="popup-option" onClick={closePopup} target="_blank" rel="noopener noreferrer">
-                <div className="option-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="8.5" cy="7" r="4"></circle>
-                    <line x1="20" y1="8" x2="20" y2="14"></line>
-                    <line x1="23" y1="11" x2="17" y2="11"></line>
-                  </svg>
-                </div>
-                <div className="option-content">
-                  <h4>Onekana Business Manager</h4>
-                  <p>{t({ fr: "Créez votre compte professionnel et gérez vos campagnes en toute autonomie", en: "Create your professional account and manage your campaigns independently" })}</p>
-                </div>
-                <div className="option-arrow">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
-              </a>
-
-              <Link to="/contact" className="popup-option" onClick={closePopup}>
-                <div className="option-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                </div>
-                <div className="option-content">
-                  <h4>{t({ fr: "Nous contacter", en: "Contact us" })}</h4>
-                  <p>{t({ fr: "Envoyez-nous un message pour obtenir plus d'informations sur nos services", en: "Send us a message to get more information about our services" })}</p>
-                </div>
-                <div className="option-arrow">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
-              </Link>
-            </div>
+            {messages.map((chatMessage, index) => (
+              <div className={`ai-chat-message ${chatMessage.role}`} key={`${chatMessage.role}-${index}`}>
+                {chatMessage.content}
+              </div>
+            ))}
+            {isSending && (
+              <div className="ai-chat-typing" aria-label={t({ fr: 'Réponse en cours', en: 'Reply in progress' })}>
+                <span />
+                <span />
+                <span />
+              </div>
+            )}
+            {chatError && <p className="ai-chat-error" role="alert">{chatError}</p>}
           </div>
-        </div>
+
+          <form className="ai-chat-form" onSubmit={handleChatSubmit}>
+            <input
+              type="text"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              placeholder={t({ fr: 'Écrivez votre question...', en: 'Write your question...' })}
+              aria-label={t({ fr: 'Votre message', en: 'Your message' })}
+              maxLength="1000"
+            />
+            <button
+              type="submit"
+              disabled={!aiChatUrl || !message.trim() || isSending}
+              title={!aiChatUrl ? t({ fr: 'Assistant bientôt disponible', en: 'Assistant coming soon' }) : undefined}
+              aria-label={t({ fr: 'Envoyer le message', en: 'Send message' })}
+            >
+              <Send size={19} />
+            </button>
+          </form>
+        </section>
       )}
+
+      <button
+        type="button"
+        className="btn btn-primary btn-large"
+        aria-label={isOpen ? t({ fr: 'Fermer le chat', en: 'Close chat' }) : label}
+        title={label}
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+      >
+        {isOpen ? <X size={30} /> : <MessageCircle size={32} />}
+      </button>
     </div>
   )
 }

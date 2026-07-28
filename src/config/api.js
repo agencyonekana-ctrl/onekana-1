@@ -2,7 +2,7 @@
 // Configuration de l'API PHP - Onekana
 // ============================================
 
-export const PHP_API_BASE_URL = 'http://localhost/onekana/api';
+export const PHP_API_BASE_URL = '/api';
 
 // PHP API endpoints
 export const PHP_ENDPOINTS = {

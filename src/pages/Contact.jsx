@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronDown, ClipboardCheck, Clock, Facebook, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from 'lucide-react'
+import { ChevronDown, ClipboardCheck, Clock, Facebook, Linkedin, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from 'lucide-react'
 import { useLanguage } from '../hooks/useLanguage'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import AccentText from '../components/AccentText'
@@ -8,6 +8,7 @@ import InnerPageHero from '../components/InnerPageHero'
 
 const CONTACT_EMAIL = 'contact@onekana-agency.com'
 const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/agence-onekana-officiel-512075421'
 
 function Contact() {
   const { t } = useLanguage()
@@ -44,6 +45,7 @@ function Contact() {
     budgetRange: '',
     customBudget: '',
     message: '',
+    website: '',
   })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -90,7 +92,7 @@ function Contact() {
     return errors
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
@@ -104,24 +106,55 @@ function Contact() {
       const budgetLabel = formData.budgetRange === 'custom'
         ? `${formData.customBudget} USD`
         : selectedBudget?.label || t({ fr: 'Non renseigné', en: 'Not provided' })
-      const subject = `[${formData.pole}] ${formData.subject.trim()}`
-      const structuredMessage = [
-        `${t({ fr: 'Nom', en: 'Name' })}: ${formData.name}`,
-        `Email: ${formData.email}`,
-        `${t({ fr: 'Entreprise', en: 'Company' })}: ${formData.company || '-'}`,
-        `${t({ fr: 'Pôle', en: 'Hub' })}: ${formData.pole}`,
-        requestedSupport ? `${t({ fr: 'Support', en: 'Medium' })}: ${requestedSupport}` : null,
-        `${t({ fr: 'Budget indicatif', en: 'Indicative budget' })}: ${budgetLabel}`,
-        '',
-        `${t({ fr: 'Message', en: 'Message' })}:`,
-        formData.message,
-      ].filter((line) => line !== null).join('\n')
-      const mailtoHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(structuredMessage)}`
-      window.location.href = mailtoHref
+      const response = await fetch('/api/contact.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          support: requestedSupport,
+          budget: budgetLabel,
+        }),
+      })
+      const contentType = response.headers.get('content-type') || ''
+      if (!contentType.includes('application/json')) {
+        throw new Error(t({
+          fr: 'Le service de messagerie est momentanément indisponible. Veuillez réessayer dans quelques instants.',
+          en: 'The messaging service is temporarily unavailable. Please try again shortly.',
+        }))
+      }
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || t({
+          fr: 'Le message n’a pas pu être envoyé. Veuillez réessayer.',
+          en: 'The message could not be sent. Please try again.',
+        }))
+      }
+
       setSubmitted(true)
-      setFormData({ name: '', email: '', company: '', subject: '', pole: '', budgetRange: '', customBudget: '', message: '' })
+      setFormErrors({})
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        subject: '',
+        pole: '',
+        budgetRange: '',
+        customBudget: '',
+        message: '',
+        website: '',
+      })
     } catch (error) {
-      setFormErrors({ submit: error.message || t({ fr: 'Une erreur réseau est survenue. Veuillez réessayer.', en: 'A network error occurred. Please try again.' }) })
+      setFormErrors({
+        submit: error.message || t({
+          fr: 'Une erreur réseau est survenue. Veuillez réessayer.',
+          en: 'A network error occurred. Please try again.',
+        }),
+      })
     } finally {
       setSubmitting(false)
     }
@@ -188,6 +221,7 @@ function Contact() {
 
               <div className="contact-social-row">
                 <a href={FACEBOOK_URL} aria-label="Facebook Onekana" target="_blank" rel="noopener noreferrer"><Facebook size={19} /></a>
+                <a href={LINKEDIN_URL} aria-label="LinkedIn Onekana" target="_blank" rel="noopener noreferrer"><Linkedin size={19} /></a>
               </div>
             </aside>
 
@@ -195,14 +229,25 @@ function Contact() {
               {submitted ? (
                 <div className="contact-success" role="status">
                   <div><Send size={30} /></div>
-                  <span className="section-label">{t({ fr: 'Email prêt', en: 'Email ready' })}</span>
-                  <h3>{t({ fr: 'Votre client email est ouvert.', en: 'Your email client is open.' })}</h3>
-                  <p>{t({ fr: 'Vérifiez le message prérempli puis finalisez l’envoi à Onekana.', en: 'Review the pre-filled message, then send it to Onekana.' })}</p>
+                  <span className="section-label">{t({ fr: 'Message envoyé', en: 'Message sent' })}</span>
+                  <h3>{t({ fr: 'Votre demande est arrivée chez Onekana.', en: 'Your request has reached Onekana.' })}</h3>
+                  <p>{t({ fr: 'Merci. Notre équipe pourra vous répondre directement à l’adresse indiquée.', en: 'Thank you. Our team can reply directly to the email address you provided.' })}</p>
                   <button type="button" className="btn btn-outline" onClick={() => setSubmitted(false)}>{t({ fr: 'Envoyer un autre message', en: 'Send another message' })}</button>
                 </div>
               ) : (
                 <form className="contact-form-modern" onSubmit={handleSubmit} noValidate>
                   <div className="contact-form-heading"><span>01</span><div><small>{t({ fr: 'Votre brief', en: 'Your brief' })}</small><h3>{t({ fr: 'Commençons simplement', en: 'Let’s start simply' })}</h3></div></div>
+                  <div className="contact-honeypot" aria-hidden="true">
+                    <label htmlFor="website">Website</label>
+                    <input
+                      id="website"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleChange}
+                      tabIndex="-1"
+                      autoComplete="off"
+                    />
+                  </div>
                   <aside className="contact-brief-summary" aria-live="polite">
                     <div className="contact-brief-summary-head">
                       <div><ClipboardCheck size={20} /><span>{t({ fr: 'Récapitulatif de la demande', en: 'Request summary' })}</span></div>
