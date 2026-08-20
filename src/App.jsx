@@ -6,6 +6,7 @@ import './App.css'
 import Home from './pages/Home'
 import Preloader from './components/Preloader'
 import CookiePopup from './components/CookiePopup'
+import TikTokIcon from './components/TikTokIcon'
 
 const Agence = lazy(() => import('./pages/Agence'))
 const Expertise = lazy(() => import('./pages/Expertise'))
@@ -114,8 +115,9 @@ const Navigation = () => {
 }
 
 const CONTACT_EMAIL = 'contact@onekana-agency.com'
-const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
-const LINKEDIN_URL = 'https://www.linkedin.com/in/agence-onekana-officiel-512075421'
+const FACEBOOK_URL = 'https://www.facebook.com/profile.php?id=61591640678284'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/onekana-agency-officiel-999147429'
+const TIKTOK_URL = 'https://www.tiktok.com/@onekanaagencyofficiel?is_from_webapp=1&sender_device=pc'
 
 // Social Icons
 const FacebookIcon = () => (
@@ -179,6 +181,7 @@ const Footer = () => {
   const socialLinks = [
     { name: 'Facebook', icon: <FacebookIcon />, url: FACEBOOK_URL },
     { name: 'LinkedIn', icon: <Linkedin size={20} aria-hidden="true" />, url: LINKEDIN_URL },
+    { name: 'TikTok', icon: <TikTokIcon />, url: TIKTOK_URL },
   ]
 
   const expertiseLinks = [

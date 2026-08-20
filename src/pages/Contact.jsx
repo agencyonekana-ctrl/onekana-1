@@ -5,10 +5,12 @@ import { useLanguage } from '../hooks/useLanguage'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import AccentText from '../components/AccentText'
 import InnerPageHero from '../components/InnerPageHero'
+import TikTokIcon from '../components/TikTokIcon'
 
 const CONTACT_EMAIL = 'contact@onekana-agency.com'
-const FACEBOOK_URL = 'https://web.facebook.com/profile.php?id=61591640678284'
-const LINKEDIN_URL = 'https://www.linkedin.com/in/agence-onekana-officiel-512075421'
+const FACEBOOK_URL = 'https://www.facebook.com/profile.php?id=61591640678284'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/onekana-agency-officiel-999147429'
+const TIKTOK_URL = 'https://www.tiktok.com/@onekanaagencyofficiel?is_from_webapp=1&sender_device=pc'
 
 function Contact() {
   const { t } = useLanguage()
@@ -222,6 +224,7 @@ function Contact() {
               <div className="contact-social-row">
                 <a href={FACEBOOK_URL} aria-label="Facebook Onekana" target="_blank" rel="noopener noreferrer"><Facebook size={19} /></a>
                 <a href={LINKEDIN_URL} aria-label="LinkedIn Onekana" target="_blank" rel="noopener noreferrer"><Linkedin size={19} /></a>
+                <a href={TIKTOK_URL} aria-label="TikTok Onekana" target="_blank" rel="noopener noreferrer"><TikTokIcon size={19} /></a>
               </div>
             </aside>
 
