@@ -26,6 +26,13 @@ function cleanString(mixed $value, int $maxLength): string
         : substr($value, 0, $maxLength);
 }
 
+function environmentValue(string $name, string $default = ''): string
+{
+    $value = getenv($name);
+
+    return is_string($value) && trim($value) !== '' ? trim($value) : $default;
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
     respond(405, ['success' => false, 'message' => 'Méthode non autorisée.']);
@@ -39,7 +46,16 @@ if ($contentLength > 32768) {
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $requestHost = strtolower(explode(':', $_SERVER['HTTP_HOST'] ?? '')[0]);
 $originHost = $origin !== '' ? strtolower((string) parse_url($origin, PHP_URL_HOST)) : '';
-if ($originHost !== '' && $requestHost !== '' && $originHost !== $requestHost) {
+$isDevelopment = strtolower(environmentValue('APP_ENV', 'production')) === 'development';
+$isLocalDevelopmentOrigin = $isDevelopment
+    && in_array($originHost, ['localhost', '127.0.0.1'], true)
+    && in_array($requestHost, ['localhost', '127.0.0.1'], true);
+if (
+    $originHost !== ''
+    && $requestHost !== ''
+    && $originHost !== $requestHost
+    && !$isLocalDevelopmentOrigin
+) {
     respond(403, ['success' => false, 'message' => 'Origine non autorisée.']);
 }
 
@@ -99,7 +115,15 @@ if (is_file($rateLimitFile) && (time() - (int) filemtime($rateLimitFile)) < 30) 
 }
 
 try {
-    $recipient = 'contact@onekana-agency.com';
+    $recipient = environmentValue('CONTACT_RECIPIENT', 'contact@onekana-agency.com');
+    $from = str_replace(["\r", "\n"], '', environmentValue(
+        'CONTACT_FROM_EMAIL',
+        'Site Onekana <contact@onekana-agency.com>',
+    ));
+    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || $from === '') {
+        throw new RuntimeException('Invalid contact email configuration.');
+    }
+
     $safeSubject = str_replace(["\r", "\n"], ' ', sprintf('[%s] %s', $pole, $subject));
     $encodedSubject = '=?UTF-8?B?' . base64_encode($safeSubject) . '?=';
     $body = implode("\n", array_filter([
@@ -117,12 +141,12 @@ try {
     $headers = implode("\r\n", [
         'MIME-Version: 1.0',
         'Content-Type: text/plain; charset=UTF-8',
-        'From: Site Onekana <contact@onekana-agency.com>',
+        "From: {$from}",
         "Reply-To: {$email}",
         'X-Mailer: PHP/' . PHP_VERSION,
     ]);
 
-    if (!mail($recipient, $encodedSubject, $body, $headers)) {
+    if (!@mail($recipient, $encodedSubject, $body, $headers)) {
         throw new RuntimeException('The local mail transport rejected the message.');
     }
 

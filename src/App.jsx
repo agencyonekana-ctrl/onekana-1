@@ -531,12 +531,23 @@ const AppContent = () => {
 }
 
 const FloatingCampaignButton = () => {
-  const { lang, t } = useLanguage()
+  const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [isSending, setIsSending] = useState(false)
   const [chatError, setChatError] = useState('')
+  const [chatSessionId] = useState(() => {
+    const existingSessionId = window.sessionStorage.getItem('onekana-chat-session')
+    if (existingSessionId) return existingSessionId
+
+    const generatedSessionId = typeof window.crypto?.randomUUID === 'function'
+      ? window.crypto.randomUUID()
+      : `web-${Date.now()}-${Math.random().toString(36).slice(2)}`
+
+    window.sessionStorage.setItem('onekana-chat-session', generatedSessionId)
+    return generatedSessionId
+  })
   const aiChatUrl = window.ONEKANA_CONFIG?.aiChatUrl?.trim() || ''
   const label = t({ fr: "Ouvrir l'assistant IA Onekana", en: 'Open the Onekana AI assistant' })
 
@@ -560,16 +571,23 @@ const FloatingCampaignButton = () => {
         },
         body: JSON.stringify({
           message: userMessage,
-          language: lang,
+          session_id: chatSessionId,
         }),
       })
       const result = await response.json()
 
-      if (!response.ok) {
+      if (!response.ok || result.success === false || result.status === 'error') {
         throw new Error(result.message)
       }
 
-      const assistantMessage = result.reply || result.response || result.message
+      const assistantMessage = result.reply
+        || result.response
+        || result.answer
+        || result.data?.reply
+        || result.data?.response
+        || result.data?.answer
+        || result.data?.message
+        || result.message
       if (!assistantMessage) {
         throw new Error()
       }

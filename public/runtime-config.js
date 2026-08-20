@@ -1,3 +1,3 @@
 window.ONEKANA_CONFIG = {
-  aiChatUrl: '',
+  aiChatUrl: '/api/chat.php',
 }

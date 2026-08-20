@@ -1,17 +1,32 @@
-# React + Vite
+# Onekana
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Site public React/Vite de Onekana, avec formulaire de contact traité côté serveur en PHP.
 
-Currently, two official plugins are available:
+## Développement local
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Prérequis : Node.js, npm et PHP 8.1 ou supérieur.
 
-## React Compiler
+Lancez simplement `npm run dev`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Cette commande démarre automatiquement :
 
-## Expanding the ESLint configuration
+- Vite pour le site ;
+- PHP sur `127.0.0.1:8787` pour `/api/contact.php` et `/api/chat.php` ;
+- le proxy entre le site et les API PHP.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-"# onekana" 
+Copiez `.env.example` vers `.env.local`, puis renseignez une nouvelle valeur pour `CHATBOT_API_KEY`. Cette clé reste côté serveur et ne doit jamais être ajoutée au dépôt Git.
+
+Le formulaire est public : le visiteur ne s’authentifie jamais et le destinataire reste fixé à `contact@onekana-agency.com`. L’envoi réel est effectué par le transport `mail()` de l’hébergement PHP.
+
+## Production
+
+Lancez `npm run build`, puis déployez tout le contenu de `dist`, y compris le dossier `dist/api`.
+
+Les variables suivantes peuvent être configurées sur l’hébergement :
+
+- `CONTACT_FROM_EMAIL` ;
+- `CONTACT_RECIPIENT`, par défaut `contact@onekana-agency.com` ;
+- `CHATBOT_API_ENDPOINT`, déjà renseigné dans `.env.example` ;
+- `CHATBOT_API_KEY`, avec une nouvelle clé API active.
+
+En production, l’API de contact utilise directement le transport `mail()` du serveur PHP. Le relais `/api/chat.php` transmet les messages au bot sans exposer sa clé dans le navigateur.
