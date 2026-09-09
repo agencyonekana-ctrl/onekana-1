@@ -604,7 +604,7 @@ const FloatingCampaignButton = () => {
   }
 
   return (
-    <div className="floating-campaign-btn">
+    <div className={`floating-campaign-btn${isOpen ? ' chat-open' : ''}`}>
       {isOpen && (
         <section className="ai-chat-panel" role="dialog" aria-modal="false" aria-labelledby="ai-chat-title">
           <header className="ai-chat-header">

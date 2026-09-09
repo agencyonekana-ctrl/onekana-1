@@ -445,10 +445,19 @@
   .ai-chat-panel {
     position: fixed;
     right: 12px;
-    bottom: 88px;
+    bottom: max(12px, env(safe-area-inset-bottom));
     left: 12px;
     width: auto;
-    height: min(520px, calc(100dvh - 112px));
+    height: min(620px, calc(100dvh - 24px - env(safe-area-inset-bottom)));
+  }
+
+  .floating-campaign-btn.chat-open > .btn,
+  .floating-campaign-btn:has(.ai-chat-panel) > .btn {
+    display: none;
+  }
+
+  .ai-chat-form {
+    padding-bottom: max(0.8rem, env(safe-area-inset-bottom));
   }
 }
 

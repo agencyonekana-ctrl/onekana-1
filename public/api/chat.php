@@ -64,13 +64,26 @@ function extractString(array $payload, array $paths): string
     return '';
 }
 
-function postToChatbot(string $endpoint, string $apiKey, string $body): array
+function endpointWithQuery(string $endpoint, array $parameters): string
+{
+    return $endpoint
+        . (str_contains($endpoint, '?') ? '&' : '?')
+        . http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
+}
+
+function requestChatbot(string $method, string $endpoint, string $apiKey, string $body = ''): array
 {
     $headers = [
         'Accept: application/json',
-        'Content-Type: application/json',
-        'X-Api-Key: ' . $apiKey,
     ];
+
+    if ($method === 'POST') {
+        $headers[] = 'Content-Type: application/json';
+    }
+
+    if ($apiKey !== '') {
+        $headers[] = 'X-Api-Key: ' . $apiKey;
+    }
 
     if (function_exists('curl_init')) {
         $request = curl_init($endpoint);
@@ -78,15 +91,20 @@ function postToChatbot(string $endpoint, string $apiKey, string $body): array
             throw new RuntimeException('Unable to initialize cURL.');
         }
 
-        curl_setopt_array($request, [
+        $options = [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $body,
+            CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_TIMEOUT => 40,
             CURLOPT_FOLLOWLOCATION => false,
-        ]);
+        ];
+
+        if ($method === 'POST') {
+            $options[CURLOPT_POSTFIELDS] = $body;
+        }
+
+        curl_setopt_array($request, $options);
 
         $responseBody = curl_exec($request);
         $statusCode = (int) curl_getinfo($request, CURLINFO_RESPONSE_CODE);
@@ -104,15 +122,18 @@ function postToChatbot(string $endpoint, string $apiKey, string $body): array
         throw new RuntimeException('No outbound HTTP transport is available.');
     }
 
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' => implode("\r\n", $headers),
-            'content' => $body,
-            'ignore_errors' => true,
-            'timeout' => 40,
-        ],
-    ]);
+    $httpOptions = [
+        'method' => $method,
+        'header' => implode("\r\n", $headers),
+        'ignore_errors' => true,
+        'timeout' => 40,
+    ];
+
+    if ($method === 'POST') {
+        $httpOptions['content'] = $body;
+    }
+
+    $context = stream_context_create(['http' => $httpOptions]);
     $responseBody = @file_get_contents($endpoint, false, $context);
     if (!is_string($responseBody)) {
         throw new RuntimeException('Chatbot request failed.');
@@ -128,8 +149,9 @@ function postToChatbot(string $endpoint, string $apiKey, string $body): array
     return [$statusCode, $responseBody];
 }
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    header('Allow: POST');
+$method = strtoupper($_SERVER['REQUEST_METHOD'] ?? '');
+if (!in_array($method, ['GET', 'POST'], true)) {
+    header('Allow: GET, POST');
     respond(405, ['success' => false, 'message' => 'Méthode non autorisée.']);
 }
 
@@ -150,29 +172,6 @@ if ($originHost !== '' && $requestHost !== '' && $originHost !== $requestHost &&
 }
 
 try {
-    $payload = json_decode((string) file_get_contents('php://input'), true, 16, JSON_THROW_ON_ERROR);
-} catch (JsonException) {
-    respond(400, ['success' => false, 'message' => 'Données invalides.']);
-}
-
-if (!is_array($payload)) {
-    respond(400, ['success' => false, 'message' => 'Données invalides.']);
-}
-
-$message = cleanString($payload['message'] ?? '', 1000);
-$sessionId = cleanString($payload['session_id'] ?? '', 160);
-
-if ($message === '' || $sessionId === '') {
-    respond(422, ['success' => false, 'message' => 'Le message ou la session est invalide.']);
-}
-
-$clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-$rateLimitFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'onekana-chat-' . hash('sha256', $clientIp);
-if (is_file($rateLimitFile) && (time() - (int) filemtime($rateLimitFile)) < 1) {
-    respond(429, ['success' => false, 'message' => 'Veuillez patienter avant de renvoyer un message.']);
-}
-
-try {
     $endpoint = environmentValue('CHATBOT_API_ENDPOINT', DEFAULT_CHATBOT_ENDPOINT);
     $apiKey = environmentValue('CHATBOT_API_KEY');
     $scheme = strtolower((string) parse_url($endpoint, PHP_URL_SCHEME));
@@ -181,20 +180,82 @@ try {
         throw new RuntimeException('Invalid chatbot endpoint.');
     }
 
-    if ($apiKey === '') {
-        error_log('Onekana chatbot: CHATBOT_API_KEY is missing.');
-        respond(503, [
-            'success' => false,
-            'message' => 'Le chatbot n’est pas encore configuré sur le serveur.',
+    $action = cleanString($_GET['action'] ?? '', 24);
+    $targetEndpoint = $endpoint;
+    $requestBody = '';
+    $rateLimitFile = '';
+
+    if ($method === 'GET') {
+        if ($action !== 'messages') {
+            respond(400, ['success' => false, 'message' => 'Action non autorisée.']);
+        }
+
+        $sessionId = cleanString($_GET['session_id'] ?? '', 160);
+        $sinceId = filter_var($_GET['since_id'] ?? 0, FILTER_VALIDATE_INT, [
+            'options' => ['default' => 0, 'min_range' => 0],
         ]);
+
+        if ($sessionId === '') {
+            respond(422, ['success' => false, 'message' => 'La session est invalide.']);
+        }
+
+        $targetEndpoint = endpointWithQuery($endpoint, [
+            'action' => 'messages',
+            'session_id' => $sessionId,
+            'since_id' => $sinceId,
+        ]);
+    } else {
+        try {
+            $payload = json_decode((string) file_get_contents('php://input'), true, 16, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            respond(400, ['success' => false, 'message' => 'Données invalides.']);
+        }
+
+        if (!is_array($payload)) {
+            respond(400, ['success' => false, 'message' => 'Données invalides.']);
+        }
+
+        $sessionId = cleanString($payload['session_id'] ?? '', 160);
+        if ($sessionId === '') {
+            respond(422, ['success' => false, 'message' => 'La session est invalide.']);
+        }
+
+        if ($action === 'feedback') {
+            $score = filter_var($payload['score'] ?? null, FILTER_VALIDATE_INT, [
+                'options' => ['min_range' => 1, 'max_range' => 5],
+            ]);
+
+            if ($score === false) {
+                respond(422, ['success' => false, 'message' => 'L’évaluation est invalide.']);
+            }
+
+            $targetEndpoint = endpointWithQuery($endpoint, ['action' => 'feedback']);
+            $requestBody = json_encode([
+                'session_id' => $sessionId,
+                'score' => $score,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } elseif ($action === '') {
+            $message = cleanString($payload['message'] ?? '', 1000);
+            if ($message === '') {
+                respond(422, ['success' => false, 'message' => 'Le message est invalide.']);
+            }
+
+            $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            $rateLimitFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'onekana-chat-' . hash('sha256', $clientIp);
+            if (is_file($rateLimitFile) && (time() - (int) filemtime($rateLimitFile)) < 1) {
+                respond(429, ['success' => false, 'message' => 'Veuillez patienter avant de renvoyer un message.']);
+            }
+
+            $requestBody = json_encode([
+                'message' => $message,
+                'session_id' => $sessionId,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } else {
+            respond(400, ['success' => false, 'message' => 'Action non autorisée.']);
+        }
     }
 
-    $requestBody = json_encode([
-        'message' => $message,
-        'session_id' => $sessionId,
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-
-    [$upstreamStatus, $responseBody] = postToChatbot($endpoint, $apiKey, $requestBody);
+    [$upstreamStatus, $responseBody] = requestChatbot($method, $targetEndpoint, $apiKey, $requestBody);
     $upstream = json_decode($responseBody, true, 32, JSON_THROW_ON_ERROR);
 
     if (!is_array($upstream)) {
@@ -210,32 +271,11 @@ try {
         ]);
     }
 
-    $reply = extractString($upstream, [
-        ['reply'],
-        ['response'],
-        ['answer'],
-        ['data', 'reply'],
-        ['data', 'response'],
-        ['data', 'answer'],
-        ['data', 'message'],
-        ['message'],
-    ]);
-
-    if ($reply === '' && is_string($upstream['data'] ?? null)) {
-        $reply = trim($upstream['data']);
+    if ($rateLimitFile !== '') {
+        @touch($rateLimitFile);
     }
 
-    if ($reply === '') {
-        throw new RuntimeException('Chatbot response does not contain a reply.');
-    }
-
-    @touch($rateLimitFile);
-
-    respond(200, [
-        'success' => true,
-        'reply' => $reply,
-        'session_id' => extractString($upstream, [['session_id'], ['data', 'session_id']]) ?: $sessionId,
-    ]);
+    respond(200, $upstream);
 } catch (Throwable $error) {
     error_log('Onekana chatbot error: ' . $error->getMessage());
     respond(502, [
