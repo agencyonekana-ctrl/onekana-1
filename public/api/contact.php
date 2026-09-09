@@ -116,16 +116,20 @@ if (is_file($rateLimitFile) && (time() - (int) filemtime($rateLimitFile)) < 30) 
 
 try {
     $recipient = environmentValue('CONTACT_RECIPIENT', 'contact@onekana-agency.com');
-    $from = str_replace(["\r", "\n"], '', environmentValue(
-        'CONTACT_FROM_EMAIL',
-        'Site Onekana <contact@onekana-agency.com>',
-    ));
-    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || $from === '') {
+    $senderEmail = environmentValue('CONTACT_SENDER_EMAIL', 'contact@onekana-agency.com');
+    $senderName = str_replace(["\r", "\n"], '', environmentValue('CONTACT_SENDER_NAME', 'Onekana Agency'));
+    if (
+        !filter_var($recipient, FILTER_VALIDATE_EMAIL)
+        || !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)
+        || $senderName === ''
+    ) {
         throw new RuntimeException('Invalid contact email configuration.');
     }
 
     $safeSubject = str_replace(["\r", "\n"], ' ', sprintf('[%s] %s', $pole, $subject));
     $encodedSubject = '=?UTF-8?B?' . base64_encode($safeSubject) . '?=';
+    $messageId = bin2hex(random_bytes(12));
+    $messageDomain = substr(strrchr($senderEmail, '@') ?: '@onekana-agency.com', 1);
     $body = implode("\n", array_filter([
         "Nom: {$name}",
         "Email: {$email}",
@@ -141,12 +145,15 @@ try {
     $headers = implode("\r\n", [
         'MIME-Version: 1.0',
         'Content-Type: text/plain; charset=UTF-8',
-        "From: {$from}",
+        "From: {$senderName} <{$senderEmail}>",
         "Reply-To: {$email}",
+        "Message-ID: <{$messageId}@{$messageDomain}>",
+        "X-Onekana-Contact-ID: {$messageId}",
         'X-Mailer: PHP/' . PHP_VERSION,
     ]);
 
-    if (!@mail($recipient, $encodedSubject, $body, $headers)) {
+    ini_set('sendmail_from', $senderEmail);
+    if (!mail($recipient, $encodedSubject, $body, $headers, '-f' . $senderEmail)) {
         throw new RuntimeException('The local mail transport rejected the message.');
     }
 
@@ -154,11 +161,12 @@ try {
 
     respond(200, [
         'success' => true,
-        'message' => 'Votre message a été envoyé à Onekana.',
+        'message' => 'Votre message a été transmis à Onekana.',
+        'messageId' => $messageId,
     ]);
 } catch (Throwable $error) {
     error_log('Onekana contact mail error: ' . $error->getMessage());
-    respond(500, [
+    respond(502, [
         'success' => false,
         'message' => 'Le message n’a pas pu être envoyé. Veuillez réessayer.',
     ]);

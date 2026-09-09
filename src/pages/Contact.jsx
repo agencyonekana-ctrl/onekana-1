@@ -50,6 +50,7 @@ function Contact() {
     website: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submissionId, setSubmissionId] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [formErrors, setFormErrors] = useState({})
   const [openFaq, setOpenFaq] = useState(0)
@@ -137,6 +138,7 @@ function Contact() {
         }))
       }
 
+      setSubmissionId(result.messageId || '')
       setSubmitted(true)
       setFormErrors({})
       setFormData({
@@ -233,9 +235,10 @@ function Contact() {
                 <div className="contact-success" role="status">
                   <div><Send size={30} /></div>
                   <span className="section-label">{t({ fr: 'Message envoyé', en: 'Message sent' })}</span>
-                  <h3>{t({ fr: 'Votre demande est arrivée chez Onekana.', en: 'Your request has reached Onekana.' })}</h3>
+                  <h3>{t({ fr: 'Votre demande a été transmise à Onekana.', en: 'Your request has been sent to Onekana.' })}</h3>
                   <p>{t({ fr: 'Merci. Notre équipe pourra vous répondre directement à l’adresse indiquée.', en: 'Thank you. Our team can reply directly to the email address you provided.' })}</p>
-                  <button type="button" className="btn btn-outline" onClick={() => setSubmitted(false)}>{t({ fr: 'Envoyer un autre message', en: 'Send another message' })}</button>
+                  {submissionId && <small>{t({ fr: 'Référence', en: 'Reference' })}: {submissionId}</small>}
+                  <button type="button" className="btn btn-outline" onClick={() => { setSubmitted(false); setSubmissionId('') }}>{t({ fr: 'Envoyer un autre message', en: 'Send another message' })}</button>
                 </div>
               ) : (
                 <form className="contact-form-modern" onSubmit={handleSubmit} noValidate>
